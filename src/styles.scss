@@ -1,16 +1,24 @@
 :root {
-  --bg: #050505;
-  --bg-2: #0b0b0d;
-  --red: #ff1a2e;
-  --red-deep: #d10f22;
-  --text: #f4f4f5;
-  --muted: #b7b7be;
-  --dim: #8d8d96;
-  --line: rgba(255, 255, 255, 0.12);
-  --display: 'Oswald', 'Arial Narrow', sans-serif;
+  /* Design "Clinical blue": light blue-grey pages, white surfaces, navy text, VITRIX red. */
+  --bg: #edf2f7;
+  --bg-2: #f6f9fc;
+  --surface: #ffffff;
+  --field: #f6f9fc;
+  --text: #1c2b40;
+  --heading: #13233a;
+  --muted: #40536b;
+  --dim: #61738a;
+  --line: rgba(19, 35, 58, 0.12);
+  --navy: #13233a;
+  --navy-deep: #0b1626;
+  --red: #e1141e;
+  --red-deep: #b80f18;
+  --ok: #1d8a4f;
+  --shadow: 0 10px 28px rgba(19, 35, 58, 0.08);
+  --display: 'Montserrat', Arial, sans-serif;
   --body: 'Manrope', Arial, sans-serif;
   --wrap: 1120px;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 *,
@@ -122,11 +130,11 @@ p {
 
 .btn-ghost {
   border-color: var(--red);
-  color: #fff;
+  color: var(--heading);
 }
 
 .btn-ghost:hover {
-  background: rgba(255, 26, 46, 0.12);
+  background: rgba(225, 20, 30, 0.12);
 }
 
 .eyebrow,
@@ -162,8 +170,8 @@ p {
   gap: 24px;
   height: 74px;
   padding: 0 22px;
-  background: rgba(0, 0, 0, 0.92);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid rgba(19, 35, 58, 0.06);
   backdrop-filter: blur(10px);
 }
 
@@ -189,13 +197,13 @@ p {
 
 .desktop-nav a,
 .site-footer nav a {
-  color: #d5d5d8;
+  color: var(--muted);
   font-size: 14px;
   letter-spacing: 0.02em;
 }
 
 .desktop-nav a.is-active {
-  color: #fff;
+  color: var(--heading);
   box-shadow: inset 0 -2px 0 var(--red);
   padding-bottom: 4px;
 }
@@ -212,7 +220,7 @@ p {
 }
 
 .account-link {
-  color: #d5d5d8;
+  color: var(--muted);
   font-size: 14px;
   max-width: 16ch;
   overflow: hidden;
@@ -222,7 +230,7 @@ p {
 
 .account-link:hover,
 .account-link.is-active {
-  color: #fff;
+  color: var(--heading);
 }
 
 .icon-btn {
@@ -232,7 +240,7 @@ p {
   place-items: center;
   background: transparent;
   border: 0;
-  color: #fff;
+  color: var(--heading);
   cursor: pointer;
 }
 
@@ -252,14 +260,14 @@ p {
   position: sticky;
   top: 74px;
   z-index: 29;
-  background: #0c0c0e;
+  background: var(--surface);
   border-bottom: 1px solid var(--line);
   padding: 16px 0 18px;
 }
 
 .search-panel input {
   width: 100%;
-  background: #050505;
+  background: var(--bg);
   border: 1px solid var(--line);
   padding: 12px 14px;
 }
@@ -305,22 +313,30 @@ p {
 .hero-atmosphere {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 50% 42%, rgba(255, 26, 46, 0.18), transparent 26%),
-    radial-gradient(ellipse at 12% 45%, rgba(255, 255, 255, 0.05), transparent 28%),
-    radial-gradient(ellipse at 86% 58%, rgba(90, 150, 180, 0.1), transparent 24%),
-    linear-gradient(180deg, #09090b 0%, #050505 78%);
+  overflow: hidden;
   pointer-events: none;
+}
+
+.hero-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  filter: saturate(0.55);
 }
 
 .hero-atmosphere::after {
   content: '';
   position: absolute;
-  inset: 8% 30% auto;
-  height: 62%;
+  inset: 0;
   background:
-    linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.04) 48%, transparent 56%),
-    radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 0.2), transparent 60%);
+    linear-gradient(transparent 75%, var(--bg)),
+    linear-gradient(
+      90deg,
+      rgba(237, 242, 247, 0.97) 0%,
+      rgba(237, 242, 247, 0.86) 48%,
+      rgba(219, 232, 245, 0.55) 100%
+    );
 }
 
 .hero-layout {
@@ -350,11 +366,11 @@ p {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  line-height: 0.92;
+  line-height: 1.05;
 }
 
 .hero-copy h1 {
-  font-size: clamp(52px, 6vw, 78px);
+  font-size: clamp(40px, 4.6vw, 62px);
   margin-bottom: 28px;
 }
 
@@ -371,7 +387,7 @@ p {
 .wordmark {
   font-family: var(--display);
   font-weight: 700;
-  font-size: clamp(52px, 6vw, 76px);
+  font-size: clamp(44px, 5.2vw, 66px);
   letter-spacing: 0.14em;
   line-height: 0.9;
   margin: 0 0 14px;
@@ -379,14 +395,11 @@ p {
 }
 
 .wordmark span {
-  background: linear-gradient(90deg, #fff 46%, #ff1a2e 46%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--red);
 }
 
 .institute {
-  color: #d7d7dc;
+  color: var(--muted);
   letter-spacing: 0.12em;
   font-size: 13px;
   line-height: 1.45;
@@ -423,7 +436,7 @@ p {
 
 .side-kicker,
 .side-note {
-  color: #c6c6cc;
+  color: var(--muted);
   letter-spacing: 0.14em;
   font-size: 13px;
   font-weight: 600;
@@ -432,11 +445,11 @@ p {
 
 .monitor {
   width: 210px;
-  background: linear-gradient(180deg, #1a1d22, #0c0e12);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(180deg, var(--navy), var(--navy-deep));
+  border: 1px solid rgba(19, 35, 58, 0.3);
   border-radius: 8px;
   padding: 10px 10px 8px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 16px 40px rgba(19, 35, 58, 0.25);
 }
 
 .ecg {
@@ -446,7 +459,7 @@ p {
 
 .ecg polyline {
   fill: none;
-  stroke: #ff3b4e;
+  stroke: var(--red);
   stroke-width: 2;
   stroke-dasharray: 280;
   animation: trace 2.8s linear infinite;
@@ -460,7 +473,7 @@ p {
   gap: 2px;
   margin: 0;
   padding: 0 6px 4px 0;
-  color: #ff4d5d;
+  color: var(--red);
   font-family: var(--display);
   font-size: 22px;
   letter-spacing: 0.06em;
@@ -480,7 +493,7 @@ p {
   grid-template-columns: repeat(4, 1fr);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  background: #070708;
+  background: var(--field);
 }
 
 .features article {
@@ -497,7 +510,7 @@ p {
   width: 46px;
   height: 46px;
   margin: 0 auto 14px;
-  color: #f3f3f3;
+  color: var(--muted);
 }
 
 .feature-icon svg {
@@ -536,7 +549,7 @@ p {
 
 .reality h2,
 .page-section h2 {
-  font-size: clamp(40px, 5vw, 58px);
+  font-size: clamp(30px, 3.8vw, 46px);
   margin-bottom: 18px;
 }
 
@@ -549,7 +562,7 @@ p {
 .reality p,
 .page-section p,
 .lede {
-  color: #d0d0d4;
+  color: var(--muted);
   font-size: 17px;
   max-width: 52ch;
 }
@@ -594,7 +607,7 @@ p {
   display: block;
   color: var(--red);
   font-family: var(--display);
-  font-size: clamp(36px, 4vw, 52px);
+  font-size: clamp(32px, 3.6vw, 46px);
   font-weight: 700;
   letter-spacing: 0.04em;
   line-height: 1;
@@ -607,7 +620,7 @@ p {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-size: 12px;
-  color: #ddd;
+  color: var(--muted);
 }
 
 .programs {
@@ -623,7 +636,7 @@ p {
 }
 
 .programs h2 {
-  font-size: clamp(32px, 4vw, 44px);
+  font-size: clamp(26px, 3.2vw, 36px);
 }
 
 .course-grid {
@@ -633,8 +646,8 @@ p {
 }
 
 .course-card {
-  background: #0c0c0e;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--surface);
+  border: 1px solid rgba(19, 35, 58, 0.06);
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -676,7 +689,7 @@ p {
 }
 
 .course-card:hover {
-  border-color: rgba(255, 26, 46, 0.7);
+  border-color: rgba(225, 20, 30, 0.7);
 }
 
 .closing {
@@ -685,7 +698,8 @@ p {
   display: flex;
   align-items: center;
   overflow: hidden;
-  background: #050505;
+  background: var(--navy);
+  color: #eef3f9;
 }
 
 .closing-photo {
@@ -703,14 +717,14 @@ p {
   inset: 0;
   background: linear-gradient(
     90deg,
-    #050505 0%,
-    #050505 20%,
-    rgba(5, 5, 5, 0.82) 30%,
-    rgba(5, 5, 5, 0.2) 42%,
-    rgba(5, 5, 5, 0.2) 58%,
-    rgba(5, 5, 5, 0.82) 70%,
-    #050505 80%,
-    #050505 100%
+    var(--navy) 0%,
+    var(--navy) 20%,
+    rgba(19, 35, 58, 0.82) 30%,
+    rgba(19, 35, 58, 0.25) 42%,
+    rgba(19, 35, 58, 0.25) 58%,
+    rgba(19, 35, 58, 0.82) 70%,
+    var(--navy) 80%,
+    var(--navy) 100%
   );
 }
 
@@ -745,8 +759,13 @@ p {
 }
 
 .site-footer {
-  background: #050505;
+  background: var(--navy);
+  color: #dfe7f1;
   padding-bottom: 18px;
+  --line: rgba(255, 255, 255, 0.14);
+  --muted: #b9c6d6;
+  --dim: #9fb0c4;
+  --heading: #ffffff;
 }
 
 .footer-top {
@@ -773,7 +792,7 @@ p {
 .footer-social a {
   width: 28px;
   height: 28px;
-  color: #eee;
+  color: var(--muted);
 }
 
 .footer-social svg {
@@ -800,19 +819,20 @@ p {
   justify-content: space-between;
   gap: 16px;
   padding-top: 14px;
-  color: #9a9aa2;
+  color: var(--dim);
   font-size: 13px;
 }
 
 .page-hero {
   padding: 72px 0 20px;
   background:
-    radial-gradient(ellipse at 80% 0%, rgba(255, 26, 46, 0.16), transparent 36%),
-    linear-gradient(#0a0a0c, #050505);
+    radial-gradient(ellipse at 85% 0%, rgba(225, 20, 30, 0.08), transparent 40%),
+    linear-gradient(180deg, #ffffff, var(--bg));
+  border-bottom: 1px solid var(--line);
 }
 
 .page-hero h1 {
-  font-size: clamp(48px, 7vw, 84px);
+  font-size: clamp(34px, 5vw, 60px);
   margin-bottom: 16px;
 }
 
@@ -835,7 +855,7 @@ p {
 }
 
 .info-card {
-  background: #0c0c0e;
+  background: var(--surface);
   border: 1px solid var(--line);
   padding: 22px 20px 24px;
 }
@@ -864,7 +884,7 @@ p {
   gap: 24px;
   align-items: center;
   padding: 16px;
-  background: #0c0c0e;
+  background: var(--surface);
   border: 1px solid var(--line);
   scroll-margin-top: 90px;
 }
@@ -876,7 +896,7 @@ p {
 }
 
 .course-row h2 {
-  font-size: 36px;
+  font-size: 30px;
   margin-bottom: 8px;
 }
 
@@ -893,14 +913,14 @@ p {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-family: var(--display);
-  color: #fff;
+  color: var(--heading);
 }
 
 .form,
 .notice {
   display: grid;
   gap: 14px;
-  background: #0c0c0e;
+  background: var(--surface);
   border: 1px solid var(--line);
   padding: 22px;
 }
@@ -918,13 +938,13 @@ p {
 .form textarea,
 .form select {
   width: 100%;
-  background: #070708;
+  background: var(--field);
   border: 1px solid var(--line);
   padding: 12px 12px;
   text-transform: none;
   letter-spacing: 0;
   font-size: 16px;
-  color: #fff;
+  color: var(--heading);
 }
 
 .form input:focus,
@@ -957,12 +977,12 @@ p {
   background: var(--bg-2);
   border: 1px solid var(--line);
   border-left: 3px solid var(--muted);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 32px rgba(19, 35, 58, 0.17);
   font-size: 15px;
 }
 
 .toast-success {
-  border-left-color: #2fbf71;
+  border-left-color: var(--ok);
 }
 
 .toast-error {
@@ -983,7 +1003,7 @@ p {
 }
 
 .toast-close:hover {
-  color: #fff;
+  color: var(--heading);
 }
 
 /* Messages under a form (beat the page-level paragraph styles). */
@@ -999,7 +1019,7 @@ p {
 }
 
 .form p.form-success {
-  color: #2fbf71;
+  color: var(--ok);
 }
 
 .prose {
@@ -1023,7 +1043,12 @@ p {
 
 .prose a,
 .consent a,
-.danger-zone a,
+.danger-zone a {
+  color: var(--heading);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .footer-bottom a {
   color: #fff;
   text-decoration: underline;
@@ -1095,7 +1120,7 @@ p {
 }
 
 .notice h2 {
-  font-size: 36px;
+  font-size: 28px;
 }
 
 .form-tabs {
@@ -1116,7 +1141,7 @@ p {
 }
 
 .form-tabs button[aria-selected='true'] {
-  color: #fff;
+  color: var(--heading);
   box-shadow: inset 0 -2px 0 var(--red);
 }
 
@@ -1178,7 +1203,7 @@ p {
     display: grid;
     gap: 4px;
     padding: 8px 22px 18px;
-    background: #000;
+    background: var(--bg);
     border-bottom: 1px solid var(--line);
   }
 
@@ -1275,12 +1300,12 @@ p {
   margin-top: 14px;
   font-family: var(--display);
   font-size: 28px;
-  color: #fff;
+  color: var(--heading);
 }
 
 .progress {
   height: 8px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(19, 35, 58, 0.08);
   overflow: hidden;
   margin: 10px 0 6px;
 }
@@ -1316,11 +1341,11 @@ td .lesson-meta {
 
 .lesson-list > li {
   border: 1px solid var(--line);
-  background: #0c0c0e;
+  background: var(--surface);
 }
 
 .lesson-list > li.open {
-  border-color: rgba(255, 26, 46, 0.5);
+  border-color: rgba(225, 20, 30, 0.5);
 }
 
 .lesson-head {
@@ -1359,8 +1384,8 @@ td .lesson-meta {
 }
 
 .lesson-list li.done .lesson-num {
-  background: #1d6b3f;
-  border-color: #2fbf71;
+  background: var(--ok);
+  border-color: var(--ok);
   color: #fff;
 }
 
@@ -1390,7 +1415,7 @@ td .lesson-meta {
   gap: 16px;
   padding: 14px 16px;
   border: 1px solid var(--line);
-  background: #0c0c0e;
+  background: var(--surface);
 }
 
 .quiz-list li > div {
@@ -1411,13 +1436,13 @@ td .lesson-meta {
 }
 
 .tag-ok {
-  border-color: #2fbf71;
-  color: #2fbf71;
+  border-color: var(--ok);
+  color: var(--ok);
 }
 
 .tag-warn {
   border-color: #c99a2e;
-  color: #e0b44a;
+  color: #8a5a00;
 }
 
 .tag-button {
@@ -1433,7 +1458,7 @@ td .lesson-meta {
 
 .faq summary {
   cursor: pointer;
-  color: #fff;
+  color: var(--heading);
   font-weight: 600;
   list-style: none;
   display: flex;
@@ -1463,15 +1488,15 @@ td .lesson-meta {
 }
 
 .timer {
-  color: #fff;
+  color: var(--heading);
 }
 
 .result.passed {
-  border-color: #2fbf71;
+  border-color: var(--ok);
 }
 
 .result h2 {
-  font-size: 32px;
+  font-size: 26px;
 }
 
 .questions {
@@ -1487,21 +1512,21 @@ td .lesson-meta {
   counter-increment: q;
   padding: 18px 20px;
   border: 1px solid var(--line);
-  background: #0c0c0e;
+  background: var(--surface);
   display: grid;
   gap: 8px;
 }
 
 .question.right {
-  border-color: #2fbf71;
+  border-color: var(--ok);
 }
 
 .question.wrong {
-  border-color: rgba(255, 26, 46, 0.7);
+  border-color: rgba(225, 20, 30, 0.7);
 }
 
 .question-text {
-  color: #fff;
+  color: var(--heading);
   font-size: 18px;
 }
 
@@ -1521,17 +1546,17 @@ td .lesson-meta {
 }
 
 .option:hover {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(19, 35, 58, 0.3);
 }
 
 .option:has(input:checked) {
   border-color: var(--red);
-  background: rgba(255, 26, 46, 0.08);
+  background: rgba(225, 20, 30, 0.08);
 }
 
 .option.correct,
 .option.correct:has(input:checked) {
-  border-color: #2fbf71;
+  border-color: var(--ok);
   background: rgba(47, 191, 113, 0.08);
 }
 
@@ -1545,7 +1570,7 @@ td .lesson-meta {
 }
 
 .question.right .review-line {
-  color: #2fbf71;
+  color: var(--ok);
 }
 
 .question.wrong .review-line {
@@ -1566,11 +1591,11 @@ td .lesson-meta {
   align-items: center;
   padding: 12px;
   border: 1px solid var(--line);
-  background: #0c0c0e;
+  background: var(--surface);
 }
 
 .my-course:hover {
-  border-color: rgba(255, 26, 46, 0.6);
+  border-color: rgba(225, 20, 30, 0.6);
 }
 
 .my-course img {
@@ -1581,7 +1606,7 @@ td .lesson-meta {
 
 .my-course h3 {
   margin: 2px 0 4px;
-  color: #fff;
+  color: var(--heading);
 }
 
 .my-course .go {
@@ -1616,7 +1641,7 @@ td .lesson-meta {
   text-transform: uppercase;
   font-size: 12px;
   color: var(--muted);
-  background: #0c0c0e;
+  background: var(--surface);
 }
 
 .data-table tr:last-child td {
@@ -1652,13 +1677,13 @@ td .lesson-meta {
 }
 
 .admin-nav a:hover {
-  color: #fff;
+  color: var(--heading);
 }
 
 .admin-nav a.is-active {
-  color: #fff;
+  color: var(--heading);
   border-left-color: var(--red);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(19, 35, 58, 0.04);
 }
 
 .admin-role {
@@ -1687,7 +1712,7 @@ td .lesson-meta {
 
 .admin-main h3 {
   font-size: 18px;
-  color: #fff;
+  color: var(--heading);
 }
 
 .admin-head {
@@ -1701,7 +1726,7 @@ td .lesson-meta {
 .admin-card {
   padding: 22px;
   border: 1px solid var(--line);
-  background: #0c0c0e;
+  background: var(--surface);
   display: grid;
   gap: 16px;
 }
@@ -1712,7 +1737,7 @@ td .lesson-meta {
 }
 
 .crumbs a:hover {
-  color: #fff;
+  color: var(--heading);
 }
 
 .grid-2,
@@ -1757,7 +1782,7 @@ td .lesson-meta {
 }
 
 .row-title {
-  color: #fff;
+  color: var(--heading);
   font-weight: 600;
   display: block;
 }
@@ -1785,8 +1810,8 @@ td .lesson-meta {
 }
 
 .icon-mini:hover:not(:disabled) {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.35);
+  color: var(--heading);
+  border-color: rgba(19, 35, 58, 0.35);
 }
 
 .icon-mini:disabled {
@@ -1818,7 +1843,7 @@ td .lesson-meta {
   gap: 12px;
   padding: 12px 14px;
   border: 1px solid var(--line);
-  background: #08080a;
+  background: var(--surface);
 }
 
 .admin-row.align-top {
@@ -1835,8 +1860,8 @@ td .lesson-meta {
 
 .lesson-editor {
   padding: 18px;
-  border: 1px solid rgba(255, 26, 46, 0.5);
-  background: #0c0c0e;
+  border: 1px solid rgba(225, 20, 30, 0.5);
+  background: var(--surface);
   display: grid;
   gap: 16px;
 }
@@ -1845,7 +1870,7 @@ td .lesson-meta {
   position: sticky;
   bottom: 0;
   padding: 12px 0;
-  background: linear-gradient(transparent, #0c0c0e 30%);
+  background: linear-gradient(transparent, var(--surface) 30%);
   align-items: center;
 }
 
@@ -1857,7 +1882,7 @@ td .lesson-meta {
 .inline-form input {
   flex: 1;
   padding: 10px 12px;
-  background: #0a0a0c;
+  background: var(--surface);
   border: 1px solid var(--line);
   color: var(--text);
   font: inherit;
@@ -1961,7 +1986,7 @@ td .lesson-meta {
 
 .correct-toggle input {
   width: auto;
-  accent-color: #2fbf71;
+  accent-color: var(--ok);
 }
 
 .answer-preview {
@@ -1975,7 +2000,7 @@ td .lesson-meta {
 }
 
 .answer-preview li.correct {
-  color: #2fbf71;
+  color: var(--ok);
 }
 
 .faq-answer {
@@ -2007,7 +2032,7 @@ td .lesson-meta {
 .filters input {
   min-width: 200px;
   padding: 9px 10px;
-  background: #0a0a0c;
+  background: var(--surface);
   border: 1px solid var(--line);
   color: var(--text);
   font: inherit;
@@ -2051,7 +2076,7 @@ td .lesson-meta {
 .stat-box strong {
   font-family: var(--display);
   font-size: 28px;
-  color: #fff;
+  color: var(--heading);
 }
 
 .stat-box span {
@@ -2151,7 +2176,36 @@ app-confirm-email-notice {
 }
 
 .form-link:hover {
-  color: #fff;
+  color: var(--heading);
+}
+
+/* Clinical-blue polish: soft shadows on white surfaces, light logo on the navy footer */
+.course-card,
+.info-card,
+.form,
+.notice,
+.admin-card,
+.my-course,
+.quiz-list li,
+.lesson-list li,
+.question {
+  box-shadow: var(--shadow);
+}
+
+.site-header {
+  box-shadow: 0 1px 0 var(--line), 0 6px 18px rgba(19, 35, 58, 0.05);
+}
+
+.site-footer app-mark stop:nth-child(1) {
+  stop-color: #eef2f6;
+}
+
+.site-footer app-mark stop:nth-child(2) {
+  stop-color: #b8c2ce;
+}
+
+.site-footer app-mark stop:nth-child(3) {
+  stop-color: #8a96a4;
 }
 
 /* Lesson quizzes, locked lessons, final exam */
@@ -2184,7 +2238,7 @@ app-quiz-runner {
   gap: 14px 24px;
   padding: 16px 18px;
   border: 1px dashed var(--line);
-  background: rgba(255, 26, 46, 0.05);
+  background: rgba(225, 20, 30, 0.05);
 }
 
 .lesson-quiz-start p {
@@ -2192,7 +2246,7 @@ app-quiz-runner {
 }
 
 .lesson-done {
-  color: #2fbf71;
+  color: var(--ok);
   font-weight: 600;
   margin: 0;
 }
@@ -2216,7 +2270,7 @@ app-quiz-runner {
 
 .btn-warn {
   border-color: #c99a2e;
-  color: #e0b44a;
+  color: #8a5a00;
 }
 
 .delete-warning {
@@ -2224,7 +2278,7 @@ app-quiz-runner {
   gap: 10px;
   padding: 14px 16px;
   border: 1px solid var(--red);
-  background: rgba(255, 26, 46, 0.08);
+  background: rgba(225, 20, 30, 0.08);
 }
 
 .delete-warning p {

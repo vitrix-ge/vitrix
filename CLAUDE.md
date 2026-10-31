@@ -29,7 +29,11 @@ No test files exist yet (`skipTests: true` in angular.json).
 - Almost all CSS lives in [src/styles.scss](src/styles.scss) (global). Components rarely have
   their own styles. Reuse existing classes: `page-hero`, `page-section`, `wrap`, `split`,
   `form`, `notice`, `btn btn-red`, `btn btn-ghost`, `eyebrow`, `lede`, `course-row`, `info-card`.
-- Design: dark background, red accent `--red`, display font Oswald (uppercase), body Manrope.
+- Design "clinical blue" (from the brand artwork): light blue-grey pages (`--bg`), white surfaces
+  (`--surface`) with soft shadows, navy text (`--heading`, `--navy`), VITRIX red (`--red`) for
+  actions; navy footer. Headings in Montserrat (uppercase, wide like the wordmark), body Manrope.
+  Use the color variables in `:root` of styles.scss, not hard-coded colors. Logo (`mark.ts`):
+  graphite stroke + red stroke; the wordmark's X is fully red.
   Mobile breakpoints at 1100px, 860px, 640px.
 - Formatting: Prettier (`.prettierrc`), single quotes, 100-char lines.
 - Images live in `public/media/` and are referenced as `media/x.jpg` (no leading slash) so they
