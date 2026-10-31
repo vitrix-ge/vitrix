@@ -78,8 +78,9 @@ Privacy and spam protection:
   `DELETE {IDENTITY_URL}/api/account` and signs out. It removes the user and all their tokens.
 - If bot sign-ups ever get through anyway, the next step is Cloudflare Turnstile (free CAPTCHA).
 
-Email confirmation and password reset (identity-api sends the emails through Gmail SMTP from
-`vitrix.contact1@gmail.com` with an App password, set on Render as `Email__Username` / `Email__Password`):
+Email confirmation and password reset (identity-api sends the emails through **Brevo**'s HTTPS API
+from `vitrix.contact1@gmail.com`, a verified Brevo sender; key on Render as `Email__BrevoApiKey`.
+Render's free plan blocks SMTP ports, so Gmail SMTP does not work there. Free: 300 emails/day):
 
 - Sign-up sends a confirmation link: `{site}/confirm-email?user=…&token=…` → page posts it to
   `POST /api/account/confirm-email`. Links work for 24 hours.
@@ -164,8 +165,9 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
 4. Language switch in the header (sets `lang` to `ka`), certificates (PDF) after passing a test,
    and removing a student's progress/results in vitrix-api when they delete their account.
 5. Connect Apply and Contact forms to a real inbox (they currently only show a confirmation).
-6. ~~Password reset and email verification~~ done (Gmail SMTP). With a domain (e.g. vitrix.ge),
-   move sending to a service like Resend/Brevo for better delivery: only `Email__*` settings change.
+6. ~~Password reset and email verification~~ done (Brevo). With a domain (e.g. vitrix.ge),
+   verify the domain in Brevo and send from e.g. `no-reply@vitrix.ge` for better delivery
+   (only `Email__From` changes).
 7. ~~Set `PRIVACY_CONTACT_EMAIL`~~ done: `vitrix.contact1@gmail.com`.
 8. Self-host the Google Fonts (privacy: Google currently receives visitors' IP addresses).
 
