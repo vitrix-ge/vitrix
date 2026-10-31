@@ -85,7 +85,8 @@
       <div>
         <h2>Lessons</h2>
         <p class="lesson-meta">
-          Students open them in this order. Paste a YouTube link for the video (unlisted works).
+          Students open them in this order; each one unlocks when the previous is completed. Add a
+          quiz to a lesson and students complete it by passing the quiz.
         </p>
       </div>
       @if (editingLesson() === null) {
@@ -136,6 +137,25 @@
                   }
                 </span>
               </div>
+              @if (l.quizId) {
+                <a
+                  class="btn btn-ghost btn-sm"
+                  [routerLink]="['/admin/tests', l.quizId]"
+                  [class.btn-warn]="!l.quizQuestionCount"
+                  >Quiz · {{ l.quizQuestionCount || 0 }} question{{
+                    l.quizQuestionCount === 1 ? '' : 's'
+                  }}</a
+                >
+              } @else {
+                <button
+                  type="button"
+                  class="btn btn-ghost btn-sm"
+                  (click)="addLessonQuiz(l)"
+                  [disabled]="editingLesson() !== null"
+                >
+                  + Add quiz
+                </button>
+              }
               <button
                 type="button"
                 class="btn btn-ghost btn-sm"
@@ -220,7 +240,11 @@
 
   <!-- ===================================================== tests -->
   <section class="admin-card">
-    <h2>Tests</h2>
+    <h2>Final exam</h2>
+    <p class="lesson-meta">
+      Opens for students after they complete every lesson. Usually timed, with a limited number of
+      attempts.
+    </p>
     <ul class="admin-list">
       @for (q of quizzes(); track q.id) {
         <li class="admin-row">
@@ -240,17 +264,17 @@
           <a class="btn btn-ghost btn-sm" [routerLink]="['/admin/tests', q.id]">Edit</a>
         </li>
       } @empty {
-        <li class="empty-state"><p>No tests yet.</p></li>
+        <li class="empty-state"><p>No final exam yet.</p></li>
       }
     </ul>
     <form class="inline-form" (submit)="$event.preventDefault(); addQuiz()">
       <input
         type="text"
         [formControl]="newQuizTitle"
-        placeholder="New test title, e.g. Final exam"
-        aria-label="New test title"
+        placeholder="Exam title, e.g. ACLS final exam"
+        aria-label="Exam title"
       />
-      <button type="submit" class="btn btn-ghost">+ Add test</button>
+      <button type="submit" class="btn btn-ghost">+ Add exam</button>
     </form>
   </section>
 

@@ -215,6 +215,16 @@ export class AdminCourseEdit {
   }
 
   // ------------------------------------------------------------------ tests
+  /** Create the lesson's quiz (or open it if it exists) and go straight to adding questions. */
+  async addLessonQuiz(lesson: Lesson): Promise<void> {
+    try {
+      const quiz = await this.api.lessonQuiz(lesson.id);
+      await this.router.navigate(['/admin/tests', quiz.id]);
+    } catch (e) {
+      this.notify.error(e instanceof Error ? e.message : 'Could not create the quiz.');
+    }
+  }
+
   async addQuiz(): Promise<void> {
     if (this.newQuizTitle.invalid) {
       this.newQuizTitle.markAsTouched();

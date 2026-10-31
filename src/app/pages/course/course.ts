@@ -9,7 +9,8 @@ import { Notify } from '../../notify';
 import { Catalog } from '../../content/catalog';
 import { ContentApi } from '../../content/content.api';
 import { CONTENT_ENABLED } from '../../content/content.config';
-import { CourseDetail, Lesson } from '../../content/content.models';
+import { AttemptResult, CourseDetail, Lesson } from '../../content/content.models';
+import { QuizRunner } from '../quiz/quiz-runner';
 import { TrPipe } from '../../content/i18n';
 import { youtubeEmbedUrl } from '../../content/youtube';
 
@@ -19,7 +20,7 @@ import { youtubeEmbedUrl } from '../../content/youtube';
  */
 @Component({
   selector: 'app-course',
-  imports: [RouterLink, TrPipe, ConfirmEmailNotice],
+  imports: [RouterLink, TrPipe, ConfirmEmailNotice, QuizRunner],
   templateUrl: './course.html',
 })
 export class CoursePage {
@@ -62,7 +63,9 @@ export class CoursePage {
     try {
       const detail = await this.api.course(this.slug());
       this.detail.set(detail);
-      const firstOpen = detail.lessons.find((l) => !l.completed) ?? detail.lessons[0];
+      const firstOpen =
+        detail.lessons.find((l) => !l.completed && !l.locked) ??
+        detail.lessons.find((l) => !l.locked);
       if (detail.enrolled && firstOpen && !this.openLessonId()) {
         this.openLessonId.set(firstOpen.id);
       }
@@ -89,21 +92,35 @@ export class CoursePage {
   async complete(lesson: Lesson): Promise<void> {
     try {
       await this.api.completeLesson(lesson.id);
-      this.detail.update((d) =>
-        d
-          ? {
-              ...d,
-              lessons: d.lessons.map((l) => (l.id === lesson.id ? { ...l, completed: true } : l)),
-            }
-          : d,
-      );
-      const next = this.detail()?.lessons.find((l) => !l.completed);
-      this.openLessonId.set(next?.id ?? null);
-      this.notify.success(
-        next ? 'Lesson completed. On to the next one.' : 'All lessons completed!',
-      );
+      await this.lessonDone();
     } catch (e) {
       this.notify.error(e instanceof Error ? e.message : 'Could not save your progress.');
     }
+  }
+
+  /** The inline lesson quiz was submitted; passing it completed the lesson on the server. */
+  async quizFinished(_lesson: Lesson, result: AttemptResult): Promise<void> {
+    if (result.passed) {
+      // Leave the result on screen for a moment, then move on.
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      await this.lessonDone();
+    }
+  }
+
+  /** Reload (the next lesson unlocks and its video is sent), then open it. */
+  private async lessonDone(): Promise<void> {
+    this.openLessonId.set(null);
+    await this.load();
+    const lessons = this.detail()?.lessons ?? [];
+    const next = lessons.find((l) => !l.completed && !l.locked);
+    this.openLessonId.set(next?.id ?? null);
+    const exam = this.detail()?.quizzes.find((q) => !q.passed);
+    this.notify.success(
+      next
+        ? 'Lesson completed. On to the next one.'
+        : exam
+          ? 'All lessons completed! The final exam is open.'
+          : 'All lessons completed!',
+    );
   }
 }

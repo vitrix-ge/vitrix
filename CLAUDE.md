@@ -142,8 +142,15 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
   tests. Students and results are admin-only. The API enforces this; `/admin` routes use `roleGuard`.
 - **Public:** `/courses` (published courses), `/courses/:slug` (overview, lesson titles, Q&A),
   `/faq` (general Q&A).
+- **Lessons in order + lesson quizzes:** students open lessons one by one (a lesson is `locked`
+  until the previous one is completed; staff see everything). A lesson can have one **lesson quiz**
+  (admin → course → lesson row → "+ Add quiz"; `POST /api/admin/lessons/{id}/quiz`): it runs inline
+  under the lesson (`<app-quiz-runner mode="lesson">`, unlimited tries, explanations shown) and
+  passing it completes the lesson. Lessons without a quiz have "Mark as completed".
+- **Final exam:** quizzes not attached to a lesson (`lessonId: null`, admin → course → "Final exam").
+  They open after every lesson is completed and run at `/tests/:id` (`mode="exam"`, attempts/timer).
 - **Students:** enrolled members see lessons with the YouTube video (`youtube-nocookie.com`
-  embed), mark lessons completed, and take tests at `/tests/:id`. Starting a test creates an
+  embed), complete lessons, and take the final exam at `/tests/:id`. Starting a test creates an
   attempt on the server (attempt limit, timer); scoring happens on the server and correct answers
   are never sent before submitting. My account shows course progress and test results.
 - **Enrollment** is by email (admin → Students), so it works before the person has an account.
