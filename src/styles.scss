@@ -1043,7 +1043,12 @@ p {
 
 .prose a,
 .consent a,
-.danger-zone a,
+.danger-zone a {
+  color: var(--heading);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .footer-bottom a {
   color: #fff;
   text-decoration: underline;
@@ -2233,7 +2238,7 @@ app-quiz-runner {
   gap: 14px 24px;
   padding: 16px 18px;
   border: 1px dashed var(--line);
-  background: rgba(255, 26, 46, 0.05);
+  background: rgba(225, 20, 30, 0.05);
 }
 
 .lesson-quiz-start p {
@@ -2241,7 +2246,7 @@ app-quiz-runner {
 }
 
 .lesson-done {
-  color: #2fbf71;
+  color: var(--ok);
   font-weight: 600;
   margin: 0;
 }
@@ -2265,7 +2270,7 @@ app-quiz-runner {
 
 .btn-warn {
   border-color: #c99a2e;
-  color: #e0b44a;
+  color: #8a5a00;
 }
 
 .delete-warning {
@@ -2273,7 +2278,7 @@ app-quiz-runner {
   gap: 10px;
   padding: 14px 16px;
   border: 1px solid var(--red);
-  background: rgba(255, 26, 46, 0.08);
+  background: rgba(225, 20, 30, 0.08);
 }
 
 .delete-warning p {
