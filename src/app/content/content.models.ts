@@ -42,6 +42,11 @@ export interface Lesson {
   published: boolean;
   /** Student view only. */
   completed?: boolean;
+  /** Student view: an earlier lesson isn't completed yet (body and video are withheld). */
+  locked?: boolean;
+  /** The lesson's quiz: passing it completes the lesson. */
+  quizId?: string;
+  quizQuestionCount?: number;
 }
 
 export interface Faq {
@@ -66,10 +71,14 @@ export interface QuizSummary {
   timeLimitMinutes: number | null;
   questionCount: number;
   published: boolean;
+  /** Set for a lesson quiz; null for the course's final exam. */
+  lessonId?: string | null;
   /** Student view only. */
   attemptsUsed?: number;
   bestScore?: number | null;
   passed?: boolean;
+  /** Final exam, student view: opens once every lesson is completed. */
+  locked?: boolean;
 }
 
 export interface Quiz extends QuizSummary {

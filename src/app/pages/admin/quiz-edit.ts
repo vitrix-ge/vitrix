@@ -135,10 +135,12 @@ export class AdminQuizEdit {
     this.options.clear();
     const opts = question?.options.length
       ? question.options
-      : [
-          { id: '', text: { en: '', ka: '' }, correct: true },
-          { id: '', text: { en: '', ka: '' }, correct: false },
-        ];
+      : // A new question starts with four answers (A–D); remove or add as needed.
+        [true, false, false, false].map((correct) => ({
+          id: '',
+          text: { en: '', ka: '' },
+          correct,
+        }));
     opts.forEach((o) => this.options.push(this.option(o.text, !!o.correct, o.id)));
     this.qForm.patchValue({
       text: question?.text ?? { en: '', ka: '' },

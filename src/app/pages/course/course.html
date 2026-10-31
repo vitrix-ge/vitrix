@@ -19,7 +19,12 @@
 
       <div>
         @if (detail(); as d) {
-          @if (d.enrolled) {
+          @if (d.enrolled && !d.lessons.length) {
+            <div class="notice">
+              <h2>Lessons coming soon</h2>
+              <p>You are enrolled. The lessons for this course are being prepared.</p>
+            </div>
+          } @else if (d.enrolled) {
             <p class="eyebrow">Your progress</p>
             <h2 class="block-title progress-title">
               {{ completedCount() }} of {{ d.lessons.length }} lessons
@@ -60,8 +65,18 @@
             <h2 class="block-title">Lessons</h2>
             <ol class="lesson-list">
               @for (lesson of d.lessons; track lesson.id; let i = $index) {
-                <li [class.done]="lesson.completed" [class.open]="openLessonId() === lesson.id">
-                  @if (d.enrolled) {
+                <li
+                  [class.done]="lesson.completed"
+                  [class.open]="openLessonId() === lesson.id"
+                  [class.is-locked]="lesson.locked"
+                >
+                  @if (d.enrolled && lesson.locked) {
+                    <div class="lesson-head locked" title="Complete the previous lesson first">
+                      <span class="lesson-num" aria-hidden="true">🔒</span>
+                      <span>{{ lesson.title | tr }}</span>
+                      <span class="lesson-meta">Complete the previous lesson first</span>
+                    </div>
+                  } @else if (d.enrolled) {
                     <button
                       type="button"
                       class="lesson-head"
@@ -90,7 +105,19 @@
                         @if (lesson.body | tr) {
                           <p class="prose-text">{{ lesson.body | tr }}</p>
                         }
-                        @if (!lesson.completed) {
+                        @if (lesson.quizId) {
+                          @if (lesson.completed) {
+                            <p class="lesson-done">✓ Lesson quiz passed</p>
+                          } @else {
+                            <app-quiz-runner
+                              class="lesson-quiz"
+                              mode="lesson"
+                              [quizId]="lesson.quizId"
+                              [questionCount]="lesson.quizQuestionCount"
+                              (finished)="quizFinished(lesson, $event)"
+                            />
+                          }
+                        } @else if (!lesson.completed) {
                           <button type="button" class="btn btn-red" (click)="complete(lesson)">
                             Mark as completed
                           </button>
@@ -112,7 +139,7 @@
           }
 
           @if (d.quizzes.length) {
-            <h2 class="block-title">Tests</h2>
+            <h2 class="block-title">Final exam</h2>
             <ul class="quiz-list">
               @for (quiz of d.quizzes; track quiz.id) {
                 <li>
@@ -130,9 +157,13 @@
                       <span class="tag">Best {{ quiz.bestScore }}%</span>
                     }
                   </div>
-                  @if (d.enrolled) {
+                  @if (d.enrolled && quiz.locked) {
+                    <span class="lesson-meta exam-locked"
+                      >🔒 Opens when all lessons are completed</span
+                    >
+                  } @else if (d.enrolled) {
                     <a class="btn btn-ghost" [routerLink]="['/tests', quiz.id]">
-                      {{ quiz.attemptsUsed ? 'Try again' : 'Start test' }}
+                      {{ quiz.passed ? 'Retake' : quiz.attemptsUsed ? 'Try again' : 'Start exam' }}
                     </a>
                   }
                 </li>

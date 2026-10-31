@@ -96,6 +96,32 @@
         </button>
       } @else {
         <form class="form" [formGroup]="deleteForm" (ngSubmit)="deleteAccount()" novalidate>
+          @if (myCourses().length) {
+            <div class="delete-warning" role="alert">
+              <p>
+                <strong>
+                  You are enrolled in {{ myCourses().length }}
+                  {{ myCourses().length === 1 ? 'course' : 'courses' }}:
+                </strong>
+                @for (mc of myCourses(); track mc.course.id; let last = $last) {
+                  {{ mc.course.title | tr }}{{ last ? '.' : ', ' }}
+                }
+              </p>
+              <p>
+                Deleting your account removes your access to
+                {{ myCourses().length === 1 ? 'this course' : 'these courses' }}, your lesson
+                progress and your test results. This cannot be undone.
+              </p>
+              <label class="consent">
+                <input
+                  type="checkbox"
+                  [checked]="loseCoursesOk()"
+                  (change)="loseCoursesOk.set($any($event.target).checked)"
+                />
+                <span>I understand that I will lose my courses</span>
+              </label>
+            </div>
+          }
           <label>
             Confirm with your password
             <input type="password" formControlName="password" autocomplete="current-password" />
@@ -107,7 +133,11 @@
             <p class="error" role="alert">{{ deleteError() }}</p>
           }
           <div class="form-actions">
-            <button class="btn btn-red" type="submit" [disabled]="deleting()">
+            <button
+              class="btn btn-red"
+              type="submit"
+              [disabled]="deleting() || (myCourses().length > 0 && !loseCoursesOk())"
+            >
               {{ deleting() ? 'Deleting…' : 'Delete permanently' }}
             </button>
             <button class="btn btn-ghost" type="button" (click)="cancelDelete()">Cancel</button>

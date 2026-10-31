@@ -84,6 +84,10 @@ export class ContentApi {
       ? this.send('PUT', `/api/admin/lessons/${lesson.id}`, lesson)
       : this.send('POST', `/api/admin/courses/${lesson.courseId}/lessons`, lesson);
   }
+  /** The lesson's quiz, created with lesson-quiz defaults the first time. */
+  lessonQuiz(lessonId: string): Promise<Quiz> {
+    return this.send('POST', `/api/admin/lessons/${lessonId}/quiz`);
+  }
   deleteLesson(id: string): Promise<void> {
     return this.send('DELETE', `/api/admin/lessons/${id}`);
   }

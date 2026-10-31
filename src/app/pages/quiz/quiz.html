@@ -1,97 +1,13 @@
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow">Test</p>
-    <h1>{{ (attempt()?.quiz?.title | tr) || 'Course test' }}</h1>
-    @if (attempt(); as a) {
-      <p class="lede">
-        {{ a.questions.length }} questions · pass mark {{ a.quiz.passPercent }}%
-        @if (timeLabel() && !result()) {
-          · <strong class="timer">Time left {{ timeLabel() }}</strong>
-        }
-      </p>
-    }
+    <p class="eyebrow">Course</p>
+    <h1>Final exam</h1>
+    <p class="lede">Answer every question, then submit. Your score and the review appear here.</p>
   </div>
 </section>
 
 <section class="page-section">
   <div class="wrap quiz-wrap">
-    @if (result(); as r) {
-      <div class="notice result" [class.passed]="r.passed">
-        <h2>{{ r.passed ? 'Passed' : 'Not passed yet' }} — {{ r.scorePercent }}%</h2>
-        <p>{{ r.correctCount }} of {{ r.total }} answers correct.</p>
-        <div class="form-actions">
-          <button type="button" class="btn btn-ghost" (click)="backToCourse()">
-            Back to the course
-          </button>
-          <a class="btn btn-ghost" routerLink="/account">My account</a>
-        </div>
-      </div>
-    }
-
-    @if (attempt(); as a) {
-      <ol class="questions">
-        @for (q of a.questions; track q.id; let i = $index) {
-          <li
-            class="question"
-            [class.right]="review(q.id)?.correct"
-            [class.wrong]="review(q.id) && !review(q.id)?.correct"
-          >
-            <p class="question-text">{{ q.text | tr }}</p>
-            <p class="lesson-meta">{{ q.multiple ? 'Choose all that apply' : 'Choose one' }}</p>
-            @for (o of q.options; track o.id) {
-              <label
-                class="option"
-                [class.correct]="review(q.id)?.correctOptionIds?.includes(o.id)"
-              >
-                <input
-                  [type]="q.multiple ? 'checkbox' : 'radio'"
-                  [name]="q.id"
-                  [checked]="isChosen(q, o.id)"
-                  [disabled]="!!result()"
-                  (change)="choose(q, o.id, $any($event.target).checked)"
-                />
-                <span>{{ o.text | tr }}</span>
-              </label>
-            }
-            @if (review(q.id); as rv) {
-              <p class="review-line">{{ rv.correct ? '✓ Correct' : '✗ Not correct' }}</p>
-              @if (rv.explanation | tr) {
-                <p class="prose-text hint">{{ rv.explanation | tr }}</p>
-              }
-            }
-          </li>
-        }
-      </ol>
-      @if (!result()) {
-        @if (error()) {
-          <p class="error" role="alert">{{ error() }}</p>
-        }
-        <div class="form-actions">
-          <button type="button" class="btn btn-red" [disabled]="busy()" (click)="submit()">
-            {{ busy() ? 'Submitting…' : 'Submit answers' }}
-          </button>
-          <span class="lesson-meta"
-            >{{ answeredCount() }} of {{ a.questions.length }} answered</span
-          >
-        </div>
-      }
-    } @else {
-      <div class="notice">
-        <h2>Ready?</h2>
-        <p>
-          Starting counts as an attempt. If the test has a time limit, the timer starts now and your
-          answers are submitted automatically when it runs out.
-        </p>
-        @if (error()) {
-          <p class="error" role="alert">{{ error() }}</p>
-        }
-        <div class="form-actions">
-          <button type="button" class="btn btn-red" [disabled]="busy()" (click)="start()">
-            {{ busy() ? 'Starting…' : 'Start test' }}
-          </button>
-          <button type="button" class="btn btn-ghost" (click)="backToCourse()">Back</button>
-        </div>
-      </div>
-    }
+    <app-quiz-runner [quizId]="quizId" mode="exam" (back)="backToCourse()" />
   </div>
 </section>

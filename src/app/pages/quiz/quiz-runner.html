@@ -1,0 +1,110 @@
+@if (attempt(); as a) {
+  @if (mode() === 'exam' && timeLabel() && !result()) {
+    <p class="lesson-meta timer-line">
+      <strong class="timer">Time left {{ timeLabel() }}</strong>
+    </p>
+  }
+
+  @if (result(); as r) {
+    <div class="notice result" [class.passed]="r.passed" role="status">
+      @if (mode() === 'lesson') {
+        <h3>{{ r.passed ? 'Lesson completed' : 'Not quite yet' }} — {{ r.scorePercent }}%</h3>
+        <p>
+          {{ r.correctCount }} of {{ r.total }} correct.
+          {{ r.passed ? '' : 'You need ' + a.quiz.passPercent + '% to complete this lesson.' }}
+        </p>
+        @if (!r.passed) {
+          <div class="form-actions">
+            <button type="button" class="btn btn-red" [disabled]="busy()" (click)="start()">
+              Try again
+            </button>
+          </div>
+        }
+      } @else {
+        <h2>{{ r.passed ? 'Passed' : 'Not passed yet' }} — {{ r.scorePercent }}%</h2>
+        <p>{{ r.correctCount }} of {{ r.total }} answers correct.</p>
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" (click)="back.emit()">
+            Back to the course
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <ol class="questions">
+    @for (q of a.questions; track q.id) {
+      <li
+        class="question"
+        [class.right]="review(q.id)?.correct"
+        [class.wrong]="review(q.id) && !review(q.id)?.correct"
+      >
+        <p class="question-text">{{ q.text | tr }}</p>
+        <p class="lesson-meta">{{ q.multiple ? 'Choose all that apply' : 'Choose one' }}</p>
+        @for (o of q.options; track o.id) {
+          <label class="option" [class.correct]="review(q.id)?.correctOptionIds?.includes(o.id)">
+            <input
+              [type]="q.multiple ? 'checkbox' : 'radio'"
+              [name]="a.attemptId + q.id"
+              [checked]="isChosen(q, o.id)"
+              [disabled]="!!result()"
+              (change)="choose(q, o.id, $any($event.target).checked)"
+            />
+            <span>{{ o.text | tr }}</span>
+          </label>
+        }
+        @if (review(q.id); as rv) {
+          <p class="review-line">{{ rv.correct ? '✓ Correct' : '✗ Not correct' }}</p>
+          @if (rv.explanation | tr) {
+            <p class="prose-text hint">{{ rv.explanation | tr }}</p>
+          }
+        }
+      </li>
+    }
+  </ol>
+
+  @if (!result()) {
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+    <div class="form-actions">
+      <button type="button" class="btn btn-red" [disabled]="busy()" (click)="submit()">
+        {{ busy() ? 'Checking…' : mode() === 'lesson' ? 'Check answers' : 'Submit answers' }}
+      </button>
+      <span class="lesson-meta">{{ answeredCount() }} of {{ a.questions.length }} answered</span>
+    </div>
+  }
+} @else if (mode() === 'lesson') {
+  <div class="lesson-quiz-start">
+    <div>
+      <p class="eyebrow">Lesson quiz</p>
+      <p>
+        {{ questionCount() ? questionCount() + ' short questions' : 'A few short questions' }} about
+        this lesson. Pass to complete it and open the next lesson.
+      </p>
+    </div>
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+    <button type="button" class="btn btn-red" [disabled]="busy()" (click)="start()">
+      {{ busy() ? 'Starting…' : 'Start quiz' }}
+    </button>
+  </div>
+} @else {
+  <div class="notice">
+    <h2>Ready?</h2>
+    <p>
+      Starting counts as an attempt. If the exam has a time limit, the timer starts now and your
+      answers are submitted automatically when it runs out.
+    </p>
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+    <div class="form-actions">
+      <button type="button" class="btn btn-red" [disabled]="busy()" (click)="start()">
+        {{ busy() ? 'Starting…' : 'Start exam' }}
+      </button>
+      <button type="button" class="btn btn-ghost" (click)="back.emit()">Back</button>
+    </div>
+  </div>
+}

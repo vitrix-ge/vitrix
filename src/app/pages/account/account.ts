@@ -63,6 +63,8 @@ export class Account {
   readonly confirmingDelete = signal(false);
   readonly deleting = signal(false);
   readonly deleteError = signal('');
+  /** Enrolled members must tick "I understand that I will lose my courses" first. */
+  readonly loseCoursesOk = signal(false);
   readonly deleteForm = this.fb.nonNullable.group({
     password: ['', Validators.required],
   });
@@ -81,6 +83,7 @@ export class Account {
   cancelDelete(): void {
     this.confirmingDelete.set(false);
     this.deleteForm.reset();
+    this.loseCoursesOk.set(false);
     this.deleteError.set('');
   }
 

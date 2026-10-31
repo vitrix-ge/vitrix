@@ -9,8 +9,14 @@
 } @else if (quiz(); as q) {
   <header class="admin-head">
     <div>
-      <p class="eyebrow">Test</p>
+      <p class="eyebrow">{{ q.lessonId ? 'Lesson quiz' : 'Final exam' }}</p>
       <h1>{{ q.title | tr }}</h1>
+      @if (q.lessonId) {
+        <p class="lesson-meta">
+          Shown under the lesson. Students complete the lesson by passing it; they can try again as
+          often as they need and see the explanation for each answer.
+        </p>
+      }
       <p class="lesson-meta">
         <span class="tag" [class.tag-ok]="q.published">{{
           q.published ? 'Published' : 'Draft'
@@ -240,8 +246,10 @@
   </ng-template>
 
   <section class="danger-zone">
-    <h2>Delete test</h2>
+    <h2>{{ quiz()?.lessonId ? 'Delete quiz' : 'Delete exam' }}</h2>
     <p>Removes the test, its questions and all students' results for it.</p>
-    <button type="button" class="btn btn-danger" (click)="remove()">Delete this test</button>
+    <button type="button" class="btn btn-danger" (click)="remove()">
+      {{ quiz()?.lessonId ? 'Delete this quiz' : 'Delete this exam' }}
+    </button>
   </section>
 }

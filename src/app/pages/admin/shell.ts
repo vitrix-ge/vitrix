@@ -12,7 +12,7 @@ import { isAdmin } from '../../content/roles';
         <aside class="admin-nav" aria-label="Admin">
           <p class="eyebrow">Admin panel</p>
           <a routerLink="courses" routerLinkActive="is-active">Courses &amp; tests</a>
-          <a routerLink="faq" routerLinkActive="is-active">Questions &amp; answers</a>
+          <a routerLink="faq" routerLinkActive="is-active">FAQ (public)</a>
           @if (admin()) {
             <a routerLink="students" routerLinkActive="is-active">Students</a>
             <a routerLink="results" routerLinkActive="is-active">Test results</a>
