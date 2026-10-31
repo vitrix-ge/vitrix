@@ -5,7 +5,7 @@
  * built-in course list from site-data.ts, hides tests/lessons and the admin panel, exactly as before.
  */
 const LOCAL_CONTENT_URL: string = 'http://localhost:8082';
-const PRODUCTION_CONTENT_URL: string = ''; // e.g. 'https://vitrix-api.onrender.com'
+const PRODUCTION_CONTENT_URL: string = 'https://vitrix-api.onrender.com'; // Render (vitrix-api)
 
 const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 
