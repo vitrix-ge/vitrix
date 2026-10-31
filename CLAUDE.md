@@ -8,8 +8,8 @@ The site is a **static Angular app** published on **GitHub Pages**
 (<https://vitrix-ge.github.io/vitrix/>, from the `gh-pages` branch). Accounts come from the
 separate **identity-api** server (repo `vitrix-ge/identity-api`), deployed on Render at
 <https://vitrix-identity-24j8.onrender.com> with a Neon Postgres database. Courses, lessons, Q&A,
-tests and student progress come from **vitrix-api** (repo `vitrix-ge/vitrix-api`, same
-database, schema `vitrix`). Apply/Contact forms have no backend yet.
+tests and student progress come from **vitrix-api** (repo `vitrix-ge/vitrix-api`, deployed on
+Render at <https://vitrix-api.onrender.com>, same database, schema `vitrix`). Apply/Contact forms have no backend yet.
 
 ## Commands
 
@@ -150,14 +150,15 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
 - **Team** (admin → Team) gives people the `editor`/`admin` role on identity-api; it applies at their next login.
 - **Deleting an account** also calls `DELETE /api/me` on vitrix-api (progress, results, enrollments).
 - **Videos:** YouTube, uploaded as *Unlisted*; only the 11-character id is stored and validated.
-- **Fallback:** `CONTENT_API_URL` in `content/content.config.ts` is `''` on the published site
-  until vitrix-api is deployed; then the Courses page uses the built-in list in `site-data.ts`,
-  and lessons/tests/admin are hidden. Locally vitrix-api runs on `http://localhost:8082`.
+- **Server:** `PRODUCTION_CONTENT_URL` in `content/content.config.ts` is
+  `https://vitrix-api.onrender.com`; locally vitrix-api runs on `http://localhost:8082`. Set it to
+  `''` to fall back to the built-in list in `site-data.ts` (lessons/tests/admin then hidden).
+  On Render's free plan it sleeps after 15 minutes idle like the identity server.
 
 ## Roadmap / not done yet
 
 1. ~~Deploy identity-api~~ done (Render + Neon). Consider Render's paid plan so it never sleeps.
-2. Deploy vitrix-api and set `PRODUCTION_CONTENT_URL`; assign the editor role to content staff.
+2. ~~Deploy vitrix-api~~ done. Assign the editor role to content staff (admin → Team).
 3. Course purchase: a "Buy" button on each course → payment (e.g. Stripe Checkout or a Georgian
    bank gateway such as TBC / Bank of Georgia) → webhook writes the enrollment. Payments need a
    server-side piece (provider function / edge function); never trust the browser to mark a
