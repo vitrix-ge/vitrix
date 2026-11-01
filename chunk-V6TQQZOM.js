@@ -1,1 +1,0 @@
-import{$ as s,F as r,P as o,e as n}from"./chunk-KEHUN3VX.js";function x(t){t||(t=o(s));let i=new n(e=>{if(t.destroyed){e.next();return}return t.onDestroy(e.next.bind(e))});return e=>e.pipe(r(i))}export{x as a};
