@@ -5,12 +5,12 @@ import { Notify } from '../../notify';
 import { Catalog } from '../../content/catalog';
 import { ContentApi } from '../../content/content.api';
 import { Course } from '../../content/content.models';
-import { TrPipe } from '../../content/i18n';
+import { TPipe, TrPipe, t } from '../../content/i18n';
 import { move, slugify } from './forms';
 
 @Component({
   selector: 'app-admin-courses',
-  imports: [RouterLink, ReactiveFormsModule, TrPipe],
+  imports: [RouterLink, ReactiveFormsModule, TrPipe, TPipe],
   templateUrl: './courses.html',
 })
 export class AdminCourses {
@@ -40,7 +40,7 @@ export class AdminCourses {
       this.courses.set((await this.api.adminCourses()).sort((a, b) => a.order - b.order));
       this.error.set('');
     } catch (e) {
-      this.error.set(e instanceof Error ? e.message : 'Could not load courses.');
+      this.error.set(e instanceof Error ? e.message : t('Could not load courses.'));
     } finally {
       this.loading.set(false);
     }
@@ -65,10 +65,10 @@ export class AdminCourses {
         published: false,
         order: this.courses().length,
       });
-      this.notify.success('Course created as a draft. Add the details, lessons and tests.');
+      this.notify.success(t('Course created as a draft. Add the details, lessons and tests.'));
       await this.router.navigate(['/admin/courses', course.id]);
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not create the course.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not create the course.'));
     } finally {
       this.busy.set(false);
     }
@@ -79,11 +79,11 @@ export class AdminCourses {
       const saved = await this.api.saveCourse({ ...course, published: !course.published });
       this.courses.update((list) => list.map((c) => (c.id === saved.id ? saved : c)));
       this.notify.success(
-        saved.published ? 'Course is now visible on the site.' : 'Course hidden from the site.',
+        t(saved.published ? 'Course is now visible on the site.' : 'Course hidden from the site.'),
       );
       void this.catalog.refresh();
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not save.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not save.'));
     }
   }
 
@@ -95,7 +95,7 @@ export class AdminCourses {
       await Promise.all(changed.map((c) => this.api.saveCourse(c)));
       void this.catalog.refresh();
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not save the new order.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not save the new order.'));
       void this.load();
     }
   }

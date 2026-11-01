@@ -2,12 +2,12 @@ import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { ContentApi } from '../../content/content.api';
 import { AttemptRow } from '../../content/content.models';
-import { TrPipe, tr } from '../../content/i18n';
+import { TPipe, TrPipe, t, tr } from '../../content/i18n';
 
 /** Admin only: every submitted test attempt, filterable, exportable as CSV. */
 @Component({
   selector: 'app-admin-results',
-  imports: [TrPipe, DatePipe],
+  imports: [TrPipe, DatePipe, TPipe],
   templateUrl: './results.html',
 })
 export class AdminResults {
@@ -49,7 +49,7 @@ export class AdminResults {
     this.api
       .attempts()
       .then((rows) => this.rows.set(rows))
-      .catch((e) => this.error.set(e instanceof Error ? e.message : 'Could not load results.'))
+      .catch((e) => this.error.set(e instanceof Error ? e.message : t('Could not load results.')))
       .finally(() => this.loading.set(false));
   }
 

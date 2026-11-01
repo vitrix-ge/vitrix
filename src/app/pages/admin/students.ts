@@ -4,12 +4,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Notify } from '../../notify';
 import { ContentApi } from '../../content/content.api';
 import { Course, Enrollment } from '../../content/content.models';
-import { TrPipe } from '../../content/i18n';
+import { TPipe, TrPipe, t } from '../../content/i18n';
 
 /** Admin only: who can open which course. Enrol by email — works before they create an account. */
 @Component({
   selector: 'app-admin-students',
-  imports: [ReactiveFormsModule, TrPipe, DatePipe],
+  imports: [ReactiveFormsModule, TrPipe, DatePipe, TPipe],
   templateUrl: './students.html',
 })
 export class AdminStudents {
@@ -51,7 +51,7 @@ export class AdminStudents {
       this.enrollments.set(enrollments);
       this.courses.set(courses.sort((a, b) => a.order - b.order));
     } catch (e) {
-      this.error.set(e instanceof Error ? e.message : 'Could not load students.');
+      this.error.set(e instanceof Error ? e.message : t('Could not load students.'));
     } finally {
       this.loading.set(false);
     }
@@ -73,7 +73,7 @@ export class AdminStudents {
     ];
     const bad = list.filter((e) => !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e));
     if (bad.length) {
-      this.notify.error(`Not a valid email: ${bad.join(', ')}`);
+      this.notify.error(t('Not a valid email: {list}', { list: bad.join(', ') }));
       return;
     }
     this.busy.set(true);
@@ -88,27 +88,30 @@ export class AdminStudents {
         ]);
         added++;
       } catch (e) {
-        failed.push(`${email} (${e instanceof Error ? e.message : 'error'})`);
+        failed.push(`${email} (${e instanceof Error ? e.message : t('error')})`);
       }
     }
     this.busy.set(false);
     if (added) {
-      this.notify.success(`${added} student(s) enrolled. They see the course in My account.`);
+      this.notify.success(
+        t('{n} student(s) enrolled. They see the course in My account.', { n: added }),
+      );
       this.form.controls.emails.reset('');
     }
     if (failed.length) {
-      this.notify.error(`Not enrolled: ${failed.join('; ')}`);
+      this.notify.error(t('Not enrolled: {list}', { list: failed.join('; ') }));
     }
   }
 
   async remove(e: Enrollment): Promise<void> {
-    if (!confirm(`Remove ${e.email} from this course? Their results are kept.`)) return;
+    if (!confirm(t('Remove {email} from this course? Their results are kept.', { email: e.email })))
+      return;
     try {
       await this.api.unenroll(e.id);
       this.enrollments.update((all) => all.filter((x) => x.id !== e.id));
-      this.notify.info('Removed from the course.');
+      this.notify.info(t('Removed from the course.'));
     } catch (err) {
-      this.notify.error(err instanceof Error ? err.message : 'Could not remove.');
+      this.notify.error(err instanceof Error ? err.message : t('Could not remove.'));
     }
   }
 }

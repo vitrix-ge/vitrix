@@ -4,13 +4,13 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Notify } from '../../notify';
 import { ContentApi } from '../../content/content.api';
 import { Course, Faq } from '../../content/content.models';
-import { TrPipe } from '../../content/i18n';
+import { TPipe, TrPipe, t } from '../../content/i18n';
 import { ltextGroup, move } from './forms';
 import { LTextField } from './ltext-field';
 
 @Component({
   selector: 'app-admin-faq',
-  imports: [ReactiveFormsModule, TrPipe, LTextField, NgTemplateOutlet],
+  imports: [ReactiveFormsModule, TrPipe, LTextField, NgTemplateOutlet, TPipe],
   templateUrl: './faq.html',
 })
 export class AdminFaq {
@@ -50,16 +50,16 @@ export class AdminFaq {
       this.faqs.set(faqs);
       this.courses.set(courses.sort((a, b) => a.order - b.order));
     } catch (e) {
-      this.error.set(e instanceof Error ? e.message : 'Could not load questions.');
+      this.error.set(e instanceof Error ? e.message : t('Could not load questions.'));
     } finally {
       this.loading.set(false);
     }
   }
 
   courseName(id: string | null): string {
-    if (!id) return 'General (Q&A page)';
+    if (!id) return t('General (Q&A page)');
     const c = this.courses().find((x) => x.id === id);
-    return c ? `${c.code} course page` : 'Course';
+    return c ? t('{code} course page', { code: c.code }) : t('Course');
   }
 
   edit(faq: Faq | null): void {
@@ -93,20 +93,20 @@ export class AdminFaq {
         existing ? list.map((x) => (x.id === saved.id ? saved : x)) : [...list, saved],
       );
       this.editing.set(null);
-      this.notify.success(existing ? 'Question saved.' : 'Question added.');
+      this.notify.success(t(existing ? 'Question saved.' : 'Question added.'));
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not save.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not save.'));
     }
   }
 
   async remove(faq: Faq): Promise<void> {
-    if (!confirm('Delete this question and answer?')) return;
+    if (!confirm(t('Delete this question and answer?'))) return;
     try {
       await this.api.deleteFaq(faq.id);
       this.faqs.update((list) => list.filter((x) => x.id !== faq.id));
-      this.notify.info('Deleted.');
+      this.notify.info(t('Deleted.'));
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not delete.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not delete.'));
     }
   }
 
@@ -121,7 +121,7 @@ export class AdminFaq {
         updated.filter((x, idx) => x.id !== before[idx].id).map((x) => this.api.saveFaq(x)),
       );
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not save the new order.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not save the new order.'));
       void this.load();
     }
   }

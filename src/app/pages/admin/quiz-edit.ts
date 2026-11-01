@@ -11,13 +11,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Notify } from '../../notify';
 import { ContentApi } from '../../content/content.api';
 import { Question, Quiz } from '../../content/content.models';
-import { TrPipe } from '../../content/i18n';
+import { TPipe, TrPipe, t } from '../../content/i18n';
 import { ltextGroup, move } from './forms';
 import { LTextField } from './ltext-field';
 
 @Component({
   selector: 'app-admin-quiz-edit',
-  imports: [ReactiveFormsModule, RouterLink, TrPipe, LTextField, NgTemplateOutlet],
+  imports: [ReactiveFormsModule, RouterLink, TrPipe, LTextField, NgTemplateOutlet, TPipe],
   templateUrl: './quiz-edit.html',
 })
 export class AdminQuizEdit {
@@ -81,7 +81,7 @@ export class AdminQuizEdit {
       this.form.reset(quiz);
       this.questions.set(questions.sort((a, b) => a.order - b.order));
     } catch (e) {
-      this.error.set(e instanceof Error ? e.message : 'Could not load the test.');
+      this.error.set(e instanceof Error ? e.message : t('Could not load the test.'));
     } finally {
       this.loading.set(false);
     }
@@ -90,12 +90,12 @@ export class AdminQuizEdit {
   async save(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.notify.error('Please fix the highlighted fields.');
+      this.notify.error(t('Please fix the highlighted fields.'));
       return;
     }
     const value = this.form.getRawValue();
     if (value.published && !this.questions().length) {
-      this.notify.error('Add at least one question before publishing the test.');
+      this.notify.error(t('Add at least one question before publishing the test.'));
       return;
     }
     this.saving.set(true);
@@ -107,9 +107,9 @@ export class AdminQuizEdit {
       });
       this.quiz.set(saved);
       this.form.markAsPristine();
-      this.notify.success('Test settings saved.');
+      this.notify.success(t('Test settings saved.'));
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not save.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not save.'));
     } finally {
       this.saving.set(false);
     }
@@ -117,15 +117,15 @@ export class AdminQuizEdit {
 
   async remove(): Promise<void> {
     const q = this.quiz();
-    if (!q || !confirm(`Delete the test "${q.title.en}" and all its results?`)) {
+    if (!q || !confirm(t('Delete the test "{name}" and all its results?', { name: q.title.en }))) {
       return;
     }
     try {
       await this.api.deleteQuiz(q.id);
-      this.notify.info('Test deleted.');
+      this.notify.info(t('Test deleted.'));
       await this.router.navigate(['/admin/courses', q.courseId]);
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not delete.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not delete.'));
     }
   }
 
@@ -189,22 +189,22 @@ export class AdminQuizEdit {
         existing ? list.map((q) => (q.id === saved.id ? saved : q)) : [...list, saved],
       );
       this.editing.set(null);
-      this.notify.success(existing ? 'Question saved.' : 'Question added.');
+      this.notify.success(t(existing ? 'Question saved.' : 'Question added.'));
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not save the question.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not save the question.'));
     }
   }
 
   async deleteQuestion(q: Question): Promise<void> {
-    if (!confirm('Delete this question?')) {
+    if (!confirm(t('Delete this question?'))) {
       return;
     }
     try {
       await this.api.deleteQuestion(q.id);
       this.questions.update((list) => list.filter((x) => x.id !== q.id));
-      this.notify.info('Question deleted.');
+      this.notify.info(t('Question deleted.'));
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not delete.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not delete.'));
     }
   }
 
@@ -217,7 +217,7 @@ export class AdminQuizEdit {
         list.filter((q, idx) => q.id !== before[idx].id).map((q) => this.api.saveQuestion(q)),
       );
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not save the new order.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not save the new order.'));
       this.questions.set(before);
     }
   }

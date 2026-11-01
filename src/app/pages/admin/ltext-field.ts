@@ -1,6 +1,7 @@
 import { Component, booleanAttribute, input, numberAttribute } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LTextGroup } from './forms';
+import { TPipe } from '../../content/i18n';
 
 /**
  * One field in both languages, side by side: English | ქართული.
@@ -8,50 +9,54 @@ import { LTextGroup } from './forms';
  */
 @Component({
   selector: 'app-ltext-field',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TPipe],
   template: `
     <fieldset class="ltext" [formGroup]="group()">
       <legend>
-        {{ label() }}
+        {{ label() | t }}
         @if (required()) {
           <span class="req" aria-hidden="true">*</span>
         }
       </legend>
       <label>
-        <span class="lang">EN</span>
+        <span class="lang">{{ 'EN' | t }}</span>
         @if (multiline()) {
           <textarea
             formControlName="en"
             [rows]="rows()"
-            [attr.aria-label]="label() + ' (English)'"
+            [attr.aria-label]="'{label} (English)' | t: { label: label() | t }"
           ></textarea>
         } @else {
-          <input type="text" formControlName="en" [attr.aria-label]="label() + ' (English)'" />
+          <input
+            type="text"
+            formControlName="en"
+            [attr.aria-label]="'{label} (English)' | t: { label: label() | t }"
+          />
         }
       </label>
       <label>
-        <span class="lang">KA</span>
+        <span class="lang">{{ 'KA' | t }}</span>
         @if (multiline()) {
           <textarea
             formControlName="ka"
             [rows]="rows()"
             lang="ka"
-            [attr.aria-label]="label() + ' (Georgian)'"
+            [attr.aria-label]="'{label} (Georgian)' | t: { label: label() | t }"
           ></textarea>
         } @else {
           <input
             type="text"
             formControlName="ka"
             lang="ka"
-            [attr.aria-label]="label() + ' (Georgian)'"
+            [attr.aria-label]="'{label} (Georgian)' | t: { label: label() | t }"
           />
         }
       </label>
       @if (group().controls.en.invalid && group().controls.en.touched) {
-        <span class="error">Enter the English {{ label().toLowerCase() }}.</span>
+        <span class="error">{{ 'Enter the English text.' | t }}</span>
       }
       @if (hint()) {
-        <span class="hint">{{ hint() }}</span>
+        <span class="hint">{{ hint() | t }}</span>
       }
     </fieldset>
   `,
