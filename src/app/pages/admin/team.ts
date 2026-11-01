@@ -6,6 +6,7 @@ import { Auth } from '../../auth';
 import { IDENTITY_URL } from '../../auth.config';
 import { Notify } from '../../notify';
 import { StaffUser } from '../../content/content.models';
+import { TPipe, t } from '../../content/i18n';
 
 /**
  * Admin only: give people the editor (content) or admin role. Roles live on identity-api;
@@ -13,7 +14,7 @@ import { StaffUser } from '../../content/content.models';
  */
 @Component({
   selector: 'app-admin-team',
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, TPipe],
   templateUrl: './team.html',
 })
 export class AdminTeam {
@@ -36,7 +37,7 @@ export class AdminTeam {
     try {
       this.staff.set(await this.get(''));
     } catch (e) {
-      this.error.set(e instanceof Error ? e.message : 'Could not load the team.');
+      this.error.set(e instanceof Error ? e.message : t('Could not load the team.'));
     } finally {
       this.loading.set(false);
     }
@@ -44,14 +45,14 @@ export class AdminTeam {
 
   async search(term: string): Promise<void> {
     if (term.trim().length < 2) {
-      this.notify.info('Type at least 2 characters of the email.');
+      this.notify.info(t('Type at least 2 characters of the email.'));
       return;
     }
     this.searching.set(true);
     try {
       this.found.set(await this.get(term.trim()));
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Search failed.');
+      this.notify.error(e instanceof Error ? e.message : t('Search failed.'));
     } finally {
       this.searching.set(false);
     }
@@ -68,7 +69,11 @@ export class AdminTeam {
     if (
       role === 'admin' &&
       !this.has(user, 'admin') &&
-      !confirm(`Make ${user.email} an admin? Admins can manage students, results and the team.`)
+      !confirm(
+        t('Make {email} an admin? Admins can manage students, results and the team.', {
+          email: user.email,
+        }),
+      )
     ) {
       return;
     }
@@ -90,7 +95,10 @@ export class AdminTeam {
             : list,
       );
       this.notify.success(
-        `${saved.email}: ${saved.roles.length ? saved.roles.join(', ') : 'no staff role'}. Applies at their next login.`,
+        t('{email}: {roles}. Applies at their next login.', {
+          email: saved.email,
+          roles: saved.roles.length ? saved.roles.map((r) => t(r)).join(', ') : t('no staff role'),
+        }),
       );
     } catch (e) {
       this.notify.error(describe(e));
@@ -116,10 +124,10 @@ export class AdminTeam {
 function describe(e: unknown): string {
   if (e instanceof HttpErrorResponse) {
     const errors = (e.error as { errors?: string[] } | null)?.errors;
-    if (Array.isArray(errors)) return errors.join(' ');
-    if (e.status === 0) return 'The account server is not reachable.';
+    if (Array.isArray(errors)) return errors.map((x) => t(x)).join(' ');
+    if (e.status === 0) return t('The account server is not reachable.');
     if (e.status === 403 || e.status === 401)
-      return 'Only admins can change roles. Log in again if you were just made admin.';
+      return t('Only admins can change roles. Log in again if you were just made admin.');
   }
-  return e instanceof Error ? e.message : 'Something went wrong.';
+  return e instanceof Error ? e.message : t('Something went wrong.');
 }

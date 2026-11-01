@@ -1,70 +1,79 @@
 @if (quiz(); as q) {
-  <p class="crumbs"><a [routerLink]="['/admin/courses', q.courseId]">← Back to the course</a></p>
+  <p class="crumbs">
+    <a [routerLink]="['/admin/courses', q.courseId]">{{ '← Back to the course' | t }}</a>
+  </p>
 }
 
 @if (loading()) {
-  <p class="lesson-meta">Loading…</p>
+  <p class="lesson-meta">{{ 'Loading…' | t }}</p>
 } @else if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
 } @else if (quiz(); as q) {
   <header class="admin-head">
     <div>
-      <p class="eyebrow">{{ q.lessonId ? 'Lesson quiz' : 'Final exam' }}</p>
+      <p class="eyebrow">{{ (q.lessonId ? 'Lesson quiz' : 'Final exam') | t }}</p>
       <h1>{{ q.title | tr }}</h1>
       @if (q.lessonId) {
         <p class="lesson-meta">
-          Shown under the lesson. Students complete the lesson by passing it; they can try again as
-          often as they need and see the explanation for each answer.
+          {{
+            'Shown under the lesson. Students complete the lesson by passing it; they can try again as often as they need and see the explanation for each answer.'
+              | t
+          }}
         </p>
       }
       <p class="lesson-meta">
         <span class="tag" [class.tag-ok]="q.published">{{
-          q.published ? 'Published' : 'Draft'
+          (q.published ? 'Published' : 'Draft') | t
         }}</span>
-        {{ questions().length }} question(s)
+        {{ '{n} question(s)' | t: { n: questions().length } }}
       </p>
     </div>
   </header>
 
   <form class="form admin-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
-    <h2>Settings</h2>
+    <h2>{{ 'Settings' | t }}</h2>
     <app-ltext-field label="Title" [group]="form.controls.title" required />
     <div class="grid-3">
       <label>
-        Pass mark (%)
+        {{ 'Pass mark (%)' | t }}
         <input type="number" formControlName="passPercent" min="1" max="100" />
       </label>
       <label>
-        Attempts allowed
+        {{ 'Attempts allowed' | t }}
         <input type="number" formControlName="maxAttempts" min="0" />
-        <span class="hint">0 = unlimited</span>
+        <span class="hint">{{ '0 = unlimited' | t }}</span>
       </label>
       <label>
-        Time limit (minutes)
-        <input type="number" formControlName="timeLimitMinutes" min="1" placeholder="No limit" />
+        {{ 'Time limit (minutes)' | t }}
+        <input
+          type="number"
+          formControlName="timeLimitMinutes"
+          min="1"
+          [placeholder]="'No limit' | t"
+        />
       </label>
     </div>
     <label class="consent">
       <input type="checkbox" formControlName="shuffle" />
-      <span>Shuffle questions and answers for every attempt</span>
+      <span>{{ 'Shuffle questions and answers for every attempt' | t }}</span>
     </label>
     <label class="consent">
       <input type="checkbox" formControlName="showCorrectAnswers" />
-      <span
-        >After submitting, show students the correct answers (off = only right/wrong per
-        question)</span
-      >
+      <span>{{
+        'After submitting, show students the correct answers (off = only right/wrong per question)'
+          | t
+      }}</span>
     </label>
     <label class="consent">
       <input type="checkbox" formControlName="published" />
-      <span>Published — enrolled students can take this test</span>
+      <span>{{ 'Published — enrolled students can take this test' | t }}</span>
     </label>
     <div class="form-actions sticky-actions">
       <button type="submit" class="btn btn-red" [disabled]="saving()">
-        {{ saving() ? 'Saving…' : 'Save settings' }}
+        {{ (saving() ? 'Saving…' : 'Save settings') | t }}
       </button>
       @if (form.dirty) {
-        <span class="hint">Unsaved changes</span>
+        <span class="hint">{{ 'Unsaved changes' | t }}</span>
       }
     </div>
   </form>
@@ -72,13 +81,18 @@
   <section class="admin-card">
     <div class="admin-head">
       <div>
-        <h2>Questions</h2>
+        <h2>{{ 'Questions' | t }}</h2>
         <p class="lesson-meta">
-          Correct answers are checked on the server and never sent to students before they submit.
+          {{
+            'Correct answers are checked on the server and never sent to students before they submit.'
+              | t
+          }}
         </p>
       </div>
       @if (editing() === null) {
-        <button type="button" class="btn btn-ghost" (click)="edit(null)">+ Add question</button>
+        <button type="button" class="btn btn-ghost" (click)="edit(null)">
+          {{ '+ Add question' | t }}
+        </button>
       }
     </div>
 
@@ -99,7 +113,7 @@
                   class="icon-mini"
                   [disabled]="first"
                   (click)="reorder(i, -1)"
-                  aria-label="Move up"
+                  [attr.aria-label]="'Move up' | t"
                 >
                   ↑
                 </button>
@@ -108,7 +122,7 @@
                   class="icon-mini"
                   [disabled]="last"
                   (click)="reorder(i, 1)"
-                  aria-label="Move down"
+                  [attr.aria-label]="'Move down' | t"
                 >
                   ↓
                 </button>
@@ -124,9 +138,9 @@
                   }
                 </ul>
                 <span class="lesson-meta">
-                  {{ question.multiple ? 'Multiple answers' : 'Single answer' }}
+                  {{ (question.multiple ? 'Multiple answers' : 'Single answer') | t }}
                   @if (!question.text.ka) {
-                    · <span class="tag tag-warn">Georgian missing</span>
+                    · <span class="tag tag-warn">{{ 'Georgian missing' | t }}</span>
                   }
                 </span>
               </div>
@@ -136,7 +150,7 @@
                 (click)="edit(question)"
                 [disabled]="editing() !== null"
               >
-                Edit
+                {{ 'Edit' | t }}
               </button>
               <button
                 type="button"
@@ -144,14 +158,16 @@
                 (click)="deleteQuestion(question)"
                 [disabled]="editing() !== null"
               >
-                Delete
+                {{ 'Delete' | t }}
               </button>
             </div>
           }
         </li>
       } @empty {
         @if (editing() !== 'new') {
-          <li class="empty-state"><p>No questions yet. Add the first one.</p></li>
+          <li class="empty-state">
+            <p>{{ 'No questions yet. Add the first one.' | t }}</p>
+          </li>
         }
       }
       @if (editing() === 'new') {
@@ -162,7 +178,7 @@
 
   <ng-template #editor>
     <form class="form lesson-editor" [formGroup]="qForm" (ngSubmit)="saveQuestion()" novalidate>
-      <h3>{{ editing() === 'new' ? 'New question' : 'Edit question' }}</h3>
+      <h3>{{ (editing() === 'new' ? 'New question' : 'Edit question') | t }}</h3>
       <app-ltext-field
         label="Question"
         [group]="qForm.controls.text"
@@ -172,12 +188,17 @@
       />
       <label class="consent">
         <input type="checkbox" formControlName="multiple" />
-        <span>Several answers can be correct (students tick all that apply)</span>
+        <span>{{ 'Several answers can be correct (students tick all that apply)' | t }}</span>
       </label>
 
       <fieldset class="answers" formArrayName="options">
         <legend>
-          Answers — tick the correct one{{ qForm.controls.multiple.value ? 's' : '' }}
+          {{
+            (qForm.controls.multiple.value
+              ? 'Answers — tick the correct ones'
+              : 'Answers — tick the correct one'
+            ) | t
+          }}
         </legend>
         @for (opt of options.controls; track $index; let i = $index) {
           <div class="answer-row" [formGroupName]="i">
@@ -191,22 +212,22 @@
                     ? opt.controls.correct.setValue($any($event.target).checked)
                     : markCorrect(i)
                 "
-                [attr.aria-label]="'Answer ' + (i + 1) + ' is correct'"
+                [attr.aria-label]="'Answer {n} is correct' | t: { n: i + 1 }"
               />
             </label>
             <div class="grow" formGroupName="text">
               <input
                 type="text"
                 formControlName="en"
-                [placeholder]="'Answer ' + (i + 1) + ' (English)'"
-                [attr.aria-label]="'Answer ' + (i + 1) + ' English'"
+                [placeholder]="'Answer {n} (English)' | t: { n: i + 1 }"
+                [attr.aria-label]="'Answer {n} (English)' | t: { n: i + 1 }"
               />
               <input
                 type="text"
                 formControlName="ka"
                 lang="ka"
                 [placeholder]="'პასუხი ' + (i + 1) + ' (ქართული)'"
-                [attr.aria-label]="'Answer ' + (i + 1) + ' Georgian'"
+                [attr.aria-label]="'Answer {n} (Georgian)' | t: { n: i + 1 }"
               />
             </div>
             <button
@@ -214,20 +235,20 @@
               class="icon-mini"
               (click)="removeOption(i)"
               [disabled]="options.length <= 2"
-              aria-label="Remove answer"
+              [attr.aria-label]="'Remove answer' | t"
             >
               ✕
             </button>
           </div>
         }
         <button type="button" class="btn btn-ghost btn-sm" (click)="addOption()">
-          + Add answer
+          {{ '+ Add answer' | t }}
         </button>
         @if (qForm.errors?.['answers'] && qForm.touched) {
-          <span class="error">{{ qForm.errors?.['answers'] }}</span>
+          <span class="error">{{ qForm.errors?.['answers'] | t }}</span>
         }
         @if (options.invalid && options.touched) {
-          <span class="error">Every answer needs English text.</span>
+          <span class="error">{{ 'Every answer needs English text.' | t }}</span>
         }
       </fieldset>
 
@@ -239,17 +260,19 @@
         hint="Shown after submitting: why the answer is right."
       />
       <div class="form-actions">
-        <button type="submit" class="btn btn-red">Save question</button>
-        <button type="button" class="btn btn-ghost" (click)="editing.set(null)">Cancel</button>
+        <button type="submit" class="btn btn-red">{{ 'Save question' | t }}</button>
+        <button type="button" class="btn btn-ghost" (click)="editing.set(null)">
+          {{ 'Cancel' | t }}
+        </button>
       </div>
     </form>
   </ng-template>
 
   <section class="danger-zone">
-    <h2>{{ quiz()?.lessonId ? 'Delete quiz' : 'Delete exam' }}</h2>
-    <p>Removes the test, its questions and all students' results for it.</p>
+    <h2>{{ (quiz()?.lessonId ? 'Delete quiz' : 'Delete exam') | t }}</h2>
+    <p>{{ "Removes the test, its questions and all students' results for it." | t }}</p>
     <button type="button" class="btn btn-danger" (click)="remove()">
-      {{ quiz()?.lessonId ? 'Delete this quiz' : 'Delete this exam' }}
+      {{ (quiz()?.lessonId ? 'Delete this quiz' : 'Delete this exam') | t }}
     </button>
   </section>
 }

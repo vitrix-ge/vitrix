@@ -1,7 +1,9 @@
-<p class="crumbs"><a routerLink="/admin/courses">← All courses</a></p>
+<p class="crumbs">
+  <a routerLink="/admin/courses">{{ '← All courses' | t }}</a>
+</p>
 
 @if (loading()) {
-  <p class="lesson-meta">Loading…</p>
+  <p class="lesson-meta">{{ 'Loading…' | t }}</p>
 } @else if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
 } @else if (course(); as c) {
@@ -11,11 +13,12 @@
       <h1>{{ c.title | tr }}</h1>
       <p class="lesson-meta">
         <span class="tag" [class.tag-ok]="c.published">{{
-          c.published ? 'Published' : 'Draft'
+          (c.published ? 'Published' : 'Draft') | t
         }}</span>
-        {{ publishedLessons() }} lesson(s) · {{ quizzes().length }} test(s)
+        {{ '{n} lesson(s)' | t: { n: publishedLessons() } }} ·
+        {{ '{n} exam(s)' | t: { n: quizzes().length } }}
         @if (c.published) {
-          · <a [routerLink]="['/courses', c.slug]" target="_blank">View on site ↗</a>
+          · <a [routerLink]="['/courses', c.slug]" target="_blank">{{ 'View on site ↗' | t }}</a>
         }
       </p>
     </div>
@@ -23,28 +26,28 @@
 
   <!-- ===================================================== details -->
   <form class="form admin-card" [formGroup]="form" (ngSubmit)="save()" novalidate>
-    <h2>Course details</h2>
+    <h2>{{ 'Course details' | t }}</h2>
     <div class="grid-3">
       <label>
-        Short code
+        {{ 'Short code' | t }}
         <input type="text" formControlName="code" (blur)="suggestSlug()" />
       </label>
       <label>
-        Address
+        {{ 'Address' | t }}
         <input type="text" formControlName="slug" />
         <span class="hint">/courses/{{ form.controls.slug.value || '…' }}</span>
         @if (form.controls.slug.invalid && form.controls.slug.touched) {
-          <span class="error">Lowercase letters, numbers and dashes only.</span>
+          <span class="error">{{ 'Lowercase letters, numbers and dashes only.' | t }}</span>
         }
       </label>
       <label>
-        Price (GEL)
+        {{ 'Price (GEL)' | t }}
         <input
           type="number"
           formControlName="price"
           min="0"
           step="1"
-          placeholder="Leave empty if on request"
+          [placeholder]="'Leave empty if on request' | t"
         />
       </label>
     </div>
@@ -57,9 +60,15 @@
     <app-ltext-field label="Description" [group]="form.controls.description" multiline [rows]="5" />
     <div class="grid-2 image-row">
       <label>
-        Image
-        <input type="text" formControlName="imageUrl" placeholder="media/acls.jpg or https://…" />
-        <span class="hint">A file in public/media (e.g. media/acls.jpg) or a full image link.</span>
+        {{ 'Image' | t }}
+        <input
+          type="text"
+          formControlName="imageUrl"
+          [placeholder]="'media/acls.jpg or https://…' | t"
+        />
+        <span class="hint">{{
+          'A file in public/media (e.g. media/acls.jpg) or a full image link.' | t
+        }}</span>
       </label>
       @if (form.controls.imageUrl.value) {
         <img class="image-preview" [src]="form.controls.imageUrl.value" alt="Image preview" />
@@ -67,14 +76,14 @@
     </div>
     <label class="consent">
       <input type="checkbox" formControlName="published" />
-      <span>Published — visible to visitors on the Courses page</span>
+      <span>{{ 'Published — visible to visitors on the Courses page' | t }}</span>
     </label>
     <div class="form-actions sticky-actions">
       <button type="submit" class="btn btn-red" [disabled]="saving()">
-        {{ saving() ? 'Saving…' : 'Save course' }}
+        {{ (saving() ? 'Saving…' : 'Save course') | t }}
       </button>
       @if (form.dirty) {
-        <span class="hint">Unsaved changes</span>
+        <span class="hint">{{ 'Unsaved changes' | t }}</span>
       }
     </div>
   </form>
@@ -83,14 +92,18 @@
   <section class="admin-card">
     <div class="admin-head">
       <div>
-        <h2>Lessons</h2>
+        <h2>{{ 'Lessons' | t }}</h2>
         <p class="lesson-meta">
-          Students open them in this order; each one unlocks when the previous is completed. Add a
-          quiz to a lesson and students complete it by passing the quiz.
+          {{
+            'Students open them in this order; each one unlocks when the previous is completed. Add a quiz to a lesson and students complete it by passing the quiz.'
+              | t
+          }}
         </p>
       </div>
       @if (editingLesson() === null) {
-        <button type="button" class="btn btn-ghost" (click)="editLesson(null)">+ Add lesson</button>
+        <button type="button" class="btn btn-ghost" (click)="editLesson(null)">
+          {{ '+ Add lesson' | t }}
+        </button>
       }
     </div>
 
@@ -107,7 +120,7 @@
                   class="icon-mini"
                   [disabled]="first"
                   (click)="reorderLesson(i, -1)"
-                  aria-label="Move up"
+                  [attr.aria-label]="'Move up' | t"
                 >
                   ↑
                 </button>
@@ -116,7 +129,7 @@
                   class="icon-mini"
                   [disabled]="last"
                   (click)="reorderLesson(i, 1)"
-                  aria-label="Move down"
+                  [attr.aria-label]="'Move down' | t"
                 >
                   ↓
                 </button>
@@ -125,15 +138,15 @@
               <div class="grow">
                 <strong>{{ l.title | tr }}</strong>
                 <span class="lesson-meta">
-                  {{ l.youtubeId ? '▶ Video' : 'Text only' }}
+                  {{ (l.youtubeId ? '▶ Video' : 'Text only') | t }}
                   @if (l.durationMinutes) {
-                    · {{ l.durationMinutes }} min
+                    · {{ '{n} min' | t: { n: l.durationMinutes } }}
                   }
                   @if (!l.published) {
-                    · <span class="tag">Hidden</span>
+                    · <span class="tag">{{ 'Hidden' | t }}</span>
                   }
                   @if (!l.title.ka) {
-                    · <span class="tag tag-warn">Georgian missing</span>
+                    · <span class="tag tag-warn">{{ 'Georgian missing' | t }}</span>
                   }
                 </span>
               </div>
@@ -142,9 +155,7 @@
                   class="btn btn-ghost btn-sm"
                   [routerLink]="['/admin/tests', l.quizId]"
                   [class.btn-warn]="!l.quizQuestionCount"
-                  >Quiz · {{ l.quizQuestionCount || 0 }} question{{
-                    l.quizQuestionCount === 1 ? '' : 's'
-                  }}</a
+                  >{{ 'Quiz · {n} question(s)' | t: { n: l.quizQuestionCount || 0 } }}</a
                 >
               } @else {
                 <button
@@ -153,7 +164,7 @@
                   (click)="addLessonQuiz(l)"
                   [disabled]="editingLesson() !== null"
                 >
-                  + Add quiz
+                  {{ '+ Add quiz' | t }}
                 </button>
               }
               <button
@@ -162,7 +173,7 @@
                 (click)="editLesson(l)"
                 [disabled]="editingLesson() !== null"
               >
-                Edit
+                {{ 'Edit' | t }}
               </button>
               <button
                 type="button"
@@ -170,14 +181,16 @@
                 (click)="deleteLesson(l)"
                 [disabled]="editingLesson() !== null"
               >
-                Delete
+                {{ 'Delete' | t }}
               </button>
             </div>
           }
         </li>
       } @empty {
         @if (editingLesson() !== 'new') {
-          <li class="empty-state"><p>No lessons yet. Add the first one.</p></li>
+          <li class="empty-state">
+            <p>{{ 'No lessons yet. Add the first one.' | t }}</p>
+          </li>
         }
       }
       @if (editingLesson() === 'new') {
@@ -188,22 +201,22 @@
 
   <ng-template #lessonEditor>
     <form class="form lesson-editor" [formGroup]="lessonForm" (ngSubmit)="saveLesson()" novalidate>
-      <h3>{{ editingLesson() === 'new' ? 'New lesson' : 'Edit lesson' }}</h3>
+      <h3>{{ (editingLesson() === 'new' ? 'New lesson' : 'Edit lesson') | t }}</h3>
       <app-ltext-field label="Title" [group]="lessonForm.controls.title" required />
       <div class="grid-2 image-row">
         <label>
-          YouTube video
+          {{ 'YouTube video' | t }}
           <input
             type="text"
             formControlName="video"
-            placeholder="https://youtu.be/… or the video id"
+            [placeholder]="'https://youtu.be/… or the video id' | t"
           />
           @if (lessonForm.controls.video.invalid) {
-            <span class="error">That doesn't look like a YouTube link.</span>
+            <span class="error">{{ "That doesn't look like a YouTube link." | t }}</span>
           } @else {
-            <span class="hint"
-              >Optional. Upload the video to YouTube as "Unlisted" and paste its link.</span
-            >
+            <span class="hint">{{
+              'Optional. Upload the video to YouTube as "Unlisted" and paste its link.' | t
+            }}</span>
           }
         </label>
         @if (videoPreview(); as vid) {
@@ -223,27 +236,31 @@
       />
       <div class="grid-2">
         <label>
-          Duration (minutes)
+          {{ 'Duration (minutes)' | t }}
           <input type="number" formControlName="durationMinutes" min="0" />
         </label>
         <label class="consent">
           <input type="checkbox" formControlName="published" />
-          <span>Visible to enrolled students</span>
+          <span>{{ 'Visible to enrolled students' | t }}</span>
         </label>
       </div>
       <div class="form-actions">
-        <button type="submit" class="btn btn-red">Save lesson</button>
-        <button type="button" class="btn btn-ghost" (click)="cancelLesson()">Cancel</button>
+        <button type="submit" class="btn btn-red">{{ 'Save lesson' | t }}</button>
+        <button type="button" class="btn btn-ghost" (click)="cancelLesson()">
+          {{ 'Cancel' | t }}
+        </button>
       </div>
     </form>
   </ng-template>
 
   <!-- ===================================================== tests -->
   <section class="admin-card">
-    <h2>Final exam</h2>
+    <h2>{{ 'Final exam' | t }}</h2>
     <p class="lesson-meta">
-      Opens for students after they complete every lesson. Usually timed, with a limited number of
-      attempts.
+      {{
+        'Opens for students after they complete every lesson. Usually timed, with a limited number of attempts.'
+          | t
+      }}
     </p>
     <ul class="admin-list">
       @for (q of quizzes(); track q.id) {
@@ -251,40 +268,50 @@
           <div class="grow">
             <a class="row-title" [routerLink]="['/admin/tests', q.id]">{{ q.title | tr }}</a>
             <span class="lesson-meta">
-              {{ q.questionCount }} question(s) · pass {{ q.passPercent }}% ·
-              {{ q.maxAttempts ? q.maxAttempts + ' attempt(s)' : 'unlimited attempts' }}
+              {{ '{n} question(s) · pass {p}%' | t: { n: q.questionCount, p: q.passPercent } }} ·
+              {{
+                q.maxAttempts
+                  ? ('{n} attempt(s)' | t: { n: q.maxAttempts })
+                  : ('unlimited attempts' | t)
+              }}
               @if (q.timeLimitMinutes) {
-                · {{ q.timeLimitMinutes }} min
+                · {{ '{n} min' | t: { n: q.timeLimitMinutes } }}
               }
             </span>
           </div>
           <span class="tag" [class.tag-ok]="q.published">{{
-            q.published ? 'Published' : 'Draft'
+            (q.published ? 'Published' : 'Draft') | t
           }}</span>
-          <a class="btn btn-ghost btn-sm" [routerLink]="['/admin/tests', q.id]">Edit</a>
+          <a class="btn btn-ghost btn-sm" [routerLink]="['/admin/tests', q.id]">{{ 'Edit' | t }}</a>
         </li>
       } @empty {
-        <li class="empty-state"><p>No final exam yet.</p></li>
+        <li class="empty-state">
+          <p>{{ 'No final exam yet.' | t }}</p>
+        </li>
       }
     </ul>
     <form class="inline-form" (submit)="$event.preventDefault(); addQuiz()">
       <input
         type="text"
         [formControl]="newQuizTitle"
-        placeholder="Exam title, e.g. ACLS final exam"
-        aria-label="Exam title"
+        [placeholder]="'Exam title, e.g. ACLS final exam' | t"
+        [attr.aria-label]="'Exam title' | t"
       />
-      <button type="submit" class="btn btn-ghost">+ Add exam</button>
+      <button type="submit" class="btn btn-ghost">{{ '+ Add exam' | t }}</button>
     </form>
   </section>
 
   <!-- ===================================================== danger -->
   <section class="danger-zone">
-    <h2>Delete course</h2>
+    <h2>{{ 'Delete course' | t }}</h2>
     <p>
-      Removes the course, its lessons, tests, enrollments and all results. Prefer "Draft" to hide
-      it.
+      {{
+        'Removes the course, its lessons, tests, enrollments and all results. Prefer "Draft" to hide it.'
+          | t
+      }}
     </p>
-    <button type="button" class="btn btn-danger" (click)="remove()">Delete this course</button>
+    <button type="button" class="btn btn-danger" (click)="remove()">
+      {{ 'Delete this course' | t }}
+    </button>
   </section>
 }

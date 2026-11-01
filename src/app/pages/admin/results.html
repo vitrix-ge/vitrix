@@ -1,36 +1,38 @@
 <header class="admin-head">
   <div>
-    <h1>Test results</h1>
-    <p class="lesson-meta">Every submitted attempt. Scores are calculated on the server.</p>
+    <h1>{{ 'Test results' | t }}</h1>
+    <p class="lesson-meta">
+      {{ 'Every submitted attempt. Scores are calculated on the server.' | t }}
+    </p>
   </div>
   <button type="button" class="btn btn-ghost" (click)="exportCsv()" [disabled]="!visible().length">
-    Download CSV
+    {{ 'Download CSV' | t }}
   </button>
 </header>
 
 <div class="filters">
   <label>
-    Test
+    {{ 'Test' | t }}
     <select [value]="quizFilter()" (change)="quizFilter.set($any($event.target).value)">
-      <option value="">All tests</option>
+      <option value="">{{ 'All tests' | t }}</option>
       @for (q of quizzes(); track q.id) {
         <option [value]="q.id">{{ q.label }}</option>
       }
     </select>
   </label>
   <label>
-    Result
+    {{ 'Result' | t }}
     <select [value]="status()" (change)="status.set($any($event.target).value)">
-      <option value="">All</option>
-      <option value="passed">Passed</option>
-      <option value="failed">Not passed</option>
+      <option value="">{{ 'All' | t }}</option>
+      <option value="passed">{{ 'Passed' | t }}</option>
+      <option value="failed">{{ 'Not passed' | t }}</option>
     </select>
   </label>
   <label>
-    Search
+    {{ 'Search' | t }}
     <input
       type="search"
-      placeholder="Name or email"
+      [placeholder]="'Name or email' | t"
       [value]="search()"
       (input)="search.set($any($event.target).value)"
     />
@@ -40,19 +42,19 @@
 <div class="stat-row">
   <div class="stat-box">
     <strong>{{ summary().total }}</strong
-    ><span>attempts</span>
+    ><span>{{ 'attempts' | t }}</span>
   </div>
   <div class="stat-box">
     <strong>{{ summary().passed }}</strong
-    ><span>passed</span>
+    ><span>{{ 'passed' | t }}</span>
   </div>
   <div class="stat-box">
-    <strong>{{ summary().avg }}%</strong><span>average score</span>
+    <strong>{{ summary().avg }}%</strong><span>{{ 'average score' | t }}</span>
   </div>
 </div>
 
 @if (loading()) {
-  <p class="lesson-meta">Loading…</p>
+  <p class="lesson-meta">{{ 'Loading…' | t }}</p>
 } @else if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
 } @else {
@@ -60,17 +62,17 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>Date</th>
-          <th>Student</th>
-          <th>Course · Test</th>
-          <th>Score</th>
-          <th>Result</th>
+          <th>{{ 'Date' | t }}</th>
+          <th>{{ 'Student' | t }}</th>
+          <th>{{ 'Course · Test' | t }}</th>
+          <th>{{ 'Score' | t }}</th>
+          <th>{{ 'Result' | t }}</th>
         </tr>
       </thead>
       <tbody>
         @for (r of visible(); track r.id) {
           <tr>
-            <td>{{ r.submittedAt | date: 'd MMM y, HH:mm' }}</td>
+            <td>{{ r.submittedAt | date: 'dd.MM.y, HH:mm' }}</td>
             <td>
               {{ r.userName }}<span class="lesson-meta">{{ r.userEmail }}</span>
             </td>
@@ -80,14 +82,19 @@
             <td>{{ r.scorePercent }}%</td>
             <td>
               <span class="tag" [class.tag-ok]="r.passed">{{
-                r.passed ? 'Passed' : 'Not passed'
+                (r.passed ? 'Passed' : 'Not passed') | t
               }}</span>
             </td>
           </tr>
         } @empty {
           <tr>
             <td colspan="5" class="empty-state">
-              No results{{ search() || quizFilter() || status() ? ' match the filter' : ' yet' }}.
+              {{
+                (search() || quizFilter() || status()
+                  ? 'No results match the filter.'
+                  : 'No results yet.'
+                ) | t
+              }}
             </td>
           </tr>
         }

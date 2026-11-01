@@ -1,22 +1,26 @@
 <header class="admin-head">
   <div>
-    <h1>FAQ (public)</h1>
+    <h1>{{ 'FAQ (public)' | t }}</h1>
     <p class="lesson-meta">
-      Public questions and answers for visitors: general ones on the FAQ page, course ones on that
-      course's page. (Quizzes for students are added to lessons.)
+      {{
+        "Public questions and answers for visitors: general ones on the FAQ page, course ones on that course's page. (Quizzes for students are added to lessons.)"
+          | t
+      }}
     </p>
   </div>
   @if (editing() === null) {
-    <button type="button" class="btn btn-red" (click)="edit(null)">+ New question</button>
+    <button type="button" class="btn btn-red" (click)="edit(null)">
+      {{ '+ New question' | t }}
+    </button>
   }
 </header>
 
 <div class="filters">
   <label>
-    Show
+    {{ 'Show' | t }}
     <select [value]="filter()" (change)="filter.set($any($event.target).value)">
-      <option value="all">All</option>
-      <option value="general">General (Q&amp;A page)</option>
+      <option value="all">{{ 'All' | t }}</option>
+      <option value="general">{{ 'General (Q&A page)' | t }}</option>
       @for (c of courses(); track c.id) {
         <option [value]="c.id">{{ c.code }} — {{ c.title | tr }}</option>
       }
@@ -29,7 +33,7 @@
 }
 
 @if (loading()) {
-  <p class="lesson-meta">Loading…</p>
+  <p class="lesson-meta">{{ 'Loading…' | t }}</p>
 } @else if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
 } @else {
@@ -46,7 +50,7 @@
                 class="icon-mini"
                 [disabled]="first"
                 (click)="reorder(i, -1)"
-                aria-label="Move up"
+                [attr.aria-label]="'Move up' | t"
               >
                 ↑
               </button>
@@ -55,7 +59,7 @@
                 class="icon-mini"
                 [disabled]="last"
                 (click)="reorder(i, 1)"
-                aria-label="Move down"
+                [attr.aria-label]="'Move down' | t"
               >
                 ↓
               </button>
@@ -66,10 +70,10 @@
               <span class="lesson-meta">
                 {{ courseName(f.courseId) }}
                 @if (!f.published) {
-                  · <span class="tag">Hidden</span>
+                  · <span class="tag">{{ 'Hidden' | t }}</span>
                 }
                 @if (!f.question.ka) {
-                  · <span class="tag tag-warn">Georgian missing</span>
+                  · <span class="tag tag-warn">{{ 'Georgian missing' | t }}</span>
                 }
               </span>
             </div>
@@ -79,7 +83,7 @@
               (click)="edit(f)"
               [disabled]="editing() !== null"
             >
-              Edit
+              {{ 'Edit' | t }}
             </button>
             <button
               type="button"
@@ -87,26 +91,28 @@
               (click)="remove(f)"
               [disabled]="editing() !== null"
             >
-              Delete
+              {{ 'Delete' | t }}
             </button>
           </div>
         }
       </li>
     } @empty {
-      <li class="empty-state"><p>No questions here yet.</p></li>
+      <li class="empty-state">
+        <p>{{ 'No questions here yet.' | t }}</p>
+      </li>
     }
   </ol>
 }
 
 <ng-template #editor>
   <form class="form lesson-editor" [formGroup]="form" (ngSubmit)="save()" novalidate>
-    <h3>{{ editing() === 'new' ? 'New question' : 'Edit question' }}</h3>
+    <h3>{{ (editing() === 'new' ? 'New question' : 'Edit question') | t }}</h3>
     <label>
-      Where it appears
+      {{ 'Where it appears' | t }}
       <select formControlName="courseId">
-        <option value="">General (Q&amp;A page)</option>
+        <option value="">{{ 'General (Q&A page)' | t }}</option>
         @for (c of courses(); track c.id) {
-          <option [value]="c.id">{{ c.code }} course page</option>
+          <option [value]="c.id">{{ '{code} course page' | t: { code: c.code } }}</option>
         }
       </select>
     </label>
@@ -114,11 +120,13 @@
     <app-ltext-field label="Answer" [group]="form.controls.answer" multiline [rows]="4" required />
     <label class="consent">
       <input type="checkbox" formControlName="published" />
-      <span>Visible on the site</span>
+      <span>{{ 'Visible on the site' | t }}</span>
     </label>
     <div class="form-actions">
-      <button type="submit" class="btn btn-red">Save</button>
-      <button type="button" class="btn btn-ghost" (click)="editing.set(null)">Cancel</button>
+      <button type="submit" class="btn btn-red">{{ 'Save' | t }}</button>
+      <button type="button" class="btn btn-ghost" (click)="editing.set(null)">
+        {{ 'Cancel' | t }}
+      </button>
     </div>
   </form>
 </ng-template>

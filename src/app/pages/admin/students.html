@@ -1,69 +1,73 @@
 <header class="admin-head">
   <div>
-    <h1>Students</h1>
+    <h1>{{ 'Students' | t }}</h1>
     <p class="lesson-meta">
-      Enrol students by email. If they don't have an account yet, the course appears as soon as they
-      sign up with that email.
+      {{
+        "Enrol students by email. If they don't have an account yet, the course appears as soon as they sign up with that email."
+          | t
+      }}
     </p>
   </div>
 </header>
 
 <form class="form admin-card" [formGroup]="form" (ngSubmit)="enroll()" novalidate>
-  <h2>Enrol students</h2>
+  <h2>{{ 'Enrol students' | t }}</h2>
   <div class="grid-2">
     <label>
-      Course
+      {{ 'Course' | t }}
       <select formControlName="courseId">
-        <option value="" disabled>Choose a course</option>
+        <option value="" disabled>{{ 'Choose a course' | t }}</option>
         @for (c of courses(); track c.id) {
           <option [value]="c.id">{{ c.code }} — {{ c.title | tr }}</option>
         }
       </select>
       @if (form.controls.courseId.invalid && form.controls.courseId.touched) {
-        <span class="error">Choose a course.</span>
+        <span class="error">{{ 'Choose a course.' | t }}</span>
       }
     </label>
     <label>
-      Email address(es)
+      {{ 'Email address(es)' | t }}
       <textarea
         formControlName="emails"
         rows="2"
-        placeholder="one@example.com, two@example.com"
+        [placeholder]="'one@example.com, two@example.com' | t"
       ></textarea>
-      <span class="hint">Several at once: separate with commas, spaces or new lines.</span>
+      <span class="hint">{{
+        'Several at once: separate with commas, spaces or new lines.' | t
+      }}</span>
     </label>
   </div>
   <div class="form-actions">
     <button type="submit" class="btn btn-red" [disabled]="busy()">
-      {{ busy() ? 'Enrolling…' : 'Enrol' }}
+      {{ (busy() ? 'Enrolling…' : 'Enrol') | t }}
     </button>
   </div>
 </form>
 
 <div class="filters">
   <label>
-    Course
+    {{ 'Course' | t }}
     <select [value]="courseFilter()" (change)="courseFilter.set($any($event.target).value)">
-      <option value="">All courses</option>
+      <option value="">{{ 'All courses' | t }}</option>
       @for (c of courses(); track c.id) {
         <option [value]="c.id">{{ c.code }}</option>
       }
     </select>
   </label>
   <label>
-    Search
+    {{ 'Search' | t }}
     <input
       type="search"
-      placeholder="Email"
+      [placeholder]="'Email' | t"
       [value]="search()"
       (input)="search.set($any($event.target).value)"
     />
   </label>
-  <span class="lesson-meta">{{ visible().length }} enrollment(s)</span>
+  <span class="lesson-meta">{{ '{n} enrollment(s)' | t: { n: visible().length } }}</span>
 </div>
 
 @if (loading()) {
-  <p class="lesson-meta">Loading…</p>
+  <p class="lesson-meta">{{ 'Loading…' | t }}</p>
 } @else if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
 } @else {
@@ -71,9 +75,9 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>Email</th>
-          <th>Course</th>
-          <th>Enrolled</th>
+          <th>{{ 'Email' | t }}</th>
+          <th>{{ 'Course' | t }}</th>
+          <th>{{ 'Enrolled' | t }}</th>
           <th></th>
         </tr>
       </thead>
@@ -82,17 +86,22 @@
           <tr>
             <td>{{ e.email }}</td>
             <td>{{ e.courseTitle | tr }}</td>
-            <td>{{ e.createdAt | date: 'd MMM y' }}</td>
+            <td>{{ e.createdAt | date: 'dd.MM.y' }}</td>
             <td>
               <button type="button" class="btn btn-danger btn-sm" (click)="remove(e)">
-                Remove
+                {{ 'Remove' | t }}
               </button>
             </td>
           </tr>
         } @empty {
           <tr>
             <td colspan="4" class="empty-state">
-              No enrollments{{ search() || courseFilter() ? ' match the filter' : ' yet' }}.
+              {{
+                (search() || courseFilter()
+                  ? 'No enrollments match the filter.'
+                  : 'No enrollments yet.'
+                ) | t
+              }}
             </td>
           </tr>
         }

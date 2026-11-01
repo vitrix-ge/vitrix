@@ -1,69 +1,73 @@
 <header class="admin-head">
   <div>
-    <h1>Courses</h1>
+    <h1>{{ 'Courses' | t }}</h1>
     <p class="lesson-meta">
-      Each course has its own lessons, videos and tests. Drafts are only visible here.
+      {{ 'Each course has its own lessons, videos and tests. Drafts are only visible here.' | t }}
     </p>
   </div>
   @if (!creating()) {
-    <button type="button" class="btn btn-red" (click)="creating.set(true)">+ New course</button>
+    <button type="button" class="btn btn-red" (click)="creating.set(true)">
+      {{ '+ New course' | t }}
+    </button>
   }
 </header>
 
 @if (creating()) {
   <form class="form admin-card" [formGroup]="newForm" (ngSubmit)="create()" novalidate>
-    <h2>New course</h2>
+    <h2>{{ 'New course' | t }}</h2>
     <div class="grid-2">
       <label>
-        Short code
-        <input type="text" formControlName="code" placeholder="ACLS" />
+        {{ 'Short code' | t }}
+        <input type="text" formControlName="code" [placeholder]="'ACLS' | t" />
         @if (newForm.controls.code.invalid && newForm.controls.code.touched) {
-          <span class="error">Enter a short code.</span>
+          <span class="error">{{ 'Enter a short code.' | t }}</span>
         }
       </label>
       <label>
-        Title (English)
+        {{ 'Title (English)' | t }}
         <input
           type="text"
           formControlName="title"
-          placeholder="Advanced Cardiovascular Life Support"
+          [placeholder]="'Advanced Cardiovascular Life Support' | t"
         />
         @if (newForm.controls.title.invalid && newForm.controls.title.touched) {
-          <span class="error">Enter a title.</span>
+          <span class="error">{{ 'Enter a title.' | t }}</span>
         }
       </label>
     </div>
     <p class="hint">
-      You can add the Georgian title, description, image and price on the next screen.
+      {{ 'You can add the Georgian title, description, image and price on the next screen.' | t }}
     </p>
     <div class="form-actions">
       <button type="submit" class="btn btn-red" [disabled]="busy()">
-        {{ busy() ? 'Creating…' : 'Create draft' }}
+        {{ (busy() ? 'Creating…' : 'Create draft') | t }}
       </button>
-      <button type="button" class="btn btn-ghost" (click)="creating.set(false)">Cancel</button>
+      <button type="button" class="btn btn-ghost" (click)="creating.set(false)">
+        {{ 'Cancel' | t }}
+      </button>
     </div>
   </form>
 }
 
 @if (loading()) {
-  <p class="lesson-meta">Loading…</p>
+  <p class="lesson-meta">{{ 'Loading…' | t }}</p>
 } @else if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
 } @else if (!courses().length) {
   <div class="empty-state">
-    <h2>No courses yet</h2>
-    <p>Create the first course, then add lessons with YouTube videos and a test.</p>
+    <h2>{{ 'No courses yet' | t }}</h2>
+    <p>{{ 'Create the first course, then add lessons with YouTube videos and a test.' | t }}</p>
   </div>
 } @else {
   <div class="table-wrap">
     <table class="data-table">
       <thead>
         <tr>
-          <th>Order</th>
+          <th>{{ 'Order' | t }}</th>
           <th></th>
-          <th>Course</th>
-          <th>Price</th>
-          <th>Status</th>
+          <th>{{ 'Course' | t }}</th>
+          <th>{{ 'Price' | t }}</th>
+          <th>{{ 'Status' | t }}</th>
           <th></th>
         </tr>
       </thead>
@@ -76,7 +80,7 @@
                 class="icon-mini"
                 [disabled]="first"
                 (click)="reorder(i, -1)"
-                aria-label="Move up"
+                [attr.aria-label]="'Move up' | t"
               >
                 ↑
               </button>
@@ -85,7 +89,7 @@
                 class="icon-mini"
                 [disabled]="last"
                 (click)="reorder(i, 1)"
-                aria-label="Move down"
+                [attr.aria-label]="'Move down' | t"
               >
                 ↓
               </button>
@@ -101,7 +105,7 @@
               <a class="row-title" [routerLink]="['/admin/courses', c.id]">{{ c.title | tr }}</a>
               <span class="lesson-meta">{{ c.code }} · /courses/{{ c.slug }}</span>
               @if (!c.title.ka) {
-                <span class="tag tag-warn">Georgian missing</span>
+                <span class="tag tag-warn">{{ 'Georgian missing' | t }}</span>
               }
             </td>
             <td>{{ c.price !== null ? c.price + ' GEL' : '—' }}</td>
@@ -115,11 +119,13 @@
                   c.published ? 'Published, click to hide' : 'Draft, click to publish'
                 "
               >
-                {{ c.published ? 'Published' : 'Draft' }}
+                {{ (c.published ? 'Published' : 'Draft') | t }}
               </button>
             </td>
             <td>
-              <a class="btn btn-ghost btn-sm" [routerLink]="['/admin/courses', c.id]">Edit</a>
+              <a class="btn btn-ghost btn-sm" [routerLink]="['/admin/courses', c.id]">{{
+                'Edit' | t
+              }}</a>
             </td>
           </tr>
         }

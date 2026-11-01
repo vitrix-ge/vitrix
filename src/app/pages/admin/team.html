@@ -1,21 +1,29 @@
 <header class="admin-head">
   <div>
-    <h1>Team</h1>
+    <h1>{{ 'Team' | t }}</h1>
     <p class="lesson-meta">
-      <strong>Editors</strong> manage courses, lessons, tests and Q&amp;A.
-      <strong>Admins</strong> can also enrol students, see results and manage this team. Changes
-      apply at the person's next login.
+      <strong>{{ 'Editors' | t }}</strong> {{ 'manage courses, lessons, tests and Q&A.' | t }}
+      <strong>{{ 'Admins' | t }}</strong>
+      {{
+        "can also enrol students, see results and manage this team. Changes apply at the person's next login."
+          | t
+      }}
     </p>
   </div>
 </header>
 
 <section class="admin-card">
-  <h2>Add someone</h2>
-  <p class="lesson-meta">They need a VITRIX account first (Log in → Create account).</p>
+  <h2>{{ 'Add someone' | t }}</h2>
+  <p class="lesson-meta">{{ 'They need a VITRIX account first (Log in → Create account).' | t }}</p>
   <form class="inline-form" (submit)="$event.preventDefault(); search(term.value)">
-    <input #term type="search" placeholder="Search by email" aria-label="Search by email" />
+    <input
+      #term
+      type="search"
+      [placeholder]="'Search by email' | t"
+      [attr.aria-label]="'Search by email' | t"
+    />
     <button type="submit" class="btn btn-ghost" [disabled]="searching()">
-      {{ searching() ? 'Searching…' : 'Search' }}
+      {{ (searching() ? 'Searching…' : 'Search') | t }}
     </button>
   </form>
   @if (found(); as list) {
@@ -27,9 +35,9 @@
 </section>
 
 <section class="admin-card">
-  <h2>Current team</h2>
+  <h2>{{ 'Current team' | t }}</h2>
   @if (loading()) {
-    <p class="lesson-meta">Loading…</p>
+    <p class="lesson-meta">{{ 'Loading…' | t }}</p>
   } @else if (error()) {
     <p class="error" role="alert">{{ error() }}</p>
   } @else {
@@ -45,9 +53,9 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>Person</th>
-          <th>Editor</th>
-          <th>Admin</th>
+          <th>{{ 'Person' | t }}</th>
+          <th>{{ 'Editor' | t }}</th>
+          <th>{{ 'Admin' | t }}</th>
         </tr>
       </thead>
       <tbody>
@@ -55,7 +63,9 @@
           <tr>
             <td>
               {{ u.name
-              }}<span class="lesson-meta">{{ u.email }}{{ u.id === myId() ? ' · you' : '' }}</span>
+              }}<span class="lesson-meta"
+                >{{ u.email }}{{ u.id === myId() ? ' · ' + ('you' | t) : '' }}</span
+              >
             </td>
             <td>
               <label class="switch">
@@ -65,7 +75,7 @@
                   (change)="toggle(u, 'editor')"
                   [attr.aria-label]="'Editor: ' + u.email"
                 />
-                <span>{{ has(u, 'editor') ? 'Yes' : 'No' }}</span>
+                <span>{{ (has(u, 'editor') ? 'Yes' : 'No') | t }}</span>
               </label>
             </td>
             <td>
@@ -77,7 +87,7 @@
                   (change)="toggle(u, 'admin')"
                   [attr.aria-label]="'Admin: ' + u.email"
                 />
-                <span>{{ has(u, 'admin') ? 'Yes' : 'No' }}</span>
+                <span>{{ (has(u, 'admin') ? 'Yes' : 'No') | t }}</span>
               </label>
             </td>
           </tr>

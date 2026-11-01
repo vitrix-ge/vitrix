@@ -46,8 +46,8 @@ No test files exist yet (`skipTests: true` in angular.json).
   in `public/fonts/firago/` (trimmed to Georgian + Latin, ~39 KB per weight; `@font-face` in
   index.html). `html:lang(ka)` switches `--body`/`--display` to FiraGO and turns off uppercase
   (FiraGO has no Mtavruli; lowercase Georgian reads better). The privacy page has a full Georgian
-  version in its template.
-  The admin panel is still English only.
+  version in its template. The admin panel is translated too (its CSV export keeps English
+  column names). Dates use the numeric `dd.MM.y` format so no locale data is needed.
 - **Light / dark:** header sun/moon button (`theme.ts`, `localStorage` `vitrix.theme`,
   `<html data-theme>`); dark colors are the `:root[data-theme='dark']` block in styles.scss.
   index.html applies both before the app starts (no flash).
@@ -211,7 +211,8 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
    verify the domain in Brevo and send from e.g. `no-reply@vitrix.ge` for better delivery
    (only `Email__From` changes).
 7. ~~Set `PRIVACY_CONTACT_EMAIL`~~ done: `vitrix.contact1@gmail.com`.
-8. Translate the admin panel; let admins fill the KA fields of the six built-in courses.
+8. ~~Translate the admin panel~~ done. Admins should fill the KA fields of the six built-in
+   courses (until then the site shows its own Georgian for them).
 9. Self-host Montserrat and Manrope too (Georgian FiraGO already is): Google Fonts still receives
    visitors' IP addresses for the Latin fonts.
 

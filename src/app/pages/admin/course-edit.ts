@@ -6,7 +6,7 @@ import { Notify } from '../../notify';
 import { Catalog } from '../../content/catalog';
 import { ContentApi } from '../../content/content.api';
 import { Course, Lesson, Quiz } from '../../content/content.models';
-import { TrPipe } from '../../content/i18n';
+import { TPipe, TrPipe, t } from '../../content/i18n';
 import { youtubeId } from '../../content/youtube';
 import { ltextGroup, move, slugify } from './forms';
 import { LTextField } from './ltext-field';
@@ -18,7 +18,7 @@ function youtubeValidator(control: { value: string }) {
 
 @Component({
   selector: 'app-admin-course-edit',
-  imports: [ReactiveFormsModule, RouterLink, TrPipe, LTextField, NgTemplateOutlet],
+  imports: [ReactiveFormsModule, RouterLink, TrPipe, LTextField, NgTemplateOutlet, TPipe],
   templateUrl: './course-edit.html',
 })
 export class AdminCourseEdit {
@@ -81,7 +81,7 @@ export class AdminCourseEdit {
       this.lessons.set(lessons.sort((a, b) => a.order - b.order));
       this.quizzes.set(quizzes);
     } catch (e) {
-      this.error.set(e instanceof Error ? e.message : 'Could not load the course.');
+      this.error.set(e instanceof Error ? e.message : t('Could not load the course.'));
     } finally {
       this.loading.set(false);
     }
@@ -96,7 +96,7 @@ export class AdminCourseEdit {
   async save(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.notify.error('Please fix the highlighted fields.');
+      this.notify.error(t('Please fix the highlighted fields.'));
       return;
     }
     this.saving.set(true);
@@ -109,10 +109,10 @@ export class AdminCourseEdit {
       });
       this.course.set(saved);
       this.form.markAsPristine();
-      this.notify.success('Course saved.');
+      this.notify.success(t('Course saved.'));
       void this.catalog.refresh();
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not save.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not save.'));
     } finally {
       this.saving.set(false);
     }
@@ -123,18 +123,20 @@ export class AdminCourseEdit {
     if (
       !c ||
       !confirm(
-        `Delete "${c.title.en}" with all its lessons, tests and results? This cannot be undone.`,
+        t('Delete "{name}" with all its lessons, tests and results? This cannot be undone.', {
+          name: c.title.en,
+        }),
       )
     ) {
       return;
     }
     try {
       await this.api.deleteCourse(c.id);
-      this.notify.info('Course deleted.');
+      this.notify.info(t('Course deleted.'));
       void this.catalog.refresh();
       await this.router.navigateByUrl('/admin/courses');
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not delete.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not delete.'));
     }
   }
 
@@ -179,24 +181,28 @@ export class AdminCourseEdit {
         existing ? list.map((l) => (l.id === saved.id ? saved : l)) : [...list, saved],
       );
       this.editingLesson.set(null);
-      this.notify.success(existing ? 'Lesson saved.' : 'Lesson added.');
+      this.notify.success(t(existing ? 'Lesson saved.' : 'Lesson added.'));
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not save the lesson.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not save the lesson.'));
     }
   }
 
   async deleteLesson(lesson: Lesson): Promise<void> {
     if (
-      !confirm(`Delete the lesson "${lesson.title.en}"? Students' progress for it is removed too.`)
+      !confirm(
+        t('Delete the lesson "{name}"? Students\' progress for it is removed too.', {
+          name: lesson.title.en,
+        }),
+      )
     ) {
       return;
     }
     try {
       await this.api.deleteLesson(lesson.id);
       this.lessons.update((list) => list.filter((l) => l.id !== lesson.id));
-      this.notify.info('Lesson deleted.');
+      this.notify.info(t('Lesson deleted.'));
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not delete.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not delete.'));
     }
   }
 
@@ -209,7 +215,7 @@ export class AdminCourseEdit {
         list.filter((l, idx) => l.id !== before[idx].id).map((l) => this.api.saveLesson(l)),
       );
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not save the new order.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not save the new order.'));
       this.lessons.set(before);
     }
   }
@@ -221,7 +227,7 @@ export class AdminCourseEdit {
       const quiz = await this.api.lessonQuiz(lesson.id);
       await this.router.navigate(['/admin/tests', quiz.id]);
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not create the quiz.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not create the quiz.'));
     }
   }
 
@@ -241,10 +247,10 @@ export class AdminCourseEdit {
         showCorrectAnswers: false,
         published: false,
       });
-      this.notify.success('Test created. Now add the questions.');
+      this.notify.success(t('Test created. Now add the questions.'));
       await this.router.navigate(['/admin/tests', quiz.id]);
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not create the test.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not create the test.'));
     }
   }
 }
