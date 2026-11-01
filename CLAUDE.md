@@ -42,12 +42,17 @@ No test files exist yet (`skipTests: true` in angular.json).
   Georgian); untranslated text shows in English. **Every new visible text needs a `| t` and a
   line in ka.ts.** Server content is `LText` with the `tr` pipe; if its `ka` is empty, `tr` tries
   ka.ts with the English text, then shows English. Server error messages are translated the same
-  way (`describeError` in auth.ts / content.api.ts). Georgian font: Noto Sans Georgian (in the
-  `--display` / `--body` font stacks). The privacy page has a full Georgian version in its template.
+  way (`describeError` in auth.ts / content.api.ts). Georgian font: **FiraGO** (OFL), self-hosted
+  in `public/fonts/firago/` (trimmed to Georgian + Latin, ~39 KB per weight; `@font-face` in
+  index.html). `html:lang(ka)` switches `--body`/`--display` to FiraGO and turns off uppercase
+  (FiraGO has no Mtavruli; lowercase Georgian reads better). The privacy page has a full Georgian
+  version in its template.
   The admin panel is still English only.
 - **Light / dark:** header sun/moon button (`theme.ts`, `localStorage` `vitrix.theme`,
   `<html data-theme>`); dark colors are the `:root[data-theme='dark']` block in styles.scss.
   index.html applies both before the app starts (no flash).
+- Layout: the app shell (`app.scss`) is a full-height column, so the footer sits at the bottom on
+  short pages. Reading sizes: body 17px, lede 19px, small meta text 14px.
 - Formatting: Prettier (`.prettierrc`), single quotes, 100-char lines.
 - Images live in `public/media/` and are referenced as `media/x.jpg` (no leading slash) so they
   work on GitHub Pages.
@@ -207,6 +212,7 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
    (only `Email__From` changes).
 7. ~~Set `PRIVACY_CONTACT_EMAIL`~~ done: `vitrix.contact1@gmail.com`.
 8. Translate the admin panel; let admins fill the KA fields of the six built-in courses.
-9. Self-host the Google Fonts (privacy: Google currently receives visitors' IP addresses).
+9. Self-host Montserrat and Manrope too (Georgian FiraGO already is): Google Fonts still receives
+   visitors' IP addresses for the Latin fonts.
 
 Update this file when you finish a roadmap item or change how something works.

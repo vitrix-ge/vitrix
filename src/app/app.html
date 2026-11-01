@@ -1,4 +1,4 @@
-<a class="skip" href="#content">Skip to content</a>
+<a class="skip" href="#content">{{ 'Skip to content' | t }}</a>
 <app-site-header />
 <main id="content">
   <router-outlet />
@@ -10,7 +10,7 @@
     <div class="toast" [class]="'toast toast-' + note.kind">
       <span>{{ note.text }}</span>
       <button type="button" class="toast-close" (click)="notify.dismiss()">
-        <span class="sr-only">Dismiss</span>
+        <span class="sr-only">{{ 'Dismiss' | t }}</span>
         <span aria-hidden="true">×</span>
       </button>
     </div>

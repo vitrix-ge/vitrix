@@ -7,12 +7,12 @@ import { SiteFooter } from './layout/site-footer';
 import { SiteHeader } from './layout/site-header';
 import { Auth } from './auth';
 import { Notify } from './notify';
-import { syncDocumentLang, t } from './content/i18n';
+import { TPipe, syncDocumentLang, t } from './content/i18n';
 import { syncDocumentTheme } from './theme';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SiteHeader, SiteFooter],
+  imports: [RouterOutlet, SiteHeader, SiteFooter, TPipe],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
