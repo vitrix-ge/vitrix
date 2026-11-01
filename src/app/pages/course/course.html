@@ -17,9 +17,36 @@
           [src]="c.imageUrl"
           [alt]="'{code} training' | t: { code: c.code }"
         />
+        <dl class="course-facts">
+          @if (c.format | tr; as format) {
+            <div>
+              <dt>{{ 'Format' | t }}</dt>
+              <dd>{{ format }}</dd>
+            </div>
+          }
+          @if (c.duration | tr; as duration) {
+            <div>
+              <dt>{{ 'Duration' | t }}</dt>
+              <dd>{{ duration }}</dd>
+            </div>
+          }
+          <div>
+            <dt>{{ 'Next start' | t }}</dt>
+            <dd>{{ c.nextStart ? (c.nextStart | date: 'dd.MM.y') : ('On request' | t) }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'Price' | t }}</dt>
+            <dd>{{ c.price !== null ? c.price + ' ₾' : ('On request' | t) }}</dd>
+          </div>
+        </dl>
         <p class="prose-text">{{ (c.description | tr) || (c.summary | tr) }}</p>
-        @if (c.price !== null) {
-          <p class="price">{{ c.price }} ₾</p>
+        @if (outcomes().length) {
+          <h2 class="block-title">{{ "What you'll learn" | t }}</h2>
+          <ul class="outcomes">
+            @for (point of outcomes(); track $index) {
+              <li>{{ point }}</li>
+            }
+          </ul>
         }
       </div>
 
@@ -48,6 +75,15 @@
                 [style.width.%]="d.lessons.length ? (100 * completedCount()) / d.lessons.length : 0"
               ></span>
             </div>
+            @if (certificate(); as cert) {
+              <div class="notice cert-notice">
+                <h2>{{ 'Congratulations, you passed!' | t }}</h2>
+                <p>{{ 'Your certificate is ready to view, print or save as PDF.' | t }}</p>
+                <a class="btn btn-red" [routerLink]="['/certificates', cert.code]">{{
+                  'View certificate' | t
+                }}</a>
+              </div>
+            }
           } @else if (d.needsEmailConfirmation) {
             <app-confirm-email-notice
               reason="You are enrolled in this course: confirm your email and its lessons and tests open."
@@ -70,7 +106,9 @@
                   }}
                 </p>
               }
-              <a class="btn btn-red" routerLink="/apply">{{ 'Apply now' | t }}</a>
+              <a class="btn btn-red" routerLink="/apply" [queryParams]="{ course: c.slug }">{{
+                'Apply now' | t
+              }}</a>
             </div>
           }
 
@@ -79,6 +117,7 @@
             <ol class="lesson-list">
               @for (lesson of d.lessons; track lesson.id; let i = $index) {
                 <li
+                  [id]="'lesson-' + lesson.id"
                   [class.done]="lesson.completed"
                   [class.open]="openLessonId() === lesson.id"
                   [class.is-locked]="lesson.locked"
@@ -210,7 +249,9 @@
           <div class="notice">
             <h2>{{ 'Interested?' | t }}</h2>
             <p>{{ 'Apply and our team will get back to you with dates and details.' | t }}</p>
-            <a class="btn btn-red" routerLink="/apply">{{ 'Apply now' | t }}</a>
+            <a class="btn btn-red" routerLink="/apply" [queryParams]="{ course: c.slug }">{{
+              'Apply now' | t
+            }}</a>
           </div>
         } @else {
           <p class="lesson-meta">{{ 'Loading course…' | t }}</p>
@@ -218,6 +259,18 @@
       </div>
     </div>
   </section>
+
+  @if (showApply()) {
+    <div class="sticky-apply">
+      <div>
+        <strong>{{ c.code | t }}</strong>
+        <span>{{ c.price !== null ? c.price + ' ₾' : ('Price on request' | t) }}</span>
+      </div>
+      <a class="btn btn-red" routerLink="/apply" [queryParams]="{ course: c.slug }">{{
+        'Apply now' | t
+      }}</a>
+    </div>
+  }
 } @else if (loading()) {
   <section class="page-section">
     <div class="wrap">

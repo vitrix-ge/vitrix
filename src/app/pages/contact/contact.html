@@ -4,7 +4,7 @@
     <h1>{{ 'Contact' | t }}</h1>
     <p class="lede">
       {{
-        'Ask about a course, a team booking, or a partnership. Messages stay in this browser — there is no server behind the form yet.'
+        'Ask about a course, a team booking, or a partnership. We usually reply within two working days.'
           | t
       }}
     </p>
@@ -22,15 +22,19 @@
         }}
       </p>
       <p class="location">{{ 'Tbilisi, Georgia' | t }}<br />{{ 'A global vision.' | t }}</p>
+      <p>
+        {{ 'Or email us directly:' | t }}
+        <a [href]="'mailto:' + email">{{ email }}</a>
+      </p>
     </div>
 
     @if (sent()) {
       <div class="notice" role="status">
-        <h2>{{ 'Message ready' | t }}</h2>
+        <h2>{{ 'Message sent' | t }}</h2>
         <p>
           {{
-            'Thanks, {name}. This demo keeps your note on this page only. A live institute inbox is the next step.'
-              | t: { name: form.controls.name.value }
+            'Thanks, {name}. We received your message and will reply to {email}.'
+              | t: { name: form.controls.name.value, email: form.controls.email.value }
           }}
         </p>
       </div>
@@ -61,7 +65,18 @@
             <span class="error">{{ 'Write at least a short message.' | t }}</span>
           }
         </label>
-        <button class="btn btn-red" type="submit">{{ 'Send message' | t }}</button>
+        <div class="trap" aria-hidden="true">
+          <label>
+            Website
+            <input type="text" formControlName="website" tabindex="-1" autocomplete="off" />
+          </label>
+        </div>
+        @if (error()) {
+          <p class="error" role="alert">{{ error() | t }}</p>
+        }
+        <button class="btn btn-red" type="submit" [disabled]="sending()">
+          {{ (sending() ? 'Sending…' : 'Send message') | t }}
+        </button>
       </form>
     }
   </div>

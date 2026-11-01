@@ -6,6 +6,13 @@ import { CONTENT_API_URL } from './content.config';
 import { t } from './i18n';
 import {
   AnswerSubmission,
+  ApplicationInput,
+  ApplicationRow,
+  ApplicationStatus,
+  Certificate,
+  ContactInput,
+  ContactMessage,
+  MyApplication,
   AttemptResult,
   AttemptRow,
   AttemptStart,
@@ -55,6 +62,23 @@ export class ContentApi {
   }
   submitAttempt(attemptId: string, answers: AnswerSubmission[]): Promise<AttemptResult> {
     return this.send('POST', `/api/attempts/${attemptId}/submit`, { answers });
+  }
+  apply(input: ApplicationInput): Promise<MyApplication> {
+    return this.send('POST', '/api/applications', input);
+  }
+  myApplications(): Promise<MyApplication[]> {
+    return this.get('/api/me/applications');
+  }
+  myCertificates(): Promise<Certificate[]> {
+    return this.get('/api/me/certificates');
+  }
+  /** Public: anyone with the code can check a certificate. */
+  certificate(code: string): Promise<Certificate> {
+    return this.get(`/api/certificates/${encodeURIComponent(code)}`);
+  }
+  /** Public contact form. */
+  contact(input: ContactInput): Promise<void> {
+    return this.send('POST', '/api/contact', input);
   }
   /** Removes my progress, results and enrollments (used when deleting the account). */
   deleteMyData(): Promise<void> {
@@ -146,6 +170,32 @@ export class ContentApi {
     return this.get('/api/admin/attempts');
   }
 
+  applications(): Promise<ApplicationRow[]> {
+    return this.get('/api/admin/applications');
+  }
+  updateApplication(
+    id: string,
+    change: { status?: ApplicationStatus; note?: string },
+  ): Promise<ApplicationRow> {
+    return this.send('PUT', `/api/admin/applications/${id}`, change);
+  }
+  /** Accept & enroll: enrolls the applicant's email in the course. */
+  acceptApplication(id: string): Promise<ApplicationRow> {
+    return this.send('POST', `/api/admin/applications/${id}/enroll`);
+  }
+  deleteApplication(id: string): Promise<void> {
+    return this.send('DELETE', `/api/admin/applications/${id}`);
+  }
+  messages(): Promise<ContactMessage[]> {
+    return this.get('/api/admin/messages');
+  }
+  setMessageHandled(id: string, handled: boolean): Promise<ContactMessage> {
+    return this.send('PUT', `/api/admin/messages/${id}`, { handled });
+  }
+  deleteMessage(id: string): Promise<void> {
+    return this.send('DELETE', `/api/admin/messages/${id}`);
+  }
+
   // ------------------------------------------------------------------ plumbing
   private get<T>(path: string): Promise<T> {
     return this.run(this.http.get<T>(CONTENT_API_URL + path, { headers: this.headers() }));
@@ -183,7 +233,9 @@ function describe(error: unknown): string {
     case 403:
       return t('You do not have access to this.');
     case 404:
-      return t('Not found. It may have been removed.');
+      break; // the server's own sentence (e.g. "No certificate with this code.") when it sent one
+    case 429:
+      return t('Too many requests. Please wait a little and try again.');
   }
   const body = error.error as {
     errors?: string[] | Record<string, string[]>;
@@ -198,5 +250,8 @@ function describe(error: unknown): string {
       .map((e) => t(e))
       .join(' ');
   }
-  return body?.title ?? 'Something went wrong. Please try again.';
+  if (error.status === 404) {
+    return t('Not found. It may have been removed.');
+  }
+  return body?.title ? t(body.title) : t('Something went wrong. Please try again.');
 }

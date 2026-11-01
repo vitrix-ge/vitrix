@@ -7,9 +7,17 @@ import { ConfirmEmailNotice } from '../../confirm-email-notice';
 import { Notify } from '../../notify';
 import { ContentApi } from '../../content/content.api';
 import { CONTENT_ENABLED } from '../../content/content.config';
-import { AttemptRow, MyCourse } from '../../content/content.models';
+import { AttemptRow, Certificate, MyApplication, MyCourse } from '../../content/content.models';
 import { TPipe, TrPipe, t } from '../../content/i18n';
 import { isStaff } from '../../content/roles';
+
+/** What applicants see for each status (admins see the same words in the Applications page). */
+export const STATUS_LABELS: Record<string, string> = {
+  new: 'Received',
+  contacted: 'In review',
+  accepted: 'Accepted',
+  rejected: 'Not accepted',
+};
 
 @Component({
   selector: 'app-account',
@@ -29,6 +37,16 @@ export class Account {
   readonly myCourses = signal<MyCourse[]>([]);
   readonly results = signal<AttemptRow[]>([]);
   readonly loadingCourses = signal(CONTENT_ENABLED);
+  readonly applications = signal<MyApplication[]>([]);
+  readonly certificates = signal<Certificate[]>([]);
+  /** "Continue where you left off": the started course with the most progress, else the first. */
+  readonly resume = computed(() => {
+    const open = this.myCourses().filter((c) => c.nextLessonId);
+    if (!open.length) {
+      return null;
+    }
+    return [...open].sort((a, b) => this.percent(b) - this.percent(a))[0];
+  });
 
   constructor() {
     // Load courses now, and again once the email gets confirmed (they need a confirmed email).
@@ -45,14 +63,25 @@ export class Account {
   private loadCourses(): void {
     if (CONTENT_ENABLED && this.user()) {
       this.loadingCourses.set(true);
-      Promise.all([this.api.myCourses(), this.api.myAttempts()])
-        .then(([courses, results]) => {
+      Promise.all([
+        this.api.myCourses(),
+        this.api.myAttempts(),
+        this.api.myApplications().catch(() => []),
+        this.api.myCertificates().catch(() => []),
+      ])
+        .then(([courses, results, applications, certificates]) => {
           this.myCourses.set(courses);
           this.results.set(results);
+          this.applications.set(applications);
+          this.certificates.set(certificates);
         })
         .catch(() => undefined) // course server unreachable: show the empty state
         .finally(() => this.loadingCourses.set(false));
     }
+  }
+
+  statusLabel(status: string): string {
+    return STATUS_LABELS[status] ?? status;
   }
 
   percent(c: MyCourse): number {

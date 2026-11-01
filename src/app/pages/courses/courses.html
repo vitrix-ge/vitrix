@@ -24,7 +24,9 @@
             <a class="btn btn-ghost" [routerLink]="['/courses', course.slug]">
               {{ 'Course details' | t }} <span aria-hidden="true">→</span>
             </a>
-            <a class="btn btn-ghost" routerLink="/apply">{{ 'Apply now' | t }}</a>
+            <a class="btn btn-ghost" routerLink="/apply" [queryParams]="{ course: course.slug }">{{
+              'Apply now' | t
+            }}</a>
           </div>
         </div>
       </article>

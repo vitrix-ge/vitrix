@@ -9,7 +9,8 @@ The site is a **static Angular app** published on **GitHub Pages**
 separate **identity-api** server (repo `vitrix-ge/identity-api`), deployed on Render at
 <https://vitrix-identity-24j8.onrender.com> with a Neon Postgres database. Courses, lessons, Q&A,
 tests and student progress come from **vitrix-api** (repo `vitrix-ge/vitrix-api`, deployed on
-Render at <https://vitrix-api.onrender.com>, same database, schema `vitrix`). Apply/Contact forms have no backend yet.
+Render at <https://vitrix-api.onrender.com>, same database, schema `vitrix`), which also stores Apply/Contact
+form submissions and certificates.
 
 ## Commands
 
@@ -55,7 +56,13 @@ No test files exist yet (`skipTests: true` in angular.json).
   short pages. Reading sizes: body 17px, lede 19px, small meta text 14px.
 - Formatting: Prettier (`.prettierrc`), single quotes, 100-char lines.
 - Images live in `public/media/` and are referenced as `media/x.jpg` (no leading slash) so they
-  work on GitHub Pages.
+  work on GitHub Pages. `media/og-image.jpg` (1200×630) is the default link-preview image.
+- **Fonts are all self-hosted** (no Google Fonts): Manrope + Montserrat in `public/fonts/latin.css`
+  (latin + latin-ext, from @fontsource), FiraGO `@font-face` in index.html. OFL licences next to them.
+- **Mobile:** check new pages at 390px wide (no sideways scrolling). Grid containers use
+  `minmax(0, 1fr)` columns so long content scrolls inside its box (`.table-wrap`) instead of
+  widening the page. On phones the course page has a sticky Apply bar (`.sticky-apply`) and the admin
+  menu is one swipeable row. The Georgian header switches to the menu button below 1420px (longer words).
 
 ## Map of the code
 
@@ -72,7 +79,8 @@ No test files exist yet (`skipTests: true` in angular.json).
 | [src/app/notify.ts](src/app/notify.ts) | `Notify` service: short toast messages (`success`, `info`, `error`), shown by the app shell. |
 | [src/app/layout/](src/app/layout/) | Header (nav, search, login link, mobile menu) and footer. |
 | [src/app/mark.ts](src/app/mark.ts) | The VITRIX logo as an SVG component. |
-| `src/app/pages/*` | One folder per page: home, about, courses, simulation, faculty, partners, contact, apply, login, account, privacy, course (`/courses/:slug`), quiz (`/tests/:id`), faq, confirm-email, reset-password. |
+| `src/app/pages/*` | One folder per page: home, about, courses, simulation, faculty, partners, contact, apply, login, account, privacy, course (`/courses/:slug`), quiz (`/tests/:id`), faq, confirm-email, reset-password, certificate (`/certificates/:code` + lookup at `/certificates`). |
+| [scripts/publish-pages.mjs](scripts/publish-pages.mjs) | After the build: one `index.html` per public address with its own title, description and Open Graph tags; `404.html`, `sitemap.xml`, `robots.txt`. |
 
 ## Login (current state)
 
@@ -153,12 +161,18 @@ contents of `dist/vitrix/browser` (plus a copy of `index.html` as `404.html`, so
 `/vitrix/login` work):
 
 ```bash
-NG_CLI_ANALYTICS=false npx ng build --base-href /vitrix/
-cp dist/vitrix/browser/index.html dist/vitrix/browser/404.html
-# real pages (HTTP 200, not the 404 fallback) for links Google's sign-in setup and search engines check
-for r in privacy login courses; do mkdir -p dist/vitrix/browser/$r && cp dist/vitrix/browser/index.html dist/vitrix/browser/$r/; done
+NG_CLI_ANALYTICS=false npm run build:pages
+# = ng build --base-href /vitrix/ && node scripts/publish-pages.mjs
 # then commit the contents of dist/vitrix/browser to the gh-pages branch
 ```
+
+`publish-pages.mjs` writes a real page (HTTP 200, with its own `<title>`, description and Open
+Graph/Twitter tags for link previews) for every public address — home, courses, each course
+(`/courses/acls`, from the live course list or the built-in one), about, simulation, faculty,
+partners, faq, contact, certificates, privacy, login, apply — plus `404.html` (deep links like
+`/vitrix/account`), `sitemap.xml` and `robots.txt`. Page descriptions are Georgian (the default
+language) and live in the script. Submit `…/vitrix/sitemap.xml` in Google Search Console once;
+`robots.txt` only takes effect at a domain root (i.e. after moving to vitrix.ge).
 
 ### Running locally with login
 
@@ -166,6 +180,25 @@ for r in privacy login courses; do mkdir -p dist/vitrix/browser/$r && cp dist/vi
 2. Here: `npm start`, open <http://localhost:4200>. Dev admin: `admin@example.com` / `Admin123!`.
 
 Port 4200 is also used by `identity-web` (the test client); run one of them at a time.
+
+## Applications, contact messages and certificates
+
+- **Apply** (`/apply`, members with a confirmed email; `/apply?course=acls` preselects) posts to
+  `POST /api/applications`; the reply goes to the account's email, so the field is read-only.
+  **Contact** posts to `POST /api/contact` (anyone; hidden honeypot field `website` like sign-up —
+  keep it hidden). vitrix-api saves both and emails the team via Brevo.
+- **Admin → Applications** (admin only): tabs Applications / Messages; status
+  (new → contacted → accepted/rejected), a private note (saved on leaving the field), **Accept & enroll**
+  (enrolls the applicant's email in the course), mark messages handled, delete.
+- **My account** shows "Continue where you left off" (next lesson of the started course with the most
+  progress; links to `/courses/<slug>?continue=1`, which scrolls to it), My applications with their
+  status (Received / In review / Accepted / Not accepted), My certificates and test results.
+- **Certificates:** passing a course's final exam issues one (vitrix-api). `/certificates/:code` shows it
+  in Georgian + English, checked live against the server (so the page is also the verification), with
+  "Print or save as PDF" (`window.print()`; print styles give one A4 landscape page). The course page
+  links to it once the exam is passed. `/certificates` lets anyone look up a code.
+- **Course facts** (admin → course): Format, Duration, What you'll learn (one point per line) and
+  Next start date; shown on the course page with the price. Empty start date = "On request".
 
 ## Courses, tests and admin (vitrix-api)
 
@@ -200,20 +233,19 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
 
 1. ~~Deploy identity-api~~ done (Render + Neon). Consider Render's paid plan so it never sleeps.
 2. ~~Deploy vitrix-api~~ done. Assign the editor role to content staff (admin → Team).
-3. Course purchase: a "Buy" button on each course → payment (e.g. Stripe Checkout or a Georgian
+3. Own domain (e.g. vitrix.ge) and Render's paid plan, then course purchase: a "Buy" button on each course → payment (e.g. Stripe Checkout or a Georgian
    bank gateway such as TBC / Bank of Georgia) → webhook writes the enrollment. Payments need a
    server-side piece (provider function / edge function); never trust the browser to mark a
    course as paid.
-4. ~~Language switch~~ done. Certificates (PDF) after passing the final exam; account emails
-   (identity-api) are still English only — send them in Georgian + English.
-5. Connect Apply and Contact forms to a real inbox (they currently only show a confirmation).
+4. ~~Language switch~~, ~~certificates~~ and ~~bilingual account emails~~ done.
+5. ~~Apply and Contact inbox~~ done (admin → Applications, emails to the team).
 6. ~~Password reset and email verification~~ done (Brevo). With a domain (e.g. vitrix.ge),
    verify the domain in Brevo and send from e.g. `no-reply@vitrix.ge` for better delivery
    (only `Email__From` changes).
 7. ~~Set `PRIVACY_CONTACT_EMAIL`~~ done: `vitrix.contact1@gmail.com`.
 8. ~~Translate the admin panel~~ done. Admins should fill the KA fields of the six built-in
    courses (until then the site shows its own Georgian for them).
-9. Self-host Montserrat and Manrope too (Georgian FiraGO already is): Google Fonts still receives
-   visitors' IP addresses for the Latin fonts.
+9. ~~Self-host Montserrat and Manrope~~ done. ~~Search/sharing tags and sitemap~~ done.
+10. Weekly encrypted database backups run from vitrix-api's GitHub Actions ("Database backup").
 
 Update this file when you finish a roadmap item or change how something works.

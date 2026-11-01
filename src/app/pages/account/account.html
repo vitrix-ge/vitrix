@@ -13,6 +13,26 @@
       <a class="btn btn-red account-cta" routerLink="/admin">{{ 'Open the admin panel' | t }}</a>
     }
 
+    @if (resume(); as r) {
+      <a
+        class="resume-card"
+        [routerLink]="['/courses', r.course.slug]"
+        [queryParams]="{ continue: 1 }"
+      >
+        <img [src]="r.course.imageUrl" alt="" />
+        <div>
+          <p class="eyebrow">{{ 'Continue where you left off' | t }}</p>
+          <h2>{{ r.nextLessonTitle | tr }}</h2>
+          <p class="lesson-meta">
+            {{ r.course.code | t }} · {{ r.course.title | tr }} ·
+            {{ '{p}% done' | t: { p: percent(r) } }}
+          </p>
+          <div class="progress"><span [style.width.%]="percent(r)"></span></div>
+        </div>
+        <span class="btn btn-red">{{ 'Continue' | t }}</span>
+      </a>
+    }
+
     <h2>{{ 'My courses' | t }}</h2>
     @if (loadingCourses()) {
       <p class="lesson-meta">{{ 'Loading your courses…' | t }}</p>
@@ -56,6 +76,43 @@
         >
         <a class="btn btn-ghost" routerLink="/apply">{{ 'Apply' | t }}</a>
       </div>
+    }
+
+    @if (certificates().length) {
+      <h2 class="block-title">{{ 'My certificates' | t }}</h2>
+      <div class="cert-list">
+        @for (cert of certificates(); track cert.code) {
+          <a class="cert-item" [routerLink]="['/certificates', cert.code]">
+            <span class="cert-badge" aria-hidden="true">✓</span>
+            <div>
+              <strong>{{ cert.courseTitle | tr }}</strong>
+              <span class="lesson-meta"
+                >{{ cert.code }} · {{ cert.issuedAt | date: 'dd.MM.y' }} ·
+                {{ cert.scorePercent }}%</span
+              >
+            </div>
+            <span class="go" aria-hidden="true">→</span>
+          </a>
+        }
+      </div>
+    }
+
+    @if (applications().length) {
+      <h2 class="block-title">{{ 'My applications' | t }}</h2>
+      <ul class="app-list">
+        @for (a of applications(); track a.id) {
+          <li>
+            <div>
+              <strong>{{ a.courseCode | t }}</strong>
+              @if (a.courseTitle) {
+                — {{ a.courseTitle | tr }}
+              }
+              <span class="lesson-meta">{{ a.createdAt | date: 'dd.MM.y' }}</span>
+            </div>
+            <span [class]="'tag status-' + a.status">{{ statusLabel(a.status) | t }}</span>
+          </li>
+        }
+      </ul>
     }
 
     @if (results().length) {

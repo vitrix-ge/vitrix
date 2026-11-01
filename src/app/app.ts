@@ -1,13 +1,13 @@
 import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { SiteFooter } from './layout/site-footer';
 import { SiteHeader } from './layout/site-header';
 import { Auth } from './auth';
 import { Notify } from './notify';
-import { TPipe, syncDocumentLang, t } from './content/i18n';
+import { TPipe, pageTitleOverride, syncDocumentLang, t } from './content/i18n';
 import { syncDocumentTheme } from './theme';
 
 @Component({
@@ -33,9 +33,18 @@ export class App {
     // Browser tab title in the current language (updates when the language changes too).
     const pageTitle = signal<string | undefined>(undefined);
     effect(() => {
+      const custom = pageTitleOverride();
       const page = pageTitle();
-      title.setTitle(page ? `${t(page)} · VITRIX` : 'VITRIX');
+      title.setTitle(custom ? `${custom} · VITRIX` : page ? `${t(page)} · VITRIX` : 'VITRIX');
     });
+
+    // A page's own title belongs to that page only; clear it before the next page starts.
+    router.events
+      .pipe(
+        filter((event) => event instanceof NavigationStart),
+        takeUntilDestroyed(destroyRef),
+      )
+      .subscribe(() => pageTitleOverride.set(null));
 
     router.events
       .pipe(

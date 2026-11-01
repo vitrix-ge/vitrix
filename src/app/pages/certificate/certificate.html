@@ -1,0 +1,111 @@
+@if (cert(); as c) {
+  <section class="page-section cert-page">
+    <div class="wrap">
+      <div class="cert-toolbar no-print">
+        <p class="verified" role="status">
+          <span aria-hidden="true">✓</span>
+          {{ 'Verified: this certificate was issued by VITRIX.' | t }}
+        </p>
+        <button type="button" class="btn btn-red" (click)="print()">
+          {{ 'Print or save as PDF' | t }}
+        </button>
+      </div>
+
+      <article class="certificate" lang="ka">
+        <div class="cert-brand">
+          <app-mark class="cert-mark" />
+          <span class="wordmark">VITRI<span class="x">X</span></span>
+          <span class="cert-sub">Emergency Medicine Training Institute · Tbilisi</span>
+        </div>
+
+        <h1 class="cert-title">
+          <span>სერტიფიკატი</span>
+          <span class="en" lang="en">Certificate of completion</span>
+        </h1>
+
+        <p class="cert-small">
+          ადასტურებს, რომ <span class="en" lang="en">/ This certifies that</span>
+        </p>
+        <p class="cert-name">{{ c.name }}</p>
+        <p class="cert-small">
+          წარმატებით დაასრულა კურსი
+          <span class="en" lang="en">/ has successfully completed</span>
+        </p>
+        <p class="cert-course">
+          <span class="code">{{ c.courseCode }}</span>
+          <span>{{ titleKa() }}</span>
+          @if (titleEn() && titleEn() !== titleKa()) {
+            <span class="en" lang="en">{{ titleEn() }}</span>
+          }
+        </p>
+
+        <dl class="cert-meta">
+          <div>
+            <dt>შედეგი <span lang="en">Score</span></dt>
+            <dd>{{ c.scorePercent }}%</dd>
+          </div>
+          <div>
+            <dt>თარიღი <span lang="en">Date</span></dt>
+            <dd>{{ c.issuedAt | date: 'dd.MM.y' }}</dd>
+          </div>
+          <div>
+            <dt>კოდი <span lang="en">Code</span></dt>
+            <dd class="mono">{{ c.code }}</dd>
+          </div>
+        </dl>
+
+        <p class="cert-verify">
+          შემოწმება <span lang="en">/ Verify:</span>&nbsp;<span class="mono">{{
+            verifyUrl()
+          }}</span>
+        </p>
+      </article>
+
+      <p class="lesson-meta no-print cert-hint">
+        {{
+          'Anyone with this code can check the certificate on this page. In the print dialog choose "Save as PDF" and landscape.'
+            | t
+        }}
+      </p>
+    </div>
+  </section>
+} @else {
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">{{ 'Certificates' | t }}</p>
+      <h1>{{ 'Check a certificate' | t }}</h1>
+      <p class="lede">
+        {{ 'Enter the code printed on a VITRIX certificate, e.g. VX-7K2M-9QPA.' | t }}
+      </p>
+    </div>
+  </section>
+  <section class="page-section">
+    <div class="wrap narrow">
+      <form class="form cert-lookup" (submit)="$event.preventDefault(); check()">
+        <label>
+          {{ 'Certificate code' | t }}
+          <input
+            type="text"
+            [value]="lookup()"
+            (input)="lookup.set($any($event.target).value)"
+            placeholder="VX-XXXX-XXXX"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+          />
+        </label>
+        @if (loading()) {
+          <p class="lesson-meta">{{ 'Checking…' | t }}</p>
+        } @else if (error()) {
+          <p class="error" role="alert">{{ error() | t }}</p>
+        }
+        <button class="btn btn-red" type="submit" [disabled]="loading()">
+          {{ 'Check' | t }}
+        </button>
+      </form>
+      <p class="lesson-meta">
+        <a routerLink="/courses">{{ 'Browse courses' | t }}</a>
+      </p>
+    </div>
+  </section>
+}
