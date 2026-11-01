@@ -1,10 +1,12 @@
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow">Our programs</p>
-    <h1>Courses that make a difference</h1>
+    <p class="eyebrow">{{ 'Our programs' | t }}</p>
+    <h1>{{ 'Courses that make a difference' | t }}</h1>
     <p class="lede">
-      Resuscitation, trauma, critical care, and scenario-based simulation. Each course is built to
-      be practiced, not only studied.
+      {{
+        'Resuscitation, trauma, critical care, and scenario-based simulation. Each course is built to be practiced, not only studied.'
+          | t
+      }}
     </p>
   </div>
 </section>
@@ -13,16 +15,16 @@
   <div class="wrap course-list">
     @for (course of courses(); track course.id) {
       <article class="course-row" [id]="course.slug">
-        <img [src]="course.imageUrl" [alt]="course.code + ' scenario'" />
+        <img [src]="course.imageUrl" [alt]="'{code} training' | t: { code: course.code }" />
         <div>
-          <p class="eyebrow">{{ course.code }}</p>
+          <p class="eyebrow">{{ course.code | t }}</p>
           <h2>{{ course.title | tr }}</h2>
           <p>{{ (course.description | tr) || (course.summary | tr) }}</p>
           <div class="form-actions">
             <a class="btn btn-ghost" [routerLink]="['/courses', course.slug]">
-              Course details <span aria-hidden="true">→</span>
+              {{ 'Course details' | t }} <span aria-hidden="true">→</span>
             </a>
-            <a class="btn btn-ghost" routerLink="/apply">Apply now</a>
+            <a class="btn btn-ghost" routerLink="/apply">{{ 'Apply now' | t }}</a>
           </div>
         </div>
       </article>

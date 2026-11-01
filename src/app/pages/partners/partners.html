@@ -1,10 +1,12 @@
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow">A global vision</p>
-    <h1>Partners</h1>
+    <p class="eyebrow">{{ 'A global vision' | t }}</p>
+    <h1>{{ 'Partners' | t }}</h1>
     <p class="lede">
-      VITRIX trains with hospitals, EMS agencies, universities, and simulation centers that want
-      teams ready for the critical moment.
+      {{
+        'VITRIX trains with hospitals, EMS agencies, universities, and simulation centers that want teams ready for the critical moment.'
+          | t
+      }}
     </p>
   </div>
 </section>
@@ -13,12 +15,14 @@
   <div class="wrap card-grid">
     @for (partner of partners; track partner.title) {
       <article class="info-card">
-        <h2>{{ partner.title }}</h2>
-        <p>{{ partner.text }}</p>
+        <h2>{{ partner.title | t }}</h2>
+        <p>{{ partner.text | t }}</p>
       </article>
     }
   </div>
   <div class="wrap faculty-cta">
-    <a class="btn btn-ghost" routerLink="/contact">Start a partnership <span aria-hidden="true">→</span></a>
+    <a class="btn btn-ghost" routerLink="/contact"
+      >{{ 'Start a partnership' | t }} <span aria-hidden="true">→</span></a
+    >
   </div>
 </section>

@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuizRunner } from './quiz-runner';
+import { TPipe } from '../../content/i18n';
 
 /** /tests/:id — a course's final exam (lesson quizzes run inline on the course page). */
 @Component({
   selector: 'app-quiz',
-  imports: [QuizRunner],
+  imports: [QuizRunner, TPipe],
   templateUrl: './quiz.html',
 })
 export class QuizPage {

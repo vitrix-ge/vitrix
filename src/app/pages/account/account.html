@@ -1,6 +1,6 @@
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow">My account</p>
+    <p class="eyebrow">{{ 'My account' | t }}</p>
     <h1>{{ user()?.name }}</h1>
     <p class="lede">{{ user()?.email }}</p>
   </div>
@@ -10,25 +10,32 @@
   <div class="wrap">
     <app-confirm-email-notice reason="Confirm it to open your courses and send applications." />
     @if (staff()) {
-      <a class="btn btn-red account-cta" routerLink="/admin">Open the admin panel</a>
+      <a class="btn btn-red account-cta" routerLink="/admin">{{ 'Open the admin panel' | t }}</a>
     }
 
-    <h2>My courses</h2>
+    <h2>{{ 'My courses' | t }}</h2>
     @if (loadingCourses()) {
-      <p class="lesson-meta">Loading your courses…</p>
+      <p class="lesson-meta">{{ 'Loading your courses…' | t }}</p>
     } @else if (myCourses().length) {
       <div class="my-courses">
         @for (mc of myCourses(); track mc.course.id) {
           <a class="my-course" [routerLink]="['/courses', mc.course.slug]">
             <img [src]="mc.course.imageUrl" alt="" />
             <div>
-              <p class="eyebrow">{{ mc.course.code }}</p>
+              <p class="eyebrow">{{ mc.course.code | t }}</p>
               <h3>{{ mc.course.title | tr }}</h3>
               <div class="progress"><span [style.width.%]="percent(mc)"></span></div>
               <p class="lesson-meta">
-                {{ mc.lessonsCompleted }}/{{ mc.lessonsTotal }} lessons
+                {{
+                  '{done}/{total} lessons'
+                    | t: { done: mc.lessonsCompleted, total: mc.lessonsTotal }
+                }}
                 @if (mc.quizzesTotal) {
-                  · {{ mc.quizzesPassed }}/{{ mc.quizzesTotal }} tests passed
+                  ·
+                  {{
+                    '{passed}/{total} exams passed'
+                      | t: { passed: mc.quizzesPassed, total: mc.quizzesTotal }
+                  }}
                 }
               </p>
             </div>
@@ -38,28 +45,30 @@
       </div>
     } @else {
       <p>
-        You are not enrolled in a course yet. Apply for a program and our team will add you; it then
-        appears here with your lessons and tests.
+        {{
+          'You are not enrolled in a course yet. Apply for a program and our team will add you; it then appears here with your lessons and tests.'
+            | t
+        }}
       </p>
       <div class="form-actions">
         <a class="btn btn-ghost" routerLink="/courses"
-          >Browse courses <span aria-hidden="true">→</span></a
+          >{{ 'Browse courses' | t }} <span aria-hidden="true">→</span></a
         >
-        <a class="btn btn-ghost" routerLink="/apply">Apply</a>
+        <a class="btn btn-ghost" routerLink="/apply">{{ 'Apply' | t }}</a>
       </div>
     }
 
     @if (results().length) {
-      <h2 class="block-title">My test results</h2>
+      <h2 class="block-title">{{ 'My test results' | t }}</h2>
       <div class="table-wrap">
         <table class="data-table">
           <thead>
             <tr>
-              <th>Test</th>
-              <th>Course</th>
-              <th>Date</th>
-              <th>Score</th>
-              <th>Result</th>
+              <th>{{ 'Test' | t }}</th>
+              <th>{{ 'Course' | t }}</th>
+              <th>{{ 'Date' | t }}</th>
+              <th>{{ 'Score' | t }}</th>
+              <th>{{ 'Result' | t }}</th>
             </tr>
           </thead>
           <tbody>
@@ -67,11 +76,11 @@
               <tr>
                 <td>{{ r.quizTitle | tr }}</td>
                 <td>{{ r.courseTitle | tr }}</td>
-                <td>{{ r.submittedAt | date: 'd MMM y, HH:mm' }}</td>
+                <td>{{ r.submittedAt | date: 'dd.MM.y, HH:mm' }}</td>
                 <td>{{ r.scorePercent }}%</td>
                 <td>
                   <span class="tag" [class.tag-ok]="r.passed">{{
-                    r.passed ? 'Passed' : 'Not passed'
+                    (r.passed ? 'Passed' : 'Not passed') | t
                   }}</span>
                 </td>
               </tr>
@@ -81,18 +90,23 @@
       </div>
     }
 
-    <button type="button" class="btn btn-ghost account-cta" (click)="logout()">Log out</button>
+    <button type="button" class="btn btn-ghost account-cta" (click)="logout()">
+      {{ 'Log out' | t }}
+    </button>
 
     <div class="danger-zone">
-      <h2>Delete account</h2>
+      <h2>{{ 'Delete account' | t }}</h2>
       <p>
-        Permanently removes your name, email, password and sign-in records. This cannot be undone.
-        See the <a routerLink="/privacy">privacy policy</a> for what we store.
+        {{
+          'Permanently removes your name, email, password and sign-in records. This cannot be undone.'
+            | t
+        }}
+        <a routerLink="/privacy">{{ 'What we store' | t }}</a>
       </p>
 
       @if (!confirmingDelete()) {
         <button type="button" class="btn btn-danger" (click)="startDelete()">
-          Delete my account
+          {{ 'Delete my account' | t }}
         </button>
       } @else {
         <form class="form" [formGroup]="deleteForm" (ngSubmit)="deleteAccount()" novalidate>
@@ -100,17 +114,17 @@
             <div class="delete-warning" role="alert">
               <p>
                 <strong>
-                  You are enrolled in {{ myCourses().length }}
-                  {{ myCourses().length === 1 ? 'course' : 'courses' }}:
+                  {{ 'You are enrolled in these courses:' | t }}
                 </strong>
                 @for (mc of myCourses(); track mc.course.id; let last = $last) {
                   {{ mc.course.title | tr }}{{ last ? '.' : ', ' }}
                 }
               </p>
               <p>
-                Deleting your account removes your access to
-                {{ myCourses().length === 1 ? 'this course' : 'these courses' }}, your lesson
-                progress and your test results. This cannot be undone.
+                {{
+                  'Deleting your account removes your access to them, your lesson progress and your test results. This cannot be undone.'
+                    | t
+                }}
               </p>
               <label class="consent">
                 <input
@@ -118,13 +132,13 @@
                   [checked]="loseCoursesOk()"
                   (change)="loseCoursesOk.set($any($event.target).checked)"
                 />
-                <span>I understand that I will lose my courses</span>
+                <span>{{ 'I understand that I will lose my courses' | t }}</span>
               </label>
             </div>
           }
           @if (user()?.hasPassword === false) {
             <label>
-              Type your email address to confirm
+              {{ 'Type your email address to confirm' | t }}
               <input
                 type="email"
                 formControlName="password"
@@ -132,20 +146,20 @@
                 [placeholder]="user()?.email"
               />
               @if (deleteForm.controls.password.invalid && deleteForm.controls.password.touched) {
-                <span class="error">Type your email address.</span>
+                <span class="error">{{ 'Type your email address.' | t }}</span>
               }
             </label>
           } @else {
             <label>
-              Confirm with your password
+              {{ 'Confirm with your password' | t }}
               <input type="password" formControlName="password" autocomplete="current-password" />
               @if (deleteForm.controls.password.invalid && deleteForm.controls.password.touched) {
-                <span class="error">Enter your password.</span>
+                <span class="error">{{ 'Enter your password.' | t }}</span>
               }
             </label>
           }
           @if (deleteError()) {
-            <p class="error" role="alert">{{ deleteError() }}</p>
+            <p class="error" role="alert">{{ deleteError() | t }}</p>
           }
           <div class="form-actions">
             <button
@@ -153,9 +167,11 @@
               type="submit"
               [disabled]="deleting() || (myCourses().length > 0 && !loseCoursesOk())"
             >
-              {{ deleting() ? 'Deleting…' : 'Delete permanently' }}
+              {{ (deleting() ? 'Deleting…' : 'Delete permanently') | t }}
             </button>
-            <button class="btn btn-ghost" type="button" (click)="cancelDelete()">Cancel</button>
+            <button class="btn btn-ghost" type="button" (click)="cancelDelete()">
+              {{ 'Cancel' | t }}
+            </button>
           </div>
         </form>
       }

@@ -1,115 +1,239 @@
-<section class="page-hero">
-  <div class="wrap">
-    <p class="eyebrow">Your data</p>
-    <h1>Privacy</h1>
-    <p class="lede">
-      What VITRIX stores about you, why, where it is kept, and how to delete it. Last updated
-      {{ updated }}.
-    </p>
-  </div>
-</section>
-
-<section class="page-section">
-  <div class="wrap prose">
-    <h2>Who we are</h2>
-    <p>
-      VITRIX is an emergency-medicine training institute in Tbilisi, Georgia. We are responsible for
-      the personal data described on this page.
-    </p>
-
-    <h2>What we collect</h2>
-    <ul>
-      <li>
-        <strong>Your account:</strong> name, email address and password. The password is stored only
-        as a secure one-way hash; nobody at VITRIX can read it.
-      </li>
-      <li>
-        <strong>Your consent:</strong> the date and time you accepted this policy when creating your
-        account.
-      </li>
-      <li>
-        <strong>Sign-in tokens:</strong> when you log in, your browser keeps short-lived sign-in
-        tokens (in its local storage) so you stay signed in. Logging out removes them.
-      </li>
-      <li>
-        <strong>Your learning progress:</strong> the courses you are enrolled in, the lessons you
-        have completed, and your test answers, scores and dates.
-      </li>
-      <li>
-        <strong>Apply and Contact forms:</strong> at the moment these are not sent to us or stored
-        anywhere; they only show a confirmation in your browser.
-      </li>
-    </ul>
-    <p>
-      We do not use advertising, tracking cookies or analytics, and we never sell or share your data
-      with third parties for marketing.
-    </p>
-
-    <h2>Why we use it</h2>
-    <p>
-      To create and run your account, let you apply for programs and, later, access the courses you
-      enrol in. We process it because you asked for an account and agreed to this policy.
-    </p>
-
-    <h2>Where it is kept</h2>
-    <ul>
-      <li>
-        Accounts are handled by our sign-in server on <strong>Render</strong> and stored in a
-        <strong>Neon</strong> database, both in Frankfurt, Germany (EU).
-      </li>
-      <li>
-        The website itself is served by <strong>GitHub Pages</strong>. Like any web host, GitHub
-        processes your IP address to deliver the pages and keep them secure.
-      </li>
-      <li>
-        If you choose <strong>Continue with Google</strong>, Google tells us your name, email address
-        and a Google account id, which we store with your VITRIX account; we never see your Google
-        password. Google's sign-in script is loaded only on the login page and Google receives your
-        IP address when it loads.
-      </li>
-      <li>
-        Account emails (confirming your address, resetting your password) are sent through
-        <strong>Gmail</strong> (Google), which processes your email address and the message to
-        deliver it.
-      </li>
-      <li>
-        Fonts are loaded from <strong>Google Fonts</strong>, which receives your IP address when the
-        page loads.
-      </li>
-      <li>
-        Lesson videos are played from <strong>YouTube</strong> in privacy-enhanced mode
-        (youtube-nocookie.com): YouTube receives your IP address when a video loads and sets cookies
-        only once you press play.
-      </li>
-    </ul>
-    <p>
-      All connections use encryption (HTTPS). After several wrong passwords an account is locked for
-      15 minutes to stop password guessing.
-    </p>
-
-    <h2>How long we keep it</h2>
-    <p>
-      Until you delete your account. Expired sign-in tokens are removed automatically within about
-      an hour of expiring.
-    </p>
-
-    <h2>Your rights</h2>
-    <p>
-      You can see your details on <a routerLink="/account">My account</a>, and
-      <strong>delete your account at any time</strong> there: this removes your name, email,
-      password and sign-in records permanently. You can also ask us for a copy of your data, to
-      correct it, or to stop processing it. Under Georgia's Law on Personal Data Protection you may
-      also complain to the Personal Data Protection Service of Georgia.
-    </p>
-
-    <h2>Contact</h2>
-    @if (contactEmail) {
-      <p>
-        Questions about your data: <a [href]="'mailto:' + contactEmail">{{ contactEmail }}</a
-        >.
+@if (lang() === 'ka') {
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">თქვენი მონაცემები</p>
+      <h1>კონფიდენციალურობა</h1>
+      <p class="lede">
+        რას ინახავს VITRIX თქვენ შესახებ, რატომ, სად და როგორ შეგიძლიათ მისი წაშლა. ბოლო განახლება:
+        {{ updatedKa }}.
       </p>
-    } @else {
-      <p>A contact address for privacy questions will be published here soon.</p>
-    }
-  </div>
-</section>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="wrap prose">
+      <h2>ვინ ვართ</h2>
+      <p>
+        VITRIX არის გადაუდებელი მედიცინის სასწავლო ინსტიტუტი თბილისში, საქართველო. ჩვენ ვართ
+        პასუხისმგებელი ამ გვერდზე აღწერილ პერსონალურ მონაცემებზე.
+      </p>
+
+      <h2>რას ვაგროვებთ</h2>
+      <ul>
+        <li>
+          <strong>თქვენი ანგარიში:</strong> სახელი, ელფოსტა და პაროლი. პაროლი ინახება მხოლოდ დაცული,
+          შეუქცევადი ჰეშის სახით — VITRIX-ში მისი წაკითხვა არავის შეუძლია.
+        </li>
+        <li>
+          <strong>თქვენი თანხმობა:</strong> თარიღი და დრო, როცა ანგარიშის შექმნისას ამ პოლიტიკას
+          დაეთანხმეთ.
+        </li>
+        <li>
+          <strong>შესვლის ტოკენები და პარამეტრები:</strong> შესვლისას თქვენი ბრაუზერი ინახავს
+          მოკლევადიან ტოკენებს (ლოკალურ მეხსიერებაში), რათა ანგარიშში დარჩეთ. გამოსვლა მათ შლის.
+          იქვე ინახება თქვენი არჩეული ენა და ღია/მუქი ფონი — მხოლოდ თქვენს ბრაუზერში.
+        </li>
+        <li>
+          <strong>სწავლის პროგრესი:</strong> კურსები, რომლებზეც ჩარიცხული ხართ, დასრულებული
+          გაკვეთილები, ტესტების პასუხები, ქულები და თარიღები.
+        </li>
+        <li>
+          <strong>განაცხადისა და კონტაქტის ფორმები:</strong> ამ ეტაპზე ისინი არ გვეგზავნება და არსად
+          ინახება; მხოლოდ თქვენს ბრაუზერში აჩვენებს დადასტურებას.
+        </li>
+      </ul>
+      <p>
+        ჩვენ არ ვიყენებთ რეკლამას, თვალთვალის ქუქი-ფაილებს ან ანალიტიკას და არასოდეს ვყიდით ან
+        ვუზიარებთ თქვენს მონაცემებს მესამე მხარეებს მარკეტინგისთვის.
+      </p>
+
+      <h2>რისთვის ვიყენებთ</h2>
+      <p>
+        თქვენი ანგარიშის შესაქმნელად და სამართავად, პროგრამებზე განაცხადისთვის და იმ კურსებზე
+        წვდომისთვის, რომლებზეც ჩაირიცხებით. მონაცემებს ვამუშავებთ, რადგან თქვენ ანგარიში მოითხოვეთ
+        და ამ პოლიტიკას დაეთანხმეთ.
+      </p>
+
+      <h2>სად ინახება</h2>
+      <ul>
+        <li>
+          ანგარიშებს მართავს ჩვენი ავტორიზაციის სერვერი <strong>Render</strong>-ზე, მონაცემები კი
+          ინახება <strong>Neon</strong>-ის მონაცემთა ბაზაში — ორივე ფრანკფურტში, გერმანია
+          (ევროკავშირი).
+        </li>
+        <li>
+          თავად ვებსაიტს ემსახურება <strong>GitHub Pages</strong>. როგორც ნებისმიერი ჰოსტინგი,
+          GitHub ამუშავებს თქვენს IP მისამართს გვერდების მისაწოდებლად და დასაცავად.
+        </li>
+        <li>
+          თუ აირჩევთ <strong>Google-ით გაგრძელებას</strong>, Google გვიგზავნის თქვენს სახელს,
+          ელფოსტას და Google ანგარიშის იდენტიფიკატორს, რომლებსაც თქვენს VITRIX ანგარიშთან ერთად
+          ვინახავთ; თქვენს Google პაროლს ვერასოდეს ვხედავთ. Google-ის შესვლის სკრიპტი მხოლოდ შესვლის
+          გვერდზე იტვირთება და ჩატვირთვისას Google იღებს თქვენს IP მისამართს.
+        </li>
+        <li>
+          ანგარიშის წერილები (ელფოსტის დადასტურება, პაროლის აღდგენა) იგზავნება
+          <strong>Brevo</strong>-ს (ევროკავშირის ელფოსტის სერვისი) მეშვეობით, რომელიც მიწოდებისთვის
+          ამუშავებს თქვენს ელფოსტას და წერილს.
+        </li>
+        <li>
+          შრიფტები იტვირთება <strong>Google Fonts</strong>-იდან, რომელიც გვერდის ჩატვირთვისას იღებს
+          თქვენს IP მისამართს.
+        </li>
+        <li>
+          გაკვეთილების ვიდეოები იკვრება <strong>YouTube</strong>-იდან კონფიდენციალურობის გაძლიერებულ
+          რეჟიმში (youtube-nocookie.com): YouTube ვიდეოს ჩატვირთვისას იღებს თქვენს IP მისამართს,
+          ქუქი- ფაილებს კი მხოლოდ დაკვრის დაჭერის შემდეგ ინახავს.
+        </li>
+      </ul>
+      <p>
+        ყველა კავშირი დაშიფრულია (HTTPS). რამდენიმე არასწორი პაროლის შემდეგ ანგარიში 15 წუთით
+        იბლოკება, რათა პაროლის გამოცნობა შეუძლებელი იყოს.
+      </p>
+
+      <h2>რამდენ ხანს ვინახავთ</h2>
+      <p>
+        სანამ ანგარიშს არ წაშლით. ვადაგასული შესვლის ტოკენები ვადის გასვლიდან დაახლოებით ერთ საათში
+        ავტომატურად იშლება.
+      </p>
+
+      <h2>თქვენი უფლებები</h2>
+      <p>
+        თქვენი მონაცემები შეგიძლიათ ნახოთ <a routerLink="/account">ჩემს ანგარიშში</a> და იქვე
+        <strong>ნებისმიერ დროს წაშალოთ ანგარიში</strong>: ეს სამუდამოდ შლის თქვენს სახელს, ელფოსტას,
+        პაროლსა და შესვლის ჩანაწერებს. ასევე შეგიძლიათ მოითხოვოთ თქვენი მონაცემების ასლი, მათი
+        გასწორება ან დამუშავების შეწყვეტა. საქართველოს კანონის „პერსონალურ მონაცემთა დაცვის შესახებ“
+        თანახმად, შეგიძლიათ მიმართოთ პერსონალურ მონაცემთა დაცვის სამსახურსაც.
+      </p>
+
+      <h2>კონტაქტი</h2>
+      @if (contactEmail) {
+        <p>
+          კითხვები თქვენი მონაცემების შესახებ:
+          <a [href]="'mailto:' + contactEmail">{{ contactEmail }}</a
+          >.
+        </p>
+      } @else {
+        <p>კონფიდენციალურობის საკითხებისთვის საკონტაქტო მისამართი მალე გამოქვეყნდება.</p>
+      }
+    </div>
+  </section>
+} @else {
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">Your data</p>
+      <h1>Privacy</h1>
+      <p class="lede">
+        What VITRIX stores about you, why, where it is kept, and how to delete it. Last updated
+        {{ updated }}.
+      </p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="wrap prose">
+      <h2>Who we are</h2>
+      <p>
+        VITRIX is an emergency-medicine training institute in Tbilisi, Georgia. We are responsible
+        for the personal data described on this page.
+      </p>
+
+      <h2>What we collect</h2>
+      <ul>
+        <li>
+          <strong>Your account:</strong> name, email address and password. The password is stored
+          only as a secure one-way hash; nobody at VITRIX can read it.
+        </li>
+        <li>
+          <strong>Your consent:</strong> the date and time you accepted this policy when creating
+          your account.
+        </li>
+        <li>
+          <strong>Sign-in tokens and settings:</strong> when you log in, your browser keeps
+          short-lived sign-in tokens (in its local storage) so you stay signed in. Logging out
+          removes them. Your language and light/dark choice are also kept there, only in your
+          browser.
+        </li>
+        <li>
+          <strong>Your learning progress:</strong> the courses you are enrolled in, the lessons you
+          have completed, and your test answers, scores and dates.
+        </li>
+        <li>
+          <strong>Apply and Contact forms:</strong> at the moment these are not sent to us or stored
+          anywhere; they only show a confirmation in your browser.
+        </li>
+      </ul>
+      <p>
+        We do not use advertising, tracking cookies or analytics, and we never sell or share your
+        data with third parties for marketing.
+      </p>
+
+      <h2>Why we use it</h2>
+      <p>
+        To create and run your account, let you apply for programs and, later, access the courses
+        you enrol in. We process it because you asked for an account and agreed to this policy.
+      </p>
+
+      <h2>Where it is kept</h2>
+      <ul>
+        <li>
+          Accounts are handled by our sign-in server on <strong>Render</strong> and stored in a
+          <strong>Neon</strong> database, both in Frankfurt, Germany (EU).
+        </li>
+        <li>
+          The website itself is served by <strong>GitHub Pages</strong>. Like any web host, GitHub
+          processes your IP address to deliver the pages and keep them secure.
+        </li>
+        <li>
+          If you choose <strong>Continue with Google</strong>, Google tells us your name, email
+          address and a Google account id, which we store with your VITRIX account; we never see
+          your Google password. Google's sign-in script is loaded only on the login page and Google
+          receives your IP address when it loads.
+        </li>
+        <li>
+          Account emails (confirming your address, resetting your password) are sent through
+          <strong>Brevo</strong> (an EU email service), which processes your email address and the
+          message to deliver it.
+        </li>
+        <li>
+          Fonts are loaded from <strong>Google Fonts</strong>, which receives your IP address when
+          the page loads.
+        </li>
+        <li>
+          Lesson videos are played from <strong>YouTube</strong> in privacy-enhanced mode
+          (youtube-nocookie.com): YouTube receives your IP address when a video loads and sets
+          cookies only once you press play.
+        </li>
+      </ul>
+      <p>
+        All connections use encryption (HTTPS). After several wrong passwords an account is locked
+        for 15 minutes to stop password guessing.
+      </p>
+
+      <h2>How long we keep it</h2>
+      <p>
+        Until you delete your account. Expired sign-in tokens are removed automatically within about
+        an hour of expiring.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>
+        You can see your details on <a routerLink="/account">My account</a>, and
+        <strong>delete your account at any time</strong> there: this removes your name, email,
+        password and sign-in records permanently. You can also ask us for a copy of your data, to
+        correct it, or to stop processing it. Under Georgia's Law on Personal Data Protection you
+        may also complain to the Personal Data Protection Service of Georgia.
+      </p>
+
+      <h2>Contact</h2>
+      @if (contactEmail) {
+        <p>
+          Questions about your data: <a [href]="'mailto:' + contactEmail">{{ contactEmail }}</a
+          >.
+        </p>
+      } @else {
+        <p>A contact address for privacy questions will be published here soon.</p>
+      }
+    </div>
+  </section>
+}

@@ -1,12 +1,17 @@
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow">Student area</p>
+    <p class="eyebrow">{{ 'Student area' | t }}</p>
     <h1>
       {{
-        mode() === 'login' ? 'Log in' : mode() === 'register' ? 'Create account' : 'Reset password'
+        (mode() === 'login'
+          ? 'Log in'
+          : mode() === 'register'
+            ? 'Create account'
+            : 'Reset password'
+        ) | t
       }}
     </h1>
-    <p class="lede">Your account keeps your applications and courses in one place.</p>
+    <p class="lede">{{ 'Your account keeps your applications and courses in one place.' | t }}</p>
   </div>
 </section>
 
@@ -14,30 +19,38 @@
   <div class="wrap split form-split">
     <div>
       @if (mode() === 'forgot') {
-        <h2>Forgot your password?</h2>
+        <h2>{{ 'Forgot your password?' | t }}</h2>
         <p>
-          Enter the email you signed up with and we will send you a link to choose a new password.
+          {{
+            'Enter the email you signed up with and we will send you a link to choose a new password.'
+              | t
+          }}
         </p>
       } @else {
-        <h2>{{ mode() === 'login' ? 'Welcome back' : 'Join VITRIX' }}</h2>
+        <h2>{{ (mode() === 'login' ? 'Welcome back' : 'Join VITRIX') | t }}</h2>
         <p>
-          Sign in to see the programs you are enrolled in, or create an account before you buy your
-          first course.
+          {{
+            'Sign in to see the programs you are enrolled in, or create an account before you buy your first course.'
+              | t
+          }}
         </p>
       }
     </div>
 
     @if (!enabled) {
       <div class="notice" role="status">
-        <h2>Coming soon</h2>
-        <p>Student accounts are not open on this site yet.</p>
+        <h2>{{ 'Coming soon' | t }}</h2>
+        <p>{{ 'Student accounts are not open on this site yet.' | t }}</p>
       </div>
     } @else if (googleSignup(); as g) {
       <div class="form google-consent" role="dialog" aria-labelledby="google-consent-title">
-        <h2 id="google-consent-title">Create your account</h2>
+        <h2 id="google-consent-title">{{ 'Create your account' | t }}</h2>
         <p>
-          There is no VITRIX account for <strong>{{ g.email }}</strong> yet. We will create one with
-          your Google name and email. Your email is already confirmed by Google.
+          {{ 'There is no VITRIX account for' | t }} <strong>{{ g.email }}</strong>
+          {{
+            'yet. We will create one with your Google name and email. Your email is already confirmed by Google.'
+              | t
+          }}
         </p>
         <label class="consent">
           <input
@@ -46,13 +59,13 @@
             (change)="googleConsent.set($any($event.target).checked)"
           />
           <span>
-            I agree to the
-            <a routerLink="/privacy" target="_blank">privacy policy</a>
-            (how VITRIX stores my name and email).
+            {{ 'I agree to the' | t }}
+            <a routerLink="/privacy" target="_blank">{{ 'privacy policy' | t }}</a>
+            {{ '(how VITRIX stores my name and email).' | t }}
           </span>
         </label>
         @if (failure()) {
-          <p class="error" role="alert">{{ failure() }}</p>
+          <p class="error" role="alert">{{ failure() | t }}</p>
         }
         <div class="form-actions">
           <button
@@ -61,21 +74,23 @@
             [disabled]="busy() || !googleConsent()"
             (click)="createWithGoogle()"
           >
-            {{ busy() ? 'Creating account…' : 'Create account' }}
+            {{ (busy() ? 'Creating account…' : 'Create account') | t }}
           </button>
-          <button class="btn btn-ghost" type="button" (click)="cancelGoogle()">Cancel</button>
+          <button class="btn btn-ghost" type="button" (click)="cancelGoogle()">
+            {{ 'Cancel' | t }}
+          </button>
         </div>
       </div>
     } @else {
       <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-        <div class="form-tabs" role="tablist" aria-label="Account">
+        <div class="form-tabs" role="tablist" [attr.aria-label]="'Account' | t">
           <button
             type="button"
             role="tab"
             [attr.aria-selected]="mode() === 'login'"
             (click)="setMode('login')"
           >
-            Log in
+            {{ 'Log in' | t }}
           </button>
           <button
             type="button"
@@ -83,52 +98,56 @@
             [attr.aria-selected]="mode() === 'register'"
             (click)="setMode('register')"
           >
-            Create account
+            {{ 'Create account' | t }}
           </button>
         </div>
 
         @if (googleEnabled && mode() !== 'forgot') {
           <app-google-button (credential)="withGoogle($event)" />
-          <p class="or-divider"><span>or with email</span></p>
+          <p class="or-divider">
+            <span>{{ 'or with email' | t }}</span>
+          </p>
         }
 
         @if (mode() === 'register') {
           <label>
-            Name
+            {{ 'Name' | t }}
             <input type="text" formControlName="name" autocomplete="name" />
             @if (invalid('name')) {
-              <span class="error">Enter your name.</span>
+              <span class="error">{{ 'Enter your name.' | t }}</span>
             }
           </label>
         }
         <label>
-          Email
+          {{ 'Email' | t }}
           <input type="email" formControlName="email" autocomplete="email" />
           @if (invalid('email')) {
-            <span class="error">Enter a valid email.</span>
+            <span class="error">{{ 'Enter a valid email.' | t }}</span>
           }
         </label>
         @if (mode() !== 'forgot') {
           <label>
-            Password
+            {{ 'Password' | t }}
             <input
               type="password"
               formControlName="password"
               [attr.autocomplete]="mode() === 'login' ? 'current-password' : 'new-password'"
             />
             @if (invalid('password')) {
-              <span class="error">Use at least 8 characters.</span>
+              <span class="error">{{ 'Use at least 8 characters.' | t }}</span>
             }
             @if (mode() === 'register') {
               <span class="hint">
-                At least 8 characters, with an uppercase and a lowercase letter, a number and a
-                symbol.
+                {{
+                  'At least 8 characters, with an uppercase and a lowercase letter, a number and a symbol.'
+                    | t
+                }}
               </span>
             }
           </label>
           @if (mode() === 'login') {
             <button class="form-link" type="button" (click)="setMode('forgot')">
-              Forgot password?
+              {{ 'Forgot password?' | t }}
             </button>
           }
         }
@@ -137,13 +156,15 @@
           <label class="consent">
             <input type="checkbox" formControlName="acceptPrivacy" />
             <span>
-              I agree to the
-              <a routerLink="/privacy" target="_blank">privacy policy</a>
-              (how VITRIX stores my name and email).
+              {{ 'I agree to the' | t }}
+              <a routerLink="/privacy" target="_blank">{{ 'privacy policy' | t }}</a>
+              {{ '(how VITRIX stores my name and email).' | t }}
             </span>
           </label>
           @if (invalid('acceptPrivacy')) {
-            <span class="error">Please accept the privacy policy to create an account.</span>
+            <span class="error">{{
+              'Please accept the privacy policy to create an account.' | t
+            }}</span>
           }
           <div class="trap" aria-hidden="true">
             <label>
@@ -154,28 +175,28 @@
         }
 
         @if (success()) {
-          <p class="form-success" role="status">{{ success() }}</p>
+          <p class="form-success" role="status">{{ success() | t }}</p>
         }
         @if (failure()) {
-          <p class="error" role="alert">{{ failure() }}</p>
+          <p class="error" role="alert">{{ failure() | t }}</p>
         }
 
         <button class="btn btn-red" type="submit" [disabled]="busy()">
           @switch (mode()) {
             @case ('login') {
-              {{ busy() ? 'Logging in…' : 'Log in' }}
+              {{ (busy() ? 'Logging in…' : 'Log in') | t }}
             }
             @case ('register') {
-              {{ busy() ? 'Creating account…' : 'Create account' }}
+              {{ (busy() ? 'Creating account…' : 'Create account') | t }}
             }
             @case ('forgot') {
-              {{ busy() ? 'Sending…' : 'Send reset link' }}
+              {{ (busy() ? 'Sending…' : 'Send reset link') | t }}
             }
           }
         </button>
         @if (mode() === 'forgot') {
           <button class="form-link" type="button" (click)="setMode('login')">
-            ← Back to log in
+            ← {{ 'Back to log in' | t }}
           </button>
         }
       </form>

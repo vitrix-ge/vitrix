@@ -1,17 +1,19 @@
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow">Student area</p>
-    <h1>Confirm email</h1>
+    <p class="eyebrow">{{ 'Student area' | t }}</p>
+    <h1>{{ 'Confirm email' | t }}</h1>
   </div>
 </section>
 
 <section class="page-section">
   <div class="wrap split form-split">
     <div>
-      <h2>Your email address</h2>
+      <h2>{{ 'Your email address' | t }}</h2>
       <p>
-        Confirming shows that the address is yours. It opens the courses you are enrolled in and
-        lets you apply for programs.
+        {{
+          'Confirming shows that the address is yours. It opens the courses you are enrolled in and lets you apply for programs.'
+            | t
+        }}
       </p>
     </div>
 
@@ -19,41 +21,46 @@
       @switch (state()) {
         @case ('working') {
           <div class="notice" role="status">
-            <h2>One moment…</h2>
+            <h2>{{ 'One moment…' | t }}</h2>
             <p>
-              Confirming your email address. The first request after a quiet period can take up to a
-              minute.
+              {{
+                'Confirming your email address. The first request after a quiet period can take up to a minute.'
+                  | t
+              }}
             </p>
           </div>
         }
         @case ('done') {
           <div class="notice" role="status">
-            <h2>Email confirmed</h2>
+            <h2>{{ 'Email confirmed' | t }}</h2>
             <p>
-              Thanks, <strong>{{ email() }}</strong> is confirmed. Your courses and applications are
-              open.
+              {{ 'Thanks,' | t }} <strong>{{ email() }}</strong>
+              {{ 'is confirmed. Your courses and applications are open.' | t }}
             </p>
             <div class="form-actions">
               @if (auth.signedIn()) {
-                <a class="btn btn-red" routerLink="/account">Go to my account</a>
+                <a class="btn btn-red" routerLink="/account">{{ 'Go to my account' | t }}</a>
               } @else {
-                <a class="btn btn-red" routerLink="/login" [queryParams]="{ redirect: '/account' }"
-                  >Log in</a
+                <a
+                  class="btn btn-red"
+                  routerLink="/login"
+                  [queryParams]="{ redirect: '/account' }"
+                  >{{ 'Log in' | t }}</a
                 >
               }
-              <a class="btn btn-ghost" routerLink="/courses">Browse courses</a>
+              <a class="btn btn-ghost" routerLink="/courses">{{ 'Browse courses' | t }}</a>
             </div>
           </div>
         }
         @case ('failed') {
           <div class="notice" role="alert">
-            <h2>Not confirmed</h2>
-            <p>{{ error() }}</p>
+            <h2>{{ 'Not confirmed' | t }}</h2>
+            <p>{{ error() | t }}</p>
             @if (!auth.signedIn()) {
-              <p>Log in and you can send yourself a new confirmation email.</p>
-              <a class="btn btn-red" routerLink="/login" [queryParams]="{ redirect: '/account' }"
-                >Log in</a
-              >
+              <p>{{ 'Log in and you can send yourself a new confirmation email.' | t }}</p>
+              <a class="btn btn-red" routerLink="/login" [queryParams]="{ redirect: '/account' }">{{
+                'Log in' | t
+              }}</a>
             }
           </div>
           <app-confirm-email-notice

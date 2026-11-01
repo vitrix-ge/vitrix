@@ -2,7 +2,7 @@ import { Component, DestroyRef, computed, inject, input, output, signal } from '
 import { Notify } from '../../notify';
 import { ContentApi } from '../../content/content.api';
 import { AttemptResult, AttemptStart, Question } from '../../content/content.models';
-import { TrPipe } from '../../content/i18n';
+import { TPipe, TrPipe, t } from '../../content/i18n';
 
 /**
  * Takes one quiz: start → answer → submit → review. Used inline under a lesson (`mode="lesson"`:
@@ -12,7 +12,7 @@ import { TrPipe } from '../../content/i18n';
  */
 @Component({
   selector: 'app-quiz-runner',
-  imports: [TrPipe],
+  imports: [TrPipe, TPipe],
   templateUrl: './quiz-runner.html',
 })
 export class QuizRunner {
@@ -60,7 +60,7 @@ export class QuizRunner {
         this.runTimer(new Date(attempt.expiresAt).getTime());
       }
     } catch (e) {
-      this.error.set(e instanceof Error ? e.message : 'Could not start the quiz.');
+      this.error.set(e instanceof Error ? e.message : t('Could not start the quiz.'));
     } finally {
       this.busy.set(false);
     }
@@ -91,12 +91,12 @@ export class QuizRunner {
     if (!auto && unanswered > 0) {
       this.error.set(
         unanswered === 1
-          ? 'Answer the last question first.'
-          : `${unanswered} questions are still unanswered.`,
+          ? t('Answer the last question first.')
+          : t('{n} questions are still unanswered.', { n: unanswered }),
       );
       if (
         this.mode() === 'lesson' ||
-        !confirm(`${unanswered} question(s) unanswered. Submit anyway?`)
+        !confirm(t('{n} question(s) unanswered. Submit anyway?', { n: unanswered }))
       ) {
         return;
       }
@@ -114,12 +114,12 @@ export class QuizRunner {
       if (this.mode() === 'exam') {
         window.scrollTo({ top: 0 });
         if (result.passed) {
-          this.notify.success(`Passed with ${result.scorePercent}%. Well done!`);
+          this.notify.success(t('Passed with {p}%. Well done!', { p: result.scorePercent }));
         }
       }
       this.finished.emit(result);
     } catch (e) {
-      this.error.set(e instanceof Error ? e.message : 'Could not submit your answers.');
+      this.error.set(e instanceof Error ? e.message : t('Could not submit your answers.'));
     } finally {
       this.busy.set(false);
     }
@@ -135,7 +135,7 @@ export class QuizRunner {
       this.secondsLeft.set(left);
       if (left === 0) {
         clearInterval(this.timer);
-        this.notify.info('Time is up. Your answers were submitted.');
+        this.notify.info(t('Time is up. Your answers were submitted.'));
         void this.submit(true);
       }
     };

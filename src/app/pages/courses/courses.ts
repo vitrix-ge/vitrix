@@ -2,11 +2,11 @@ import { afterNextRender, Component, inject, Injector } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Catalog } from '../../content/catalog';
-import { TrPipe } from '../../content/i18n';
+import { TPipe, TrPipe } from '../../content/i18n';
 
 @Component({
   selector: 'app-courses',
-  imports: [RouterLink, TrPipe],
+  imports: [RouterLink, TrPipe, TPipe],
   templateUrl: './courses.html',
 })
 export class Courses {

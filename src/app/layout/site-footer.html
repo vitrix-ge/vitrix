@@ -1,13 +1,13 @@
 <footer class="site-footer">
   <div class="wrap footer-top">
-    <a class="brand" routerLink="/" aria-label="VITRIX home">
+    <a class="brand" routerLink="/" [attr.aria-label]="'VITRIX home' | t">
       <app-mark />
       <span>VITRIX</span>
     </a>
 
-    <nav aria-label="Footer">
+    <nav [attr.aria-label]="'Footer menu' | t">
       @for (item of nav; track item.path) {
-        <a [routerLink]="item.path">{{ item.label }}</a>
+        <a [routerLink]="item.path">{{ item.label | t }}</a>
       }
     </nav>
 
@@ -32,15 +32,20 @@
         </svg>
       </a>
       <p class="footer-mark">
-        Built for<br />
-        the critical<br />
-        moment
+        {{ 'Built for' | t }}<br />
+        {{ 'the critical' | t }}<br />
+        {{ 'moment' | t }}
       </p>
     </div>
   </div>
 
   <div class="wrap footer-bottom">
-    <p>© {{ year }} VITRIX. All rights reserved. <a routerLink="/privacy">Privacy</a></p>
-    <p>Tbilisi, Georgia <span aria-hidden="true">|</span> A Global Vision.</p>
+    <p>
+      {{ '© {year} VITRIX. All rights reserved.' | t: { year: year } }}
+      <a routerLink="/privacy">{{ 'Privacy' | t }}</a>
+    </p>
+    <p>
+      {{ 'Tbilisi, Georgia' | t }} <span aria-hidden="true">|</span> {{ 'A Global Vision.' | t }}
+    </p>
   </div>
 </footer>
