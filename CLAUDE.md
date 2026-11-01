@@ -137,6 +137,8 @@ contents of `dist/vitrix/browser` (plus a copy of `index.html` as `404.html`, so
 ```bash
 NG_CLI_ANALYTICS=false npx ng build --base-href /vitrix/
 cp dist/vitrix/browser/index.html dist/vitrix/browser/404.html
+# real pages (HTTP 200, not the 404 fallback) for links Google's sign-in setup and search engines check
+for r in privacy login courses; do mkdir -p dist/vitrix/browser/$r && cp dist/vitrix/browser/index.html dist/vitrix/browser/$r/; done
 # then commit the contents of dist/vitrix/browser to the gh-pages branch
 ```
 
