@@ -199,8 +199,8 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
    bank gateway such as TBC / Bank of Georgia) → webhook writes the enrollment. Payments need a
    server-side piece (provider function / edge function); never trust the browser to mark a
    course as paid.
-4. Language switch in the header (sets `lang` to `ka`), certificates (PDF) after passing a test,
-   and removing a student's progress/results in vitrix-api when they delete their account.
+4. ~~Language switch~~ done. Certificates (PDF) after passing the final exam; account emails
+   (identity-api) are still English only — send them in Georgian + English.
 5. Connect Apply and Contact forms to a real inbox (they currently only show a confirmation).
 6. ~~Password reset and email verification~~ done (Brevo). With a domain (e.g. vitrix.ge),
    verify the domain in Brevo and send from e.g. `no-reply@vitrix.ge` for better delivery
