@@ -96,7 +96,11 @@ export class Account {
     this.deleteError.set('');
     try {
       // Also remove course progress, results and enrollments (vitrix-api) — see the Privacy page.
-      await this.auth.deleteAccount(this.deleteForm.getRawValue().password, () =>
+      const value = this.deleteForm.getRawValue().password;
+      // Google-only accounts have no password: they confirm by typing their email.
+      const confirmation =
+        this.user()?.hasPassword === false ? { email: value } : { password: value };
+      await this.auth.deleteAccount(confirmation, () =>
         CONTENT_ENABLED ? this.api.deleteMyData() : Promise.resolve(),
       );
       this.notify.info('Your account and personal data have been deleted.');

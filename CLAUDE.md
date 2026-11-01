@@ -99,6 +99,16 @@ Render's free plan blocks SMTP ports, so Gmail SMTP does not work there. Free: 3
   the email and unlocks the account; the page then logs in with the new password.
 - Locally (no SMTP settings) identity-api writes the links to its console log instead of sending.
 
+**Continue with Google** (`google-button.ts`, shown when `GOOGLE_CLIENT_ID` in `auth.config.ts` is
+set): Google's script (loaded only on the login page) returns an ID token → `Auth.loginWithGoogle`
+posts it to `/connect/token` with grant `urn:vitrix:params:oauth:grant-type:google`. No account yet →
+the server answers `consent_required` and the login page shows a "Create your account" step with the
+privacy checkbox, then sends the token again with `accept_privacy=true`. Google accounts are confirmed
+and have no password (`Member.hasPassword` false): "Delete account" asks for the email instead, and
+"Forgot password" can add a password. Google Cloud OAuth client (Web): authorized JavaScript origins
+`https://vitrix-ge.github.io` and `http://localhost:4200`; the same client id is `Google__ClientId`
+on Render.
+
 Pages:
 
 - `/login` — two tabs, **Log in** and **Create account**. Creating an account signs the member
