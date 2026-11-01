@@ -22,7 +22,8 @@ export const CLIENT_ID = 'vitrix';
  * "Continue with Google": the OAuth client id from Google Cloud (public; the same id is set on
  * identity-api as Google:ClientId). '' = Google button hidden.
  */
-export const GOOGLE_CLIENT_ID: string = '';
+export const GOOGLE_CLIENT_ID: string =
+  '837354581289-5lr4palm86u3i9p0460av6mm3q2ii9ns.apps.googleusercontent.com';
 
 /** The identity server's grant type for Google ID tokens (identity-api: External/GoogleSignIn.cs). */
 export const GOOGLE_GRANT = 'urn:vitrix:params:oauth:grant-type:google';
