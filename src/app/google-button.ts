@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { DestroyRef } from '@angular/core';
 import { GOOGLE_CLIENT_ID } from './auth.config';
+import { TPipe, lang } from './content/i18n';
 
 /** Minimal typing for Google Identity Services (https://accounts.google.com/gsi/client). */
 interface GoogleIdentity {
@@ -62,10 +63,13 @@ function loadGoogle(): Promise<GoogleIdentity> {
  */
 @Component({
   selector: 'app-google-button',
+  imports: [TPipe],
   template: `
     <div #host class="google-btn"></div>
     @if (failed()) {
-      <p class="hint">Google sign-in could not load. Check your connection or use your email.</p>
+      <p class="hint">
+        {{ 'Google sign-in could not load. Check your connection or use your email.' | t }}
+      </p>
     }
   `,
 })
@@ -98,7 +102,7 @@ export class GoogleButton {
             text: 'continue_with',
             shape: 'rectangular',
             logo_alignment: 'center',
-            locale: 'en',
+            locale: lang() === 'ka' ? 'ka' : 'en',
             width: Math.max(200, Math.min(400, el.clientWidth || 320)),
           });
           destroyRef.onDestroy(() => google.accounts.id.cancel());

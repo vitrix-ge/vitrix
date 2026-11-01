@@ -5,17 +5,17 @@
   <div class="wrap hero-layout">
     <div class="hero-copy">
       <p class="kicker">
-        Real scenarios.<br />
-        Real skills.<br />
-        Real impact.
+        {{ 'Real scenarios.' | t }}<br />
+        {{ 'Real skills.' | t }}<br />
+        {{ 'Real impact.' | t }}
       </p>
       <h1>
-        Prepare<br />
-        Perform<br />
-        Save lives
+        {{ 'Prepare' | t }}<br />
+        {{ 'Perform' | t }}<br />
+        {{ 'Save lives' | t }}
       </h1>
       <a class="btn btn-red" routerLink="/courses">
-        Explore our courses
+        {{ 'Explore our courses' | t }}
         <span aria-hidden="true">→</span>
       </a>
     </div>
@@ -24,18 +24,18 @@
       <app-mark class="hero-mark" />
       <p class="wordmark">VITRI<span>X</span></p>
       <p class="institute">
-        Institute of Emergency Medicine,<br />
-        Simulation &amp; Human Performance
+        {{ 'Institute of Emergency Medicine,' | t }}<br />
+        {{ 'Simulation & Human Performance' | t }}
       </p>
-      <p class="tagline">Built for the critical moment</p>
+      <p class="tagline">{{ 'Built for the critical moment' | t }}</p>
     </div>
 
     <div class="hero-side">
       <p class="side-kicker">
-        People<br />
-        Skills<br />
-        Systems<br />
-        Better outcomes
+        {{ 'People' | t }}<br />
+        {{ 'Skills' | t }}<br />
+        {{ 'Systems' | t }}<br />
+        {{ 'Better outcomes' | t }}
       </p>
       <div class="monitor" aria-hidden="true">
         <svg viewBox="0 0 220 70" class="ecg">
@@ -48,15 +48,15 @@
         </ol>
       </div>
       <p class="side-note">
-        More than<br />
-        education —<br />
-        a safer tomorrow.
+        {{ 'More than' | t }}<br />
+        {{ 'education —' | t }}<br />
+        {{ 'a safer tomorrow.' | t }}
       </p>
     </div>
   </div>
 </section>
 
-<section class="features" aria-label="How VITRIX trains">
+<section class="features" [attr.aria-label]="'How VITRIX trains' | t">
   @for (pillar of pillars; track pillar.title; let i = $index) {
     <article>
       <div class="feature-icon" aria-hidden="true">
@@ -92,10 +92,10 @@
           }
         }
       </div>
-      <h2>{{ pillar.title }}</h2>
+      <h2>{{ pillar.title | t }}</h2>
       <p>
         @for (line of pillar.lines; track line) {
-          {{ line }}<br />
+          {{ line | t }}<br />
         }
       </p>
     </article>
@@ -105,34 +105,40 @@
 <section class="reality">
   <div class="wrap reality-grid">
     <div>
-      <h2>Train<br />for reality</h2>
+      <h2>{{ 'Train' | t }}<br />{{ 'for reality' | t }}</h2>
       <p>
-        VITRIX is a modern education and simulation institute focused on emergency medicine, critical
-        care and human performance.
+        {{
+          'VITRIX is a modern education and simulation institute focused on emergency medicine, critical care and human performance.'
+            | t
+        }}
       </p>
       <p>
-        We bridge knowledge, hands-on training and real-world experience to prepare healthcare
-        professionals for the moments that matter.
+        {{
+          'We bridge knowledge, hands-on training and real-world experience to prepare healthcare professionals for the moments that matter.'
+            | t
+        }}
       </p>
       <a class="btn btn-ghost" routerLink="/about">
-        About Vitrix
+        {{ 'About VITRIX' | t }}
         <span aria-hidden="true">→</span>
       </a>
     </div>
     <figure>
       <img
         src="media/clinical.jpg"
-        alt="Clinician in surgical cap and mask working at the bedside beside a patient monitor"
+        [alt]="
+          'Clinician in surgical cap and mask working at the bedside beside a patient monitor' | t
+        "
       />
     </figure>
   </div>
 </section>
 
-<section class="stats" aria-label="Institute figures">
+<section class="stats" [attr.aria-label]="'Institute figures' | t">
   @for (stat of stats; track stat.label) {
     <article>
-      <strong>{{ stat.value }}</strong>
-      <span>{{ stat.label }}</span>
+      <strong>{{ stat.value | t }}</strong>
+      <span>{{ stat.label | t }}</span>
     </article>
   }
 </section>
@@ -141,11 +147,11 @@
   <div class="wrap">
     <div class="programs-head">
       <div>
-        <p class="eyebrow">Our programs</p>
-        <h2>Courses that make a difference</h2>
+        <p class="eyebrow">{{ 'Our programs' | t }}</p>
+        <h2>{{ 'Courses that make a difference' | t }}</h2>
       </div>
       <a class="btn btn-ghost" routerLink="/courses">
-        View all courses
+        {{ 'View all courses' | t }}
         <span aria-hidden="true">→</span>
       </a>
     </div>
@@ -153,10 +159,10 @@
     <div class="course-grid">
       @for (course of courses; track course.id) {
         <a class="course-card" [routerLink]="['/courses']" [fragment]="course.id">
-          <img [src]="course.image" [alt]="course.code + ' training'" />
+          <img [src]="course.image" [alt]="'{code} training' | t: { code: course.code }" />
           <div>
-            <h3>{{ course.code }}</h3>
-            <p>{{ course.name }}</p>
+            <h3>{{ course.code | t }}</h3>
+            <p>{{ course.name | t }}</p>
             <span aria-hidden="true">→</span>
           </div>
         </a>
@@ -169,12 +175,12 @@
   <img class="closing-photo" src="media/skyline.jpg" alt="" />
   <div class="wrap closing-grid">
     <h2>
-      Because<br />
-      people behind skills<br />
-      save lives
+      {{ 'Because' | t }}<br />
+      {{ 'people behind skills' | t }}<br />
+      {{ 'save lives' | t }}
     </h2>
     <blockquote>
-      <p>“A more prepared healthcare community. A safer tomorrow.”</p>
+      <p>{{ '“A more prepared healthcare community. A safer tomorrow.”' | t }}</p>
     </blockquote>
   </div>
 </section>

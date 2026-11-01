@@ -3,6 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Observable, firstValueFrom, from, map, of, shareReplay } from 'rxjs';
 import { AUTH_ENABLED, CLIENT_ID, GOOGLE_GRANT, IDENTITY_URL, SCOPE } from './auth.config';
+import { t } from './content/i18n';
 
 export interface Member {
   id: string;
@@ -138,7 +139,7 @@ export class Auth {
     this.assertEnabled();
     const token = this.accessToken();
     if (!token) {
-      throw new Error('Your session has expired. Please log in again.');
+      throw new Error(t('Your session has expired. Please log in again.'));
     }
     try {
       const result = await firstValueFrom(
@@ -218,7 +219,7 @@ export class Auth {
     this.assertEnabled();
     const token = this.accessToken();
     if (!token) {
-      throw new Error('Your session has expired. Please log in again.');
+      throw new Error(t('Your session has expired. Please log in again.'));
     }
     try {
       await firstValueFrom(
@@ -318,7 +319,7 @@ export class Auth {
 
   private assertEnabled(): void {
     if (!AUTH_ENABLED) {
-      throw new Error('Student accounts are not open on this site yet.');
+      throw new Error(t('Student accounts are not open on this site yet.'));
     }
   }
 }
@@ -397,24 +398,27 @@ function toMember(accessToken: string): Member | null {
 /** Turns server responses into a sentence the login form can show. */
 function describeError(error: unknown): string {
   if (!(error instanceof HttpErrorResponse)) {
-    return 'Something went wrong. Please try again.';
+    return t('Something went wrong. Please try again.');
   }
   if (error.status === 0) {
-    return 'The account server is not reachable. Please try again later.';
+    return t('The account server is not reachable. Please try again later.');
   }
   if (error.status === 429) {
-    return 'Too many attempts. Please wait a minute and try again.';
+    return t('Too many attempts. Please wait a minute and try again.');
   }
   const body = error.error as
     { error_description?: string; errors?: string[] | Record<string, string[]> } | null | undefined;
   if (body?.error_description) {
-    return body.error_description;
+    return t(body.error_description);
   }
   if (Array.isArray(body?.errors)) {
-    return body.errors.join(' ');
+    return body.errors.map((e) => t(e)).join(' ');
   }
   if (body?.errors && typeof body.errors === 'object') {
-    return Object.values(body.errors).flat().join(' ');
+    return Object.values(body.errors)
+      .flat()
+      .map((e) => t(e))
+      .join(' ');
   }
-  return 'Something went wrong. Please try again.';
+  return t('Something went wrong. Please try again.');
 }

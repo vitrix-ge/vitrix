@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ka">
   <head>
     <meta charset="utf-8" />
     <title>VITRIX</title>
@@ -13,9 +13,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&family=Noto+Sans+Georgian:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <script>
+      // Apply the saved language and theme before the app starts, so the page doesn't flash.
+      try {
+        var l = localStorage.getItem('vitrix.lang');
+        document.documentElement.lang = l === 'en' ? 'en' : 'ka';
+        document.documentElement.dataset.theme =
+          localStorage.getItem('vitrix.theme') === 'dark' ? 'dark' : 'light';
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <app-root></app-root>

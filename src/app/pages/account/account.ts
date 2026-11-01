@@ -8,12 +8,12 @@ import { Notify } from '../../notify';
 import { ContentApi } from '../../content/content.api';
 import { CONTENT_ENABLED } from '../../content/content.config';
 import { AttemptRow, MyCourse } from '../../content/content.models';
-import { TrPipe } from '../../content/i18n';
+import { TPipe, TrPipe, t } from '../../content/i18n';
 import { isStaff } from '../../content/roles';
 
 @Component({
   selector: 'app-account',
-  imports: [RouterLink, ReactiveFormsModule, TrPipe, DatePipe, ConfirmEmailNotice],
+  imports: [RouterLink, ReactiveFormsModule, TrPipe, TPipe, DatePipe, ConfirmEmailNotice],
   templateUrl: './account.html',
 })
 export class Account {
@@ -71,7 +71,7 @@ export class Account {
 
   logout(): void {
     this.auth.logout();
-    this.notify.info('You have been logged out.');
+    this.notify.info(t('You have been logged out.'));
     this.router.navigateByUrl('/');
   }
 
@@ -103,7 +103,7 @@ export class Account {
       await this.auth.deleteAccount(confirmation, () =>
         CONTENT_ENABLED ? this.api.deleteMyData() : Promise.resolve(),
       );
-      this.notify.info('Your account and personal data have been deleted.');
+      this.notify.info(t('Your account and personal data have been deleted.'));
       await this.router.navigateByUrl('/');
     } catch (error) {
       this.deleteError.set(error instanceof Error ? error.message : 'Something went wrong.');

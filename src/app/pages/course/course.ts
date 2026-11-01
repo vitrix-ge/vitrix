@@ -11,7 +11,7 @@ import { ContentApi } from '../../content/content.api';
 import { CONTENT_ENABLED } from '../../content/content.config';
 import { AttemptResult, CourseDetail, Lesson } from '../../content/content.models';
 import { QuizRunner } from '../quiz/quiz-runner';
-import { TrPipe } from '../../content/i18n';
+import { TPipe, TrPipe, t } from '../../content/i18n';
 import { youtubeEmbedUrl } from '../../content/youtube';
 
 /**
@@ -20,7 +20,7 @@ import { youtubeEmbedUrl } from '../../content/youtube';
  */
 @Component({
   selector: 'app-course',
-  imports: [RouterLink, TrPipe, ConfirmEmailNotice, QuizRunner],
+  imports: [RouterLink, TrPipe, TPipe, ConfirmEmailNotice, QuizRunner],
   templateUrl: './course.html',
 })
 export class CoursePage {
@@ -71,7 +71,7 @@ export class CoursePage {
       }
     } catch (e) {
       if (!this.fallback()) {
-        this.error.set(e instanceof Error ? e.message : 'Course not found.');
+        this.error.set(e instanceof Error ? e.message : t('Course not found.'));
       }
     } finally {
       this.loading.set(false);
@@ -94,7 +94,7 @@ export class CoursePage {
       await this.api.completeLesson(lesson.id);
       await this.lessonDone();
     } catch (e) {
-      this.notify.error(e instanceof Error ? e.message : 'Could not save your progress.');
+      this.notify.error(e instanceof Error ? e.message : t('Could not save your progress.'));
     }
   }
 
@@ -116,11 +116,13 @@ export class CoursePage {
     this.openLessonId.set(next?.id ?? null);
     const exam = this.detail()?.quizzes.find((q) => !q.passed);
     this.notify.success(
-      next
-        ? 'Lesson completed. On to the next one.'
-        : exam
-          ? 'All lessons completed! The final exam is open.'
-          : 'All lessons completed!',
+      t(
+        next
+          ? 'Lesson completed. On to the next one.'
+          : exam
+            ? 'All lessons completed! The final exam is open.'
+            : 'All lessons completed!',
+      ),
     );
   }
 }

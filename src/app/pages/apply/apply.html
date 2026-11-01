@@ -1,10 +1,12 @@
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow">Admissions</p>
-    <h1>Apply now</h1>
+    <p class="eyebrow">{{ 'Admissions' | t }}</p>
+    <h1>{{ 'Apply now' | t }}</h1>
     <p class="lede">
-      Tell us which program you want and the clinical world you already work in. We will use it to
-      place you with the right cohort.
+      {{
+        'Tell us which program you want and the clinical world you already work in. We will use it to place you with the right cohort.'
+          | t
+      }}
     </p>
   </div>
 </section>
@@ -12,10 +14,12 @@
 <section class="page-section">
   <div class="wrap split form-split">
     <div>
-      <h2>Start an application</h2>
+      <h2>{{ 'Start an application' | t }}</h2>
       <p>
-        Courses cover resuscitation, trauma, critical care, and simulation. Share enough background
-        for faculty to see where you train today.
+        {{
+          'Courses cover resuscitation, trauma, critical care, and simulation. Share enough background for faculty to see where you train today.'
+            | t
+        }}
       </p>
     </div>
 
@@ -27,53 +31,54 @@
       </div>
     } @else if (sent()) {
       <div class="notice" role="status">
-        <h2>Application noted</h2>
+        <h2>{{ 'Application noted' | t }}</h2>
         <p>
-          Thanks, {{ form.controls.name.value }}. Your interest in
-          {{ form.controls.course.value }} is saved in this session only. A live admissions desk is
-          not connected yet.
+          {{
+            'Thanks, {name}. Your interest in {course} is saved in this session only. A live admissions desk is not connected yet.'
+              | t: { name: form.controls.name.value, course: form.controls.course.value }
+          }}
         </p>
       </div>
     } @else {
       <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
         <label>
-          Name
+          {{ 'Name' | t }}
           <input type="text" formControlName="name" autocomplete="name" />
           @if (invalid('name')) {
-            <span class="error">Enter your name.</span>
+            <span class="error">{{ 'Enter your name.' | t }}</span>
           }
         </label>
         <label>
-          Email
+          {{ 'Email' | t }}
           <input type="email" formControlName="email" autocomplete="email" />
           @if (invalid('email')) {
-            <span class="error">Enter a valid email.</span>
+            <span class="error">{{ 'Enter a valid email.' | t }}</span>
           }
         </label>
         <label>
-          Phone
+          {{ 'Phone' | t }}
           <input type="tel" formControlName="phone" autocomplete="tel" />
         </label>
         <label>
-          Course
+          {{ 'Course' | t }}
           <select formControlName="course">
-            <option value="" disabled>Select a program</option>
+            <option value="" disabled>{{ 'Select a program' | t }}</option>
             @for (course of courses(); track course.id) {
               <option [value]="course.code">{{ course.code }} — {{ course.title | tr }}</option>
             }
           </select>
           @if (invalid('course')) {
-            <span class="error">Choose a course.</span>
+            <span class="error">{{ 'Choose a course.' | t }}</span>
           }
         </label>
         <label>
-          Clinical background
+          {{ 'Clinical background' | t }}
           <textarea rows="5" formControlName="background"></textarea>
           @if (invalid('background')) {
-            <span class="error">Tell us where you practice.</span>
+            <span class="error">{{ 'Tell us where you practice.' | t }}</span>
           }
         </label>
-        <button class="btn btn-red" type="submit">Submit application</button>
+        <button class="btn btn-red" type="submit">{{ 'Submit application' | t }}</button>
       </form>
     }
   </div>

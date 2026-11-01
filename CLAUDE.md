@@ -35,6 +35,19 @@ No test files exist yet (`skipTests: true` in angular.json).
   Use the color variables in `:root` of styles.scss, not hard-coded colors. Logo (`mark.ts`):
   graphite stroke + red stroke; the wordmark's X is fully red.
   Mobile breakpoints at 1100px, 860px, 640px.
+- **Languages (KA default, EN):** header switch `ქარ | EN` (`lang` signal in `content/i18n.ts`,
+  saved in `localStorage` `vitrix.lang`, sets `<html lang>`). Interface text is written in English
+  and translated with the `t` pipe / `t()` function: `{{ 'Log in' | t }}`,
+  `{{ 'Welcome back, {name}.' | t: { name } }}`. Georgian lives in `content/ka.ts` (English key →
+  Georgian); untranslated text shows in English. **Every new visible text needs a `| t` and a
+  line in ka.ts.** Server content is `LText` with the `tr` pipe; if its `ka` is empty, `tr` tries
+  ka.ts with the English text, then shows English. Server error messages are translated the same
+  way (`describeError` in auth.ts / content.api.ts). Georgian font: Noto Sans Georgian (in the
+  `--display` / `--body` font stacks). The privacy page has a full Georgian version in its template.
+  The admin panel is still English only.
+- **Light / dark:** header sun/moon button (`theme.ts`, `localStorage` `vitrix.theme`,
+  `<html data-theme>`); dark colors are the `:root[data-theme='dark']` block in styles.scss.
+  index.html applies both before the app starts (no flash).
 - Formatting: Prettier (`.prettierrc`), single quotes, 100-char lines.
 - Images live in `public/media/` and are referenced as `media/x.jpg` (no leading slash) so they
   work on GitHub Pages.
@@ -193,6 +206,7 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
    verify the domain in Brevo and send from e.g. `no-reply@vitrix.ge` for better delivery
    (only `Email__From` changes).
 7. ~~Set `PRIVACY_CONTACT_EMAIL`~~ done: `vitrix.contact1@gmail.com`.
-8. Self-host the Google Fonts (privacy: Google currently receives visitors' IP addresses).
+8. Translate the admin panel; let admins fill the KA fields of the six built-in courses.
+9. Self-host the Google Fonts (privacy: Google currently receives visitors' IP addresses).
 
 Update this file when you finish a roadmap item or change how something works.

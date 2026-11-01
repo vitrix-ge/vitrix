@@ -1,10 +1,12 @@
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow">Tbilisi, Georgia</p>
-    <h1>Contact</h1>
+    <p class="eyebrow">{{ 'Tbilisi, Georgia' | t }}</p>
+    <h1>{{ 'Contact' | t }}</h1>
     <p class="lede">
-      Ask about a course, a team booking, or a partnership. Messages stay in this browser — there is
-      no server behind the form yet.
+      {{
+        'Ask about a course, a team booking, or a partnership. Messages stay in this browser — there is no server behind the form yet.'
+          | t
+      }}
     </p>
   </div>
 </section>
@@ -12,47 +14,54 @@
 <section class="page-section">
   <div class="wrap split form-split">
     <div>
-      <h2>Write to the institute</h2>
-      <p>Tell us who you are and what you need trained. Faculty and program staff read every note.</p>
-      <p class="location">Tbilisi, Georgia<br />A global vision.</p>
+      <h2>{{ 'Write to the institute' | t }}</h2>
+      <p>
+        {{
+          'Tell us who you are and what you need trained. Faculty and program staff read every note.'
+            | t
+        }}
+      </p>
+      <p class="location">{{ 'Tbilisi, Georgia' | t }}<br />{{ 'A global vision.' | t }}</p>
     </div>
 
     @if (sent()) {
       <div class="notice" role="status">
-        <h2>Message ready</h2>
+        <h2>{{ 'Message ready' | t }}</h2>
         <p>
-          Thanks, {{ form.controls.name.value }}. This demo keeps your note on this page only. A live
-          institute inbox is the next step.
+          {{
+            'Thanks, {name}. This demo keeps your note on this page only. A live institute inbox is the next step.'
+              | t: { name: form.controls.name.value }
+          }}
         </p>
       </div>
     } @else {
       <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
         <label>
-          Name
+          {{ 'Name' | t }}
           <input type="text" formControlName="name" autocomplete="name" />
           @if (invalid('name')) {
-            <span class="error">Enter your name.</span>
+            <span class="error">{{ 'Enter your name.' | t }}</span>
           }
         </label>
         <label>
-          Email
+          {{ 'Email' | t }}
           <input type="email" formControlName="email" autocomplete="email" />
           @if (invalid('email')) {
-            <span class="error">Enter a valid email.</span>
+            <span class="error">{{ 'Enter a valid email.' | t }}</span>
           }
         </label>
         <label>
-          Organization
+          {{ 'Organization' | t }}
           <input type="text" formControlName="organization" autocomplete="organization" />
         </label>
         <label>
-          Message
+          {{ 'Message' | t }}
           <textarea rows="5" formControlName="message"></textarea>
           @if (invalid('message')) {
-            <span class="error">Write at least a short message.</span>
+            <span class="error">{{ 'Write at least a short message.' | t }}</span>
           }
         </label>
-        <button class="btn btn-red" type="submit">Send message</button>
+        <button class="btn btn-red" type="submit">{{ 'Send message' | t }}</button>
       </form>
     }
   </div>

@@ -6,10 +6,12 @@ import { isStaff } from '../content/roles';
 import { CONTENT_ENABLED } from '../content/content.config';
 import { COURSES, NAV } from '../site-data';
 import { Mark } from '../mark';
+import { TPipe, lang, setLang, t } from '../content/i18n';
+import { theme, toggleTheme } from '../theme';
 
 @Component({
   selector: 'app-site-header',
-  imports: [RouterLink, RouterLinkActive, Mark],
+  imports: [RouterLink, RouterLinkActive, Mark, TPipe],
   templateUrl: './site-header.html',
   styleUrl: './site-header.scss',
 })
@@ -23,6 +25,10 @@ export class SiteHeader {
   readonly menuOpen = signal(false);
   readonly searchOpen = signal(false);
   readonly query = signal('');
+  readonly lang = lang;
+  readonly setLang = setLang;
+  readonly theme = theme;
+  readonly toggleTheme = toggleTheme;
 
   readonly results = computed(() => {
     const q = this.query().trim().toLowerCase();
@@ -30,16 +36,18 @@ export class SiteHeader {
       return [];
     }
 
-    const pages = NAV.filter((item) => item.label.toLowerCase().includes(q)).map((item) => ({
-      label: item.label,
+    const pages = NAV.filter((item) =>
+      `${item.label} ${t(item.label)}`.toLowerCase().includes(q),
+    ).map((item) => ({
+      label: t(item.label),
       path: item.path,
       fragment: undefined as string | undefined,
     }));
 
     const courses = COURSES.filter((course) =>
-      `${course.code} ${course.name}`.toLowerCase().includes(q),
+      `${course.code} ${course.name} ${t(course.name)}`.toLowerCase().includes(q),
     ).map((course) => ({
-      label: `${course.code} — ${course.name}`,
+      label: `${course.code} — ${t(course.name)}`,
       path: '/courses',
       fragment: course.id,
     }));

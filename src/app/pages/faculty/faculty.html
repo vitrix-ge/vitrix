@@ -1,10 +1,12 @@
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow">Clinicians. Educators. Mentors.</p>
-    <h1>Faculty</h1>
+    <p class="eyebrow">{{ 'Clinicians. Educators. Mentors.' | t }}</p>
+    <h1>{{ 'Faculty' | t }}</h1>
     <p class="lede">
-      People who practice the work they teach. Emergency medicine, trauma, critical care, and
-      simulation — in the same room.
+      {{
+        'People who practice the work they teach. Emergency medicine, trauma, critical care, and simulation — in the same room.'
+          | t
+      }}
     </p>
   </div>
 </section>
@@ -13,12 +15,14 @@
   <div class="wrap card-grid faculty-grid">
     @for (person of faculty; track person.role) {
       <article class="info-card">
-        <h2>{{ person.role }}</h2>
-        <p>{{ person.text }}</p>
+        <h2>{{ person.role | t }}</h2>
+        <p>{{ person.text | t }}</p>
       </article>
     }
   </div>
   <div class="wrap faculty-cta">
-    <a class="btn btn-red" routerLink="/contact">Work with faculty <span aria-hidden="true">→</span></a>
+    <a class="btn btn-red" routerLink="/contact"
+      >{{ 'Work with faculty' | t }} <span aria-hidden="true">→</span></a
+    >
   </div>
 </section>

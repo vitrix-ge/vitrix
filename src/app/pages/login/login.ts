@@ -4,13 +4,14 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Auth, GoogleConsentRequired } from '../../auth';
 import { GOOGLE_CLIENT_ID } from '../../auth.config';
 import { GoogleButton, googleProfile } from '../../google-button';
+import { TPipe, t } from '../../content/i18n';
 import { Notify } from '../../notify';
 
 type Mode = 'login' | 'register' | 'forgot';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink, GoogleButton],
+  imports: [ReactiveFormsModule, RouterLink, GoogleButton, TPipe],
   templateUrl: './login.html',
 })
 export class Login {
@@ -82,14 +83,18 @@ export class Login {
       if (this.mode() === 'forgot') {
         await this.auth.forgotPassword(email);
         this.success.set(
-          `If there is an account for ${email.trim()}, we have sent it a link to choose a new ` +
-            'password. It works for 24 hours; check your spam folder too.',
+          t(
+            'If there is an account for {email}, we have sent it a link to choose a new password. It works for 24 hours; check your spam folder too.',
+            { email: email.trim() },
+          ),
         );
       } else if (this.mode() === 'register') {
         await this.createAccount(name, email, password, acceptPrivacy, website);
       } else {
         await this.auth.login(email, password);
-        this.notify.success(`Welcome back, ${this.auth.user()?.name ?? 'member'}.`);
+        this.notify.success(
+          t('Welcome back, {name}.', { name: this.auth.user()?.name ?? t('member') }),
+        );
         await this.goOn();
       }
     } catch (error) {
@@ -122,8 +127,10 @@ export class Login {
     }
 
     this.notify.success(
-      `Account created. Welcome to VITRIX, ${this.auth.user()?.name ?? name}! ` +
-        `We sent a confirmation link to ${email.trim()}.`,
+      t('Account created. Welcome to VITRIX, {name}! We sent a confirmation link to {email}.', {
+        name: this.auth.user()?.name ?? name,
+        email: email.trim(),
+      }),
     );
     await this.goOn();
   }
@@ -135,7 +142,9 @@ export class Login {
     this.success.set('');
     try {
       await this.auth.loginWithGoogle(idToken);
-      this.notify.success(`Welcome back, ${this.auth.user()?.name ?? 'member'}.`);
+      this.notify.success(
+        t('Welcome back, {name}.', { name: this.auth.user()?.name ?? t('member') }),
+      );
       await this.goOn();
     } catch (error) {
       if (error instanceof GoogleConsentRequired) {
@@ -160,7 +169,9 @@ export class Login {
       await this.auth.loginWithGoogle(pending.token, true);
       this.googleSignup.set(null);
       this.notify.success(
-        `Account created. Welcome to VITRIX, ${this.auth.user()?.name ?? pending.name ?? 'member'}!`,
+        t('Account created. Welcome to VITRIX, {name}!', {
+          name: this.auth.user()?.name ?? pending.name ?? t('member'),
+        }),
       );
       await this.goOn();
     } catch (error) {

@@ -1,10 +1,12 @@
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow">The institute</p>
-    <h1>About VITRIX</h1>
+    <p class="eyebrow">{{ 'The institute' | t }}</p>
+    <h1>{{ 'About VITRIX' | t }}</h1>
     <p class="lede">
-      An education and simulation institute for emergency medicine, critical care, and human
-      performance. Built for the critical moment.
+      {{
+        'An education and simulation institute for emergency medicine, critical care, and human performance. Built for the critical moment.'
+          | t
+      }}
     </p>
   </div>
 </section>
@@ -12,26 +14,33 @@
 <section class="page-section">
   <div class="wrap split">
     <div>
-      <h2>Train for reality</h2>
+      <h2>{{ 'Train for reality' | t }}</h2>
       <p>
-        VITRIX is a modern education and simulation institute focused on emergency medicine, critical
-        care and human performance.
+        {{
+          'VITRIX is a modern education and simulation institute focused on emergency medicine, critical care and human performance.'
+            | t
+        }}
       </p>
       <p>
-        We bridge knowledge, hands-on training and real-world experience to prepare healthcare
-        professionals for the moments that matter. Guidelines set the standard. Simulation makes the
-        standard usable when the room gets loud.
+        {{
+          'We bridge knowledge, hands-on training and real-world experience to prepare healthcare professionals for the moments that matter. Guidelines set the standard. Simulation makes the standard usable when the room gets loud.'
+            | t
+        }}
       </p>
       <p>
-        Based in Tbilisi, with a global vision: a more prepared healthcare community, and a safer
-        tomorrow.
+        {{
+          'Based in Tbilisi, with a global vision: a more prepared healthcare community, and a safer tomorrow.'
+            | t
+        }}
       </p>
-      <a class="btn btn-red" routerLink="/courses">Explore our courses <span aria-hidden="true">→</span></a>
+      <a class="btn btn-red" routerLink="/courses"
+        >{{ 'Explore our courses' | t }} <span aria-hidden="true">→</span></a
+      >
     </div>
     <figure class="frame">
       <img
         src="media/clinical.jpg"
-        alt="Clinician providing bedside care while a monitor displays vital signs"
+        [alt]="'Clinician providing bedside care while a monitor displays vital signs' | t"
       />
     </figure>
   </div>
@@ -39,14 +48,14 @@
 
 <section class="page-section tight">
   <div class="wrap">
-    <h2>What we stand on</h2>
+    <h2>{{ 'What we stand on' | t }}</h2>
     <div class="card-grid">
       @for (pillar of pillars; track pillar.title) {
         <article class="info-card">
-          <h3>{{ pillar.title }}</h3>
+          <h3>{{ pillar.title | t }}</h3>
           <p>
             @for (line of pillar.lines; track line) {
-              {{ line }}
+              {{ line | t }}
             }
           </p>
         </article>

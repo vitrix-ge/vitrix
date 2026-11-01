@@ -1,7 +1,9 @@
 @if (course(); as c) {
   <section class="page-hero">
     <div class="wrap">
-      <p class="eyebrow"><a routerLink="/courses">Courses</a> / {{ c.code }}</p>
+      <p class="eyebrow">
+        <a routerLink="/courses">{{ 'Courses' | t }}</a> / {{ c.code | t }}
+      </p>
       <h1>{{ c.title | tr }}</h1>
       <p class="lede">{{ c.summary | tr }}</p>
     </div>
@@ -10,10 +12,14 @@
   <section class="page-section">
     <div class="wrap split form-split course-layout">
       <div>
-        <img class="course-cover" [src]="c.imageUrl" [alt]="c.code + ' scenario'" />
+        <img
+          class="course-cover"
+          [src]="c.imageUrl"
+          [alt]="'{code} training' | t: { code: c.code }"
+        />
         <p class="prose-text">{{ (c.description | tr) || (c.summary | tr) }}</p>
         @if (c.price !== null) {
-          <p class="price">{{ c.price }} GEL</p>
+          <p class="price">{{ c.price }} ₾</p>
         }
       </div>
 
@@ -21,13 +27,15 @@
         @if (detail(); as d) {
           @if (d.enrolled && !d.lessons.length) {
             <div class="notice">
-              <h2>Lessons coming soon</h2>
-              <p>You are enrolled. The lessons for this course are being prepared.</p>
+              <h2>{{ 'Lessons coming soon' | t }}</h2>
+              <p>{{ 'You are enrolled. The lessons for this course are being prepared.' | t }}</p>
             </div>
           } @else if (d.enrolled) {
-            <p class="eyebrow">Your progress</p>
+            <p class="eyebrow">{{ 'Your progress' | t }}</p>
             <h2 class="block-title progress-title">
-              {{ completedCount() }} of {{ d.lessons.length }} lessons
+              {{
+                '{done} of {total} lessons' | t: { done: completedCount(), total: d.lessons.length }
+              }}
             </h2>
             <div
               class="progress"
@@ -46,23 +54,28 @@
             />
           } @else {
             <div class="notice">
-              <h2>Join this course</h2>
+              <h2>{{ 'Join this course' | t }}</h2>
               @if (auth.signedIn()) {
                 <p>
-                  Lessons and tests open once you are enrolled. Apply and our team will add you.
+                  {{
+                    'Lessons and tests open once you are enrolled. Apply and our team will add you.'
+                      | t
+                  }}
                 </p>
               } @else {
                 <p>
-                  Log in or create an account, then apply. Lessons and tests open once you are
-                  enrolled.
+                  {{
+                    'Log in or create an account, then apply. Lessons and tests open once you are enrolled.'
+                      | t
+                  }}
                 </p>
               }
-              <a class="btn btn-red" routerLink="/apply">Apply now</a>
+              <a class="btn btn-red" routerLink="/apply">{{ 'Apply now' | t }}</a>
             </div>
           }
 
           @if (d.lessons.length) {
-            <h2 class="block-title">Lessons</h2>
+            <h2 class="block-title">{{ 'Lessons' | t }}</h2>
             <ol class="lesson-list">
               @for (lesson of d.lessons; track lesson.id; let i = $index) {
                 <li
@@ -71,10 +84,15 @@
                   [class.is-locked]="lesson.locked"
                 >
                   @if (d.enrolled && lesson.locked) {
-                    <div class="lesson-head locked" title="Complete the previous lesson first">
+                    <div
+                      class="lesson-head locked"
+                      [title]="'Complete the previous lesson first.' | t"
+                    >
                       <span class="lesson-num" aria-hidden="true">🔒</span>
                       <span>{{ lesson.title | tr }}</span>
-                      <span class="lesson-meta">Complete the previous lesson first</span>
+                      <span class="lesson-meta">{{
+                        'Complete the previous lesson first.' | t
+                      }}</span>
                     </div>
                   } @else if (d.enrolled) {
                     <button
@@ -86,7 +104,9 @@
                       <span class="lesson-num">{{ lesson.completed ? '✓' : i + 1 }}</span>
                       <span>{{ lesson.title | tr }}</span>
                       @if (lesson.durationMinutes) {
-                        <span class="lesson-meta">{{ lesson.durationMinutes }} min</span>
+                        <span class="lesson-meta">{{
+                          '{n} min' | t: { n: lesson.durationMinutes }
+                        }}</span>
                       }
                     </button>
                     @if (openLessonId() === lesson.id) {
@@ -107,7 +127,7 @@
                         }
                         @if (lesson.quizId) {
                           @if (lesson.completed) {
-                            <p class="lesson-done">✓ Lesson quiz passed</p>
+                            <p class="lesson-done">✓ {{ 'Lesson quiz passed' | t }}</p>
                           } @else {
                             <app-quiz-runner
                               class="lesson-quiz"
@@ -119,7 +139,7 @@
                           }
                         } @else if (!lesson.completed) {
                           <button type="button" class="btn btn-red" (click)="complete(lesson)">
-                            Mark as completed
+                            {{ 'Mark as completed' | t }}
                           </button>
                         }
                       </div>
@@ -129,7 +149,7 @@
                       <span class="lesson-num">{{ i + 1 }}</span>
                       <span>{{ lesson.title | tr }}</span>
                       @if (lesson.hasVideo) {
-                        <span class="lesson-meta">Video</span>
+                        <span class="lesson-meta">{{ 'Video' | t }}</span>
                       }
                     </div>
                   }
@@ -139,31 +159,37 @@
           }
 
           @if (d.quizzes.length) {
-            <h2 class="block-title">Final exam</h2>
+            <h2 class="block-title">{{ 'Final exam' | t }}</h2>
             <ul class="quiz-list">
               @for (quiz of d.quizzes; track quiz.id) {
                 <li>
                   <div>
                     <strong>{{ quiz.title | tr }}</strong>
                     <span class="lesson-meta">
-                      {{ quiz.questionCount }} questions · pass mark {{ quiz.passPercent }}%
+                      {{
+                        '{n} questions · pass mark {p}%'
+                          | t: { n: quiz.questionCount, p: quiz.passPercent }
+                      }}
                       @if (quiz.timeLimitMinutes) {
-                        · {{ quiz.timeLimitMinutes }} min
+                        · {{ '{n} min' | t: { n: quiz.timeLimitMinutes } }}
                       }
                     </span>
                     @if (quiz.passed) {
-                      <span class="tag tag-ok">Passed · {{ quiz.bestScore }}%</span>
+                      <span class="tag tag-ok">{{ 'Passed' | t }} · {{ quiz.bestScore }}%</span>
                     } @else if (quiz.bestScore !== null && quiz.bestScore !== undefined) {
-                      <span class="tag">Best {{ quiz.bestScore }}%</span>
+                      <span class="tag">{{ 'Best {p}%' | t: { p: quiz.bestScore } }}</span>
                     }
                   </div>
                   @if (d.enrolled && quiz.locked) {
                     <span class="lesson-meta exam-locked"
-                      >🔒 Opens when all lessons are completed</span
+                      >🔒 {{ 'Opens when all lessons are completed' | t }}</span
                     >
                   } @else if (d.enrolled) {
                     <a class="btn btn-ghost" [routerLink]="['/tests', quiz.id]">
-                      {{ quiz.passed ? 'Retake' : quiz.attemptsUsed ? 'Try again' : 'Start exam' }}
+                      {{
+                        (quiz.passed ? 'Retake' : quiz.attemptsUsed ? 'Try again' : 'Start exam')
+                          | t
+                      }}
                     </a>
                   }
                 </li>
@@ -172,7 +198,7 @@
           }
 
           @if (d.faqs.length) {
-            <h2 class="block-title">Questions about this course</h2>
+            <h2 class="block-title">{{ 'Questions about this course' | t }}</h2>
             @for (faq of d.faqs; track faq.id) {
               <details class="faq">
                 <summary>{{ faq.question | tr }}</summary>
@@ -182,26 +208,28 @@
           }
         } @else if (!loading()) {
           <div class="notice">
-            <h2>Interested?</h2>
-            <p>Apply and our team will get back to you with dates and details.</p>
-            <a class="btn btn-red" routerLink="/apply">Apply now</a>
+            <h2>{{ 'Interested?' | t }}</h2>
+            <p>{{ 'Apply and our team will get back to you with dates and details.' | t }}</p>
+            <a class="btn btn-red" routerLink="/apply">{{ 'Apply now' | t }}</a>
           </div>
         } @else {
-          <p class="lesson-meta">Loading course…</p>
+          <p class="lesson-meta">{{ 'Loading course…' | t }}</p>
         }
       </div>
     </div>
   </section>
 } @else if (loading()) {
   <section class="page-section">
-    <div class="wrap"><p class="lesson-meta">Loading course…</p></div>
+    <div class="wrap">
+      <p class="lesson-meta">{{ 'Loading course…' | t }}</p>
+    </div>
   </section>
 } @else {
   <section class="page-hero">
     <div class="wrap">
-      <h1>Course not found</h1>
-      <p class="lede">{{ error() }}</p>
-      <a class="btn btn-ghost" routerLink="/courses">All courses</a>
+      <h1>{{ 'Course not found' | t }}</h1>
+      <p class="lede">{{ error() | t }}</p>
+      <a class="btn btn-ghost" routerLink="/courses">{{ 'All courses' | t }}</a>
     </div>
   </section>
 }

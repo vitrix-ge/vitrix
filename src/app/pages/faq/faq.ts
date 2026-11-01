@@ -2,18 +2,18 @@ import { Component, inject, signal } from '@angular/core';
 import { ContentApi } from '../../content/content.api';
 import { CONTENT_ENABLED } from '../../content/content.config';
 import { Faq } from '../../content/content.models';
-import { TrPipe } from '../../content/i18n';
+import { TPipe, TrPipe } from '../../content/i18n';
 
 /** /faq — general questions and answers, managed in the admin panel. */
 @Component({
   selector: 'app-faq',
-  imports: [TrPipe],
+  imports: [TrPipe, TPipe],
   template: `
     <section class="page-hero">
       <div class="wrap">
-        <p class="eyebrow">Help</p>
-        <h1>Questions &amp; answers</h1>
-        <p class="lede">Admissions, courses, certificates and the student area.</p>
+        <p class="eyebrow">{{ 'Help' | t }}</p>
+        <h1>{{ 'Questions & answers' | t }}</h1>
+        <p class="lede">{{ 'Admissions, courses, certificates and the student area.' | t }}</p>
       </div>
     </section>
     <section class="page-section">
@@ -26,9 +26,10 @@ import { TrPipe } from '../../content/i18n';
         } @empty {
           <p>
             {{
-              loading()
+              (loading()
                 ? 'Loading…'
                 : 'No questions published yet. Write to us on the Contact page.'
+              ) | t
             }}
           </p>
         }

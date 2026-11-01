@@ -1,10 +1,12 @@
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow">Human performance</p>
-    <h1>Simulation</h1>
+    <p class="eyebrow">{{ 'Human performance' | t }}</p>
+    <h1>{{ 'Simulation' | t }}</h1>
     <p class="lede">
-      High-fidelity scenarios where teams rehearse the critical moment, then leave with something
-      they can measure.
+      {{
+        'High-fidelity scenarios where teams rehearse the critical moment, then leave with something they can measure.'
+          | t
+      }}
     </p>
   </div>
 </section>
@@ -12,22 +14,28 @@
 <section class="page-section">
   <div class="wrap split">
     <div>
-      <h2>Hands on, on purpose</h2>
+      <h2>{{ 'Hands on, on purpose' | t }}</h2>
       <p>
-        VITRIX simulation is scenario-based training. A case unfolds. The monitor changes. The team
-        has to assign roles, speak clearly, and act before the window closes.
+        {{
+          'VITRIX simulation is scenario-based training. A case unfolds. The monitor changes. The team has to assign roles, speak clearly, and act before the window closes.'
+            | t
+        }}
       </p>
       <p>
-        Faculty design the scenario, run the room, and debrief what the team actually did. The point
-        is not a perfect script. The point is a sharper next attempt — skills, confidence, and better
-        outcomes.
+        {{
+          'Faculty design the scenario, run the room, and debrief what the team actually did. The point is not a perfect script. The point is a sharper next attempt — skills, confidence, and better outcomes.'
+            | t
+        }}
       </p>
       <a class="btn btn-red" routerLink="/courses" fragment="simulation">
-        View simulation courses <span aria-hidden="true">→</span>
+        {{ 'View simulation courses' | t }} <span aria-hidden="true">→</span>
       </a>
     </div>
     <figure class="frame">
-      <img src="media/simulation.jpg" alt="Team training around a monitor in a simulation room" />
+      <img
+        src="media/simulation.jpg"
+        [alt]="'Team training around a monitor in a simulation room' | t"
+      />
     </figure>
   </div>
 </section>
@@ -35,16 +43,31 @@
 <section class="page-section tight">
   <div class="wrap card-grid">
     <article class="info-card">
-      <h3>Scenario</h3>
-      <p>Cases drawn from emergency medicine, trauma, and critical care — timed the way real rooms are timed.</p>
+      <h3>{{ 'Scenario' | t }}</h3>
+      <p>
+        {{
+          'Cases drawn from emergency medicine, trauma, and critical care — timed the way real rooms are timed.'
+            | t
+        }}
+      </p>
     </article>
     <article class="info-card">
-      <h3>Performance</h3>
-      <p>Teams practice communication, priorities, and technical steps together, not as separate lectures.</p>
+      <h3>{{ 'Performance' | t }}</h3>
+      <p>
+        {{
+          'Teams practice communication, priorities, and technical steps together, not as separate lectures.'
+            | t
+        }}
+      </p>
     </article>
     <article class="info-card">
-      <h3>Debrief</h3>
-      <p>A structured look at what happened, so the lesson survives after the manikin is reset.</p>
+      <h3>{{ 'Debrief' | t }}</h3>
+      <p>
+        {{
+          'A structured look at what happened, so the lesson survives after the manikin is reset.'
+            | t
+        }}
+      </p>
     </article>
   </div>
 </section>

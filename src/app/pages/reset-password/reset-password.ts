@@ -9,11 +9,12 @@ import {
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Auth } from '../../auth';
 import { Notify } from '../../notify';
+import { TPipe, t } from '../../content/i18n';
 
 /** Opened from the link in the password reset email: /reset-password?user=...&token=... */
 @Component({
   selector: 'app-reset-password',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, TPipe],
   templateUrl: './reset-password.html',
 })
 export class ResetPassword {
@@ -62,14 +63,14 @@ export class ResetPassword {
       // Sign straight in with the new password.
       try {
         await this.auth.login(email, password);
-        this.notify.success('Your password has been changed. You are signed in.');
+        this.notify.success(t('Your password has been changed. You are signed in.'));
         await this.router.navigateByUrl('/account');
       } catch {
-        this.notify.success('Your password has been changed. Log in with the new password.');
+        this.notify.success(t('Your password has been changed. Log in with the new password.'));
         await this.router.navigateByUrl('/login');
       }
     } catch (error) {
-      this.failure.set(error instanceof Error ? error.message : 'Something went wrong.');
+      this.failure.set(error instanceof Error ? error.message : t('Something went wrong.'));
     } finally {
       this.busy.set(false);
     }

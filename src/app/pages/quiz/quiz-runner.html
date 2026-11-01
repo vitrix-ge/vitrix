@@ -1,31 +1,33 @@
 @if (attempt(); as a) {
   @if (mode() === 'exam' && timeLabel() && !result()) {
     <p class="lesson-meta timer-line">
-      <strong class="timer">Time left {{ timeLabel() }}</strong>
+      <strong class="timer">{{ 'Time left {time}' | t: { time: timeLabel() } }}</strong>
     </p>
   }
 
   @if (result(); as r) {
     <div class="notice result" [class.passed]="r.passed" role="status">
       @if (mode() === 'lesson') {
-        <h3>{{ r.passed ? 'Lesson completed' : 'Not quite yet' }} — {{ r.scorePercent }}%</h3>
+        <h3>{{ (r.passed ? 'Lesson completed' : 'Not quite yet') | t }} — {{ r.scorePercent }}%</h3>
         <p>
-          {{ r.correctCount }} of {{ r.total }} correct.
-          {{ r.passed ? '' : 'You need ' + a.quiz.passPercent + '% to complete this lesson.' }}
+          {{ '{n} of {total} correct.' | t: { n: r.correctCount, total: r.total } }}
+          @if (!r.passed) {
+            {{ 'You need {p}% to complete this lesson.' | t: { p: a.quiz.passPercent } }}
+          }
         </p>
         @if (!r.passed) {
           <div class="form-actions">
             <button type="button" class="btn btn-red" [disabled]="busy()" (click)="start()">
-              Try again
+              {{ 'Try again' | t }}
             </button>
           </div>
         }
       } @else {
-        <h2>{{ r.passed ? 'Passed' : 'Not passed yet' }} — {{ r.scorePercent }}%</h2>
-        <p>{{ r.correctCount }} of {{ r.total }} answers correct.</p>
+        <h2>{{ (r.passed ? 'Passed' : 'Not passed yet') | t }} — {{ r.scorePercent }}%</h2>
+        <p>{{ '{n} of {total} answers correct.' | t: { n: r.correctCount, total: r.total } }}</p>
         <div class="form-actions">
           <button type="button" class="btn btn-ghost" (click)="back.emit()">
-            Back to the course
+            {{ 'Back to the course' | t }}
           </button>
         </div>
       }
@@ -40,7 +42,7 @@
         [class.wrong]="review(q.id) && !review(q.id)?.correct"
       >
         <p class="question-text">{{ q.text | tr }}</p>
-        <p class="lesson-meta">{{ q.multiple ? 'Choose all that apply' : 'Choose one' }}</p>
+        <p class="lesson-meta">{{ (q.multiple ? 'Choose all that apply' : 'Choose one') | t }}</p>
         @for (o of q.options; track o.id) {
           <label class="option" [class.correct]="review(q.id)?.correctOptionIds?.includes(o.id)">
             <input
@@ -54,7 +56,7 @@
           </label>
         }
         @if (review(q.id); as rv) {
-          <p class="review-line">{{ rv.correct ? '✓ Correct' : '✗ Not correct' }}</p>
+          <p class="review-line">{{ (rv.correct ? '✓ Correct' : '✗ Not correct') | t }}</p>
           @if (rv.explanation | tr) {
             <p class="prose-text hint">{{ rv.explanation | tr }}</p>
           }
@@ -65,46 +67,54 @@
 
   @if (!result()) {
     @if (error()) {
-      <p class="error" role="alert">{{ error() }}</p>
+      <p class="error" role="alert">{{ error() | t }}</p>
     }
     <div class="form-actions">
       <button type="button" class="btn btn-red" [disabled]="busy()" (click)="submit()">
-        {{ busy() ? 'Checking…' : mode() === 'lesson' ? 'Check answers' : 'Submit answers' }}
+        {{ (busy() ? 'Checking…' : mode() === 'lesson' ? 'Check answers' : 'Submit answers') | t }}
       </button>
-      <span class="lesson-meta">{{ answeredCount() }} of {{ a.questions.length }} answered</span>
+      <span class="lesson-meta">{{
+        '{n} of {total} answered' | t: { n: answeredCount(), total: a.questions.length }
+      }}</span>
     </div>
   }
 } @else if (mode() === 'lesson') {
   <div class="lesson-quiz-start">
     <div>
-      <p class="eyebrow">Lesson quiz</p>
+      <p class="eyebrow">{{ 'Lesson quiz' | t }}</p>
       <p>
-        {{ questionCount() ? questionCount() + ' short questions' : 'A few short questions' }} about
-        this lesson. Pass to complete it and open the next lesson.
+        {{
+          (questionCount()
+            ? '{n} short questions about this lesson. Pass to complete it and open the next lesson.'
+            : 'A few short questions about this lesson. Pass to complete it and open the next lesson.'
+          ) | t: { n: questionCount() }
+        }}
       </p>
     </div>
     @if (error()) {
-      <p class="error" role="alert">{{ error() }}</p>
+      <p class="error" role="alert">{{ error() | t }}</p>
     }
     <button type="button" class="btn btn-red" [disabled]="busy()" (click)="start()">
-      {{ busy() ? 'Starting…' : 'Start quiz' }}
+      {{ (busy() ? 'Starting…' : 'Start quiz') | t }}
     </button>
   </div>
 } @else {
   <div class="notice">
-    <h2>Ready?</h2>
+    <h2>{{ 'Ready?' | t }}</h2>
     <p>
-      Starting counts as an attempt. If the exam has a time limit, the timer starts now and your
-      answers are submitted automatically when it runs out.
+      {{
+        'Starting counts as an attempt. If the exam has a time limit, the timer starts now and your answers are submitted automatically when it runs out.'
+          | t
+      }}
     </p>
     @if (error()) {
-      <p class="error" role="alert">{{ error() }}</p>
+      <p class="error" role="alert">{{ error() | t }}</p>
     }
     <div class="form-actions">
       <button type="button" class="btn btn-red" [disabled]="busy()" (click)="start()">
-        {{ busy() ? 'Starting…' : 'Start exam' }}
+        {{ (busy() ? 'Starting…' : 'Start exam') | t }}
       </button>
-      <button type="button" class="btn btn-ghost" (click)="back.emit()">Back</button>
+      <button type="button" class="btn btn-ghost" (click)="back.emit()">{{ 'Back' | t }}</button>
     </div>
   </div>
 }

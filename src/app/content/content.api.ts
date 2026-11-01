@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, firstValueFrom } from 'rxjs';
 import { Auth } from '../auth';
 import { CONTENT_API_URL } from './content.config';
+import { t } from './i18n';
 import {
   AnswerSubmission,
   AttemptResult,
@@ -172,27 +173,30 @@ export class ContentApi {
 
 function describe(error: unknown): string {
   if (!(error instanceof HttpErrorResponse)) {
-    return 'Something went wrong. Please try again.';
+    return t('Something went wrong. Please try again.');
   }
   switch (error.status) {
     case 0:
-      return 'The course server is not reachable. Please try again later.';
+      return t('The course server is not reachable. Please try again later.');
     case 401:
-      return 'Please log in again.';
+      return t('Please log in again.');
     case 403:
-      return 'You do not have access to this.';
+      return t('You do not have access to this.');
     case 404:
-      return 'Not found. It may have been removed.';
+      return t('Not found. It may have been removed.');
   }
   const body = error.error as {
     errors?: string[] | Record<string, string[]>;
     title?: string;
   } | null;
   if (Array.isArray(body?.errors)) {
-    return body.errors.join(' ');
+    return body.errors.map((e) => t(e)).join(' ');
   }
   if (body?.errors && typeof body.errors === 'object') {
-    return Object.values(body.errors).flat().join(' ');
+    return Object.values(body.errors)
+      .flat()
+      .map((e) => t(e))
+      .join(' ');
   }
   return body?.title ?? 'Something went wrong. Please try again.';
 }

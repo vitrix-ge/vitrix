@@ -1,13 +1,13 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Catalog } from '../../content/catalog';
-import { TrPipe } from '../../content/i18n';
+import { TPipe, TrPipe } from '../../content/i18n';
 import { Auth } from '../../auth';
 import { ConfirmEmailNotice } from '../../confirm-email-notice';
 
 @Component({
   selector: 'app-apply',
-  imports: [ReactiveFormsModule, TrPipe, ConfirmEmailNotice],
+  imports: [ReactiveFormsModule, TrPipe, ConfirmEmailNotice, TPipe],
   templateUrl: './apply.html',
 })
 export class Apply {
