@@ -1,14 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Auth } from '../../auth';
+import { Auth, GoogleConsentRequired } from '../../auth';
+import { GOOGLE_CLIENT_ID } from '../../auth.config';
+import { GoogleButton, googleProfile } from '../../google-button';
 import { Notify } from '../../notify';
 
 type Mode = 'login' | 'register' | 'forgot';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, GoogleButton],
   templateUrl: './login.html',
 })
 export class Login {
@@ -24,6 +26,11 @@ export class Login {
   readonly failure = signal('');
   /** Shown in the form, e.g. after an account was created but automatic login failed. */
   readonly success = signal('');
+
+  readonly googleEnabled = GOOGLE_CLIENT_ID !== '';
+  /** "Continue with Google" for a new person: ask for the privacy consent before creating the account. */
+  readonly googleSignup = signal<{ token: string; email: string; name: string } | null>(null);
+  readonly googleConsent = signal(false);
 
   constructor() {
     // /login?mode=forgot (from "Send a new link" on the reset page) or ?mode=register.
@@ -119,6 +126,54 @@ export class Login {
         `We sent a confirmation link to ${email.trim()}.`,
     );
     await this.goOn();
+  }
+
+  /** Google's button returned an ID token: sign in, or ask for consent if there is no account yet. */
+  async withGoogle(idToken: string): Promise<void> {
+    this.busy.set(true);
+    this.failure.set('');
+    this.success.set('');
+    try {
+      await this.auth.loginWithGoogle(idToken);
+      this.notify.success(`Welcome back, ${this.auth.user()?.name ?? 'member'}.`);
+      await this.goOn();
+    } catch (error) {
+      if (error instanceof GoogleConsentRequired) {
+        this.googleConsent.set(false);
+        this.googleSignup.set({ token: idToken, ...googleProfile(idToken) });
+      } else {
+        this.failure.set(error instanceof Error ? error.message : 'Google sign-in failed.');
+      }
+    } finally {
+      this.busy.set(false);
+    }
+  }
+
+  async createWithGoogle(): Promise<void> {
+    const pending = this.googleSignup();
+    if (!pending || !this.googleConsent()) {
+      return;
+    }
+    this.busy.set(true);
+    this.failure.set('');
+    try {
+      await this.auth.loginWithGoogle(pending.token, true);
+      this.googleSignup.set(null);
+      this.notify.success(
+        `Account created. Welcome to VITRIX, ${this.auth.user()?.name ?? pending.name ?? 'member'}!`,
+      );
+      await this.goOn();
+    } catch (error) {
+      // Google's token is valid for an hour; if it expired, they simply press the button again.
+      this.failure.set(error instanceof Error ? error.message : 'Could not create the account.');
+    } finally {
+      this.busy.set(false);
+    }
+  }
+
+  cancelGoogle(): void {
+    this.googleSignup.set(null);
+    this.failure.set('');
   }
 
   private async goOn(): Promise<void> {

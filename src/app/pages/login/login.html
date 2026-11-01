@@ -32,6 +32,40 @@
         <h2>Coming soon</h2>
         <p>Student accounts are not open on this site yet.</p>
       </div>
+    } @else if (googleSignup(); as g) {
+      <div class="form google-consent" role="dialog" aria-labelledby="google-consent-title">
+        <h2 id="google-consent-title">Create your account</h2>
+        <p>
+          There is no VITRIX account for <strong>{{ g.email }}</strong> yet. We will create one with
+          your Google name and email. Your email is already confirmed by Google.
+        </p>
+        <label class="consent">
+          <input
+            type="checkbox"
+            [checked]="googleConsent()"
+            (change)="googleConsent.set($any($event.target).checked)"
+          />
+          <span>
+            I agree to the
+            <a routerLink="/privacy" target="_blank">privacy policy</a>
+            (how VITRIX stores my name and email).
+          </span>
+        </label>
+        @if (failure()) {
+          <p class="error" role="alert">{{ failure() }}</p>
+        }
+        <div class="form-actions">
+          <button
+            class="btn btn-red"
+            type="button"
+            [disabled]="busy() || !googleConsent()"
+            (click)="createWithGoogle()"
+          >
+            {{ busy() ? 'Creating account…' : 'Create account' }}
+          </button>
+          <button class="btn btn-ghost" type="button" (click)="cancelGoogle()">Cancel</button>
+        </div>
+      </div>
     } @else {
       <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
         <div class="form-tabs" role="tablist" aria-label="Account">
@@ -52,6 +86,11 @@
             Create account
           </button>
         </div>
+
+        @if (googleEnabled && mode() !== 'forgot') {
+          <app-google-button (credential)="withGoogle($event)" />
+          <p class="or-divider"><span>or with email</span></p>
+        }
 
         @if (mode() === 'register') {
           <label>

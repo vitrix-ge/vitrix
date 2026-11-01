@@ -2284,3 +2284,42 @@ app-quiz-runner {
 .delete-warning p {
   margin: 0;
 }
+
+/* Continue with Google */
+app-google-button {
+  display: block;
+}
+
+.google-btn {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 2px 0;
+  color: var(--dim);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.google-consent h2 {
+  font-size: 26px;
+  margin: 0;
+}
+
+.google-consent p {
+  margin: 0;
+}

@@ -9,5 +9,5 @@ import { PRIVACY_CONTACT_EMAIL } from '../../site-data';
 })
 export class Privacy {
   readonly contactEmail = PRIVACY_CONTACT_EMAIL;
-  readonly updated = '31 October 2026';
+  readonly updated = '1 November 2026';
 }

@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Observable, firstValueFrom, from, map, of, shareReplay } from 'rxjs';
-import { AUTH_ENABLED, CLIENT_ID, IDENTITY_URL, SCOPE } from './auth.config';
+import { AUTH_ENABLED, CLIENT_ID, GOOGLE_GRANT, IDENTITY_URL, SCOPE } from './auth.config';
 
 export interface Member {
   id: string;
@@ -11,6 +11,8 @@ export interface Member {
   roles: string[];
   /** True once the member clicked the link in the confirmation email. */
   emailVerified: boolean;
+  /** False for accounts made with "Continue with Google" only (no VITRIX password). */
+  hasPassword: boolean;
   /** Course ids from COURSES. Filled by the future purchase flow (from an API). */
   courses: string[];
 }
@@ -64,6 +66,20 @@ export class Auth {
       grant_type: 'password',
       username: email.trim(),
       password,
+      scope: SCOPE,
+    });
+  }
+
+  /**
+   * "Continue with Google" with the ID token from Google's button. Throws GoogleConsentRequired when
+   * there is no account yet: ask for the privacy consent, then call again with acceptPrivacy = true.
+   */
+  async loginWithGoogle(idToken: string, acceptPrivacy = false): Promise<void> {
+    this.assertEnabled();
+    await this.requestTokens({
+      grant_type: GOOGLE_GRANT,
+      id_token: idToken,
+      accept_privacy: acceptPrivacy ? 'true' : 'false',
       scope: SCOPE,
     });
   }
@@ -191,10 +207,14 @@ export class Auth {
   }
 
   /**
-   * Permanently deletes the signed-in member's account (password required), then signs out.
+   * Permanently deletes the signed-in member's account, then signs out. Confirmed with the password,
+   * or (accounts without a password) with the email address typed again.
    * `afterDeleted` runs while the token is still in hand, e.g. to delete course progress elsewhere.
    */
-  async deleteAccount(password: string, afterDeleted?: () => Promise<void>): Promise<void> {
+  async deleteAccount(
+    confirmation: { password?: string; email?: string },
+    afterDeleted?: () => Promise<void>,
+  ): Promise<void> {
     this.assertEnabled();
     const token = this.accessToken();
     if (!token) {
@@ -203,7 +223,7 @@ export class Auth {
     try {
       await firstValueFrom(
         this.http.request('DELETE', `${IDENTITY_URL}/api/account`, {
-          body: { password },
+          body: confirmation,
           headers: { Authorization: `Bearer ${token}` },
         }),
       );
@@ -263,6 +283,9 @@ export class Auth {
         this.http.post<TokenResponse>(`${IDENTITY_URL}/connect/token`, body),
       );
     } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error?.error === 'consent_required') {
+        throw new GoogleConsentRequired(describeError(error));
+      }
       throw new Error(describeError(error));
     }
     this.start({
@@ -299,6 +322,9 @@ export class Auth {
     }
   }
 }
+
+/** "Continue with Google" for someone without an account yet: they must accept the privacy policy. */
+export class GoogleConsentRequired extends Error {}
 
 /** Members only. Visitors who are not signed in go to /login and come back afterwards. */
 export const authGuard: CanActivateFn = (_route, state) => {
@@ -351,6 +377,7 @@ function toMember(accessToken: string): Member | null {
     const rawName = String(claims['name'] ?? '');
     const roles = claims['role'];
     const verified = claims['email_verified'];
+    const hasPassword = claims['has_password'];
     return {
       id: String(claims['sub'] ?? ''),
       email,
@@ -358,6 +385,8 @@ function toMember(accessToken: string): Member | null {
       name: rawName && !rawName.includes('@') ? rawName : email.split('@')[0] || 'Member',
       roles: Array.isArray(roles) ? roles.map(String) : roles ? [String(roles)] : [],
       emailVerified: verified === true || verified === 'true',
+      // Older tokens don't have the claim: those accounts all have a password.
+      hasPassword: !(hasPassword === false || hasPassword === 'false'),
       courses: [],
     };
   } catch {

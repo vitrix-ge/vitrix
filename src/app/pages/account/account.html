@@ -122,13 +122,28 @@
               </label>
             </div>
           }
-          <label>
-            Confirm with your password
-            <input type="password" formControlName="password" autocomplete="current-password" />
-            @if (deleteForm.controls.password.invalid && deleteForm.controls.password.touched) {
-              <span class="error">Enter your password.</span>
-            }
-          </label>
+          @if (user()?.hasPassword === false) {
+            <label>
+              Type your email address to confirm
+              <input
+                type="email"
+                formControlName="password"
+                autocomplete="off"
+                [placeholder]="user()?.email"
+              />
+              @if (deleteForm.controls.password.invalid && deleteForm.controls.password.touched) {
+                <span class="error">Type your email address.</span>
+              }
+            </label>
+          } @else {
+            <label>
+              Confirm with your password
+              <input type="password" formControlName="password" autocomplete="current-password" />
+              @if (deleteForm.controls.password.invalid && deleteForm.controls.password.touched) {
+                <span class="error">Enter your password.</span>
+              }
+            </label>
+          }
           @if (deleteError()) {
             <p class="error" role="alert">{{ deleteError() }}</p>
           }
