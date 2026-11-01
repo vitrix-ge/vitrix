@@ -69,13 +69,43 @@
   stop-color: #8a96a4;
 }
 
-/* Georgian: Mtavruli capitals are wide, so headings get less letter spacing. */
-:lang(ka) h1,
-:lang(ka) h2,
-:lang(ka) h3,
-:lang(ka) .eyebrow,
-:lang(ka) .btn {
-  letter-spacing: 0.02em;
+/* Georgian (html lang="ka"): FiraGO, self-hosted in public/fonts/firago (@font-face in index.html).
+   FiraGO has no Georgian capitals (Mtavruli) and lowercase Georgian reads better anyway, so nothing
+   is set in capitals, and the wide letter spacing meant for Latin capitals is reduced. */
+html:lang(ka) {
+  --body: 'FiraGO', 'Manrope', Arial, sans-serif;
+  --display: 'FiraGO', 'Montserrat', Arial, sans-serif;
+}
+
+html:lang(ka) *:not(.wordmark, .wordmark *) {
+  text-transform: none !important;
+}
+
+html:lang(ka) h1,
+html:lang(ka) h2,
+html:lang(ka) h3 {
+  letter-spacing: 0;
+}
+
+html:lang(ka)
+  :is(
+    .eyebrow,
+    .kicker,
+    .side-kicker,
+    .side-note,
+    .institute,
+    .tagline,
+    .footer-mark,
+    .btn,
+    .form label,
+    .stats span,
+    .course-card p,
+    .data-table th,
+    .or-divider,
+    .features p,
+    .lang-switch button
+  ) {
+  letter-spacing: 0.01em;
 }
 
 *,
@@ -95,8 +125,8 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--body);
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 17px;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -469,8 +499,8 @@ p {
 .institute {
   color: var(--muted);
   letter-spacing: 0.12em;
-  font-size: 13px;
-  line-height: 1.45;
+  font-size: 14px;
+  line-height: 1.5;
   font-weight: 500;
 }
 
@@ -506,7 +536,7 @@ p {
 .side-note {
   color: var(--muted);
   letter-spacing: 0.14em;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1.35;
 }
@@ -597,10 +627,10 @@ p {
 
 .features p {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .reality {
@@ -630,8 +660,9 @@ p {
 .reality p,
 .page-section p,
 .lede {
+  line-height: 1.55;
   color: var(--muted);
-  font-size: 17px;
+  font-size: 19px;
   max-width: 52ch;
 }
 
@@ -687,7 +718,7 @@ p {
   margin-top: 8px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
 }
 
@@ -742,7 +773,7 @@ p {
 
 .course-card p {
   color: var(--dim);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   line-height: 1.35;
@@ -888,7 +919,7 @@ p {
   gap: 16px;
   padding-top: 14px;
   color: var(--dim);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .page-hero {
@@ -996,7 +1027,7 @@ p {
 .form label {
   display: grid;
   gap: 6px;
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
@@ -1026,7 +1057,7 @@ p {
   color: var(--red);
   letter-spacing: 0;
   text-transform: none;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .toast-region {
@@ -1078,7 +1109,7 @@ p {
 .form p.error,
 .form p.form-success {
   margin: 0;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
 }
 
@@ -1090,7 +1121,8 @@ p {
   color: var(--ok);
 }
 
-.prose {
+/* Long text: comfortable line length, left-aligned with the page title (the wrap stays full width). */
+.prose > * {
   max-width: 760px;
 }
 
@@ -1184,7 +1216,7 @@ p {
   color: var(--dim);
   letter-spacing: 0;
   text-transform: none;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .notice h2 {
@@ -1388,7 +1420,7 @@ p {
 .lesson-meta {
   display: inline-block;
   color: var(--dim);
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 0;
   text-transform: none;
 }
@@ -1496,7 +1528,7 @@ td .lesson-meta {
   display: inline-block;
   padding: 2px 8px;
   border: 1px solid var(--line);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0.04em;
   color: var(--muted);
   background: transparent;
@@ -1708,7 +1740,7 @@ td .lesson-meta {
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
   background: var(--surface);
 }
