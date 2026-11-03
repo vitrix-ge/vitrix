@@ -14,6 +14,7 @@ import { AttemptResult, Certificate, CourseDetail, Lesson } from '../../content/
 import { QuizRunner } from '../quiz/quiz-runner';
 import { TPipe, TrPipe, lang, pageTitleOverride, t, tr } from '../../content/i18n';
 import { youtubeEmbedUrl } from '../../content/youtube';
+import { MyLearning } from '../../content/my-learning';
 
 /**
  * /courses/:slug — overview for everyone; lessons (with video), progress and tests for enrolled
@@ -31,6 +32,9 @@ export class CoursePage {
   private readonly sanitizer = inject(DomSanitizer);
   private readonly notify = inject(Notify);
   readonly auth = inject(Auth);
+  readonly learning = inject(MyLearning);
+  /** Applied already and waiting for an answer: no second Apply button. */
+  readonly applied = computed(() => this.learning.appliedFor(this.course()?.code));
 
   readonly detail = signal<CourseDetail | null>(null);
   readonly loading = signal(true);
@@ -55,7 +59,7 @@ export class CoursePage {
   /** Show the Apply bar (sticky at the bottom on phones) to everyone not enrolled yet. */
   readonly showApply = computed(() => {
     const d = this.detail();
-    return !this.loading() && !d?.enrolled && !d?.needsEmailConfirmation;
+    return !this.loading() && !d?.enrolled && !d?.needsEmailConfirmation && !this.applied();
   });
   readonly completedCount = computed(
     () => this.detail()?.lessons.filter((lesson) => lesson.completed).length ?? 0,

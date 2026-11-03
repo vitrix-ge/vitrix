@@ -88,6 +88,17 @@
             <app-confirm-email-notice
               reason="You are enrolled in this course: confirm your email and its lessons and tests open."
             />
+          } @else if (applied()) {
+            <div class="notice">
+              <h2>{{ 'Application sent' | t }}</h2>
+              <p>
+                {{
+                  'Our team has your application for this course and will reply by email. Lessons and tests open once you are enrolled.'
+                    | t
+                }}
+              </p>
+              <a class="btn btn-ghost" routerLink="/my-courses">{{ 'My courses' | t }}</a>
+            </div>
           } @else {
             <div class="notice">
               <h2>{{ 'Join this course' | t }}</h2>

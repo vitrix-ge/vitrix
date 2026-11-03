@@ -188,7 +188,7 @@ export class Login {
   }
 
   private async goOn(): Promise<void> {
-    const redirect = this.route.snapshot.queryParamMap.get('redirect') ?? '/account';
-    await this.router.navigateByUrl(redirect.startsWith('/') ? redirect : '/account');
+    const redirect = this.route.snapshot.queryParamMap.get('redirect') ?? '/my-courses';
+    await this.router.navigateByUrl(redirect.startsWith('/') ? redirect : '/my-courses');
   }
 }

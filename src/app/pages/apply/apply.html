@@ -39,7 +39,39 @@
           }}
         </p>
         <div class="form-actions">
-          <a class="btn btn-ghost" routerLink="/account">{{ 'See it in My account' | t }}</a>
+          <a class="btn btn-ghost" routerLink="/my-courses">{{ 'See it in My courses' | t }}</a>
+        </div>
+      </div>
+    } @else if (alreadyHave(); as c) {
+      <div class="notice notice-ok" role="status">
+        <h2>{{ 'You already have this course' | t }}</h2>
+        <p>
+          {{
+            'You are enrolled in {course}. Its lessons and tests are in My courses.'
+              | t: { course: c.code + ' — ' + (c.title | tr) }
+          }}
+        </p>
+        <div class="form-actions">
+          <a class="btn btn-red" [routerLink]="['/courses', c.slug]">{{ 'Open the course' | t }}</a>
+          <button type="button" class="btn btn-ghost" (click)="chooseAnother()">
+            {{ 'Apply for another course' | t }}
+          </button>
+        </div>
+      </div>
+    } @else if (alreadyApplied(); as c) {
+      <div class="notice" role="status">
+        <h2>{{ 'You have already applied' | t }}</h2>
+        <p>
+          {{
+            'Your application for {course} is with our team. We will reply to {email}; you can follow it in My courses.'
+              | t: { course: c.code, email: email() }
+          }}
+        </p>
+        <div class="form-actions">
+          <a class="btn btn-red" routerLink="/my-courses">{{ 'My courses' | t }}</a>
+          <button type="button" class="btn btn-ghost" (click)="chooseAnother()">
+            {{ 'Apply for another course' | t }}
+          </button>
         </div>
       </div>
     } @else if (!loading() && !serverReady()) {
@@ -78,7 +110,14 @@
           <select formControlName="course">
             <option value="" disabled>{{ 'Select a program' | t }}</option>
             @for (course of courses(); track course.id) {
-              <option [value]="course.id">{{ course.code }} — {{ course.title | tr }}</option>
+              <option [value]="course.id" [disabled]="unavailable(course.code)">
+                {{ course.code }} — {{ course.title | tr }}
+                @if (learning.enrolledIn(course.code)) {
+                  ({{ 'already yours' | t }})
+                } @else if (learning.appliedFor(course.code)) {
+                  ({{ 'already applied' | t }})
+                }
+              </option>
             }
           </select>
           @if (invalid('course')) {

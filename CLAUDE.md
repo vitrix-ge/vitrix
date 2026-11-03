@@ -140,9 +140,12 @@ Pages:
 - `/login` — two tabs, **Log in** and **Create account**. Creating an account signs the member
   in straight away; both then go to the `?redirect=` URL or `/account` with a toast ("Account
   created. Welcome…" / "Welcome back…"). Logging out shows "You have been logged out.".
-- `/account` and `/apply` — protected by `authGuard` (not signed in → `/login?redirect=...`).
-  Apply is pre-filled with the member's name and email.
-- Header shows "Log in" or the member's name; mobile menu shows "Log in" / "My account".
+- `/my-courses`, `/account` and `/apply` — protected by `authGuard` (not signed in →
+  `/login?redirect=...`). After logging in members land on `/my-courses` (unless `redirect` says
+  otherwise). Apply is pre-filled with the member's name and email.
+- Header: "Log in" for visitors. Signed in: a **My courses** link (desktop) and an avatar button
+  (initials) opening the **account menu**: name + email, My courses, Account settings (`/account`),
+  Admin panel (staff), Log out. On phones the same items sit at the top of the menu.
 - `Auth.accessToken()` gives the Bearer token for calling VITRIX APIs later.
 - `Member.courses` is a list of course `id`s from `COURSES`. Nothing fills it yet — that is the
   job of the future purchase flow (an API that validates the identity server's tokens).
@@ -190,9 +193,16 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
 - **Admin → Applications** (admin only): tabs Applications / Messages; status
   (new → contacted → accepted/rejected), a private note (saved on leaving the field), **Accept & enroll**
   (enrolls the applicant's email in the course), mark messages handled, delete.
-- **My account** shows "Continue where you left off" (next lesson of the started course with the most
+- **My courses** (`/my-courses`, the learning dashboard; `/account` is now only settings, log out
+  and delete account) shows "Continue where you left off" (next lesson of the started course with the most
   progress; links to `/courses/<slug>?continue=1`, which scrolls to it), My applications with their
-  status (Received / In review / Accepted / Not accepted), My certificates and test results.
+  status (Received / In review / Accepted / Not accepted; hidden once the course is in My courses),
+  My certificates and test results.
+- **No second application:** `content/my-learning.ts` (`MyLearning`) holds the member's courses and
+  applications for every page. Apply marks courses "already yours" / "already applied" (disabled) and,
+  when opened for such a course, says so with "Open the course" / "My courses"; the course list shows
+  "Open the course" for enrolled courses; the course page says "Application sent" while one is open.
+  vitrix-api refuses the same cases.
 - **Certificates:** passing a course's final exam issues one (vitrix-api). `/certificates/:code` shows it
   in Georgian + English, checked live against the server (so the page is also the verification), with
   "Print or save as PDF" (`window.print()`; print styles give one A4 landscape page). The course page

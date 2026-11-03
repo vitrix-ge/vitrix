@@ -1,0 +1,154 @@
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow">{{ 'Hello, {name}' | t: { name: user()?.name } }}</p>
+    <h1>{{ 'My courses' | t }}</h1>
+    <p class="lede">
+      {{ 'Your lessons, progress, certificates and applications in one place.' | t }}
+    </p>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="wrap">
+    <app-confirm-email-notice reason="Confirm it to open your courses and send applications." />
+
+    @if (resume(); as r) {
+      <a
+        class="resume-card"
+        [routerLink]="['/courses', r.course.slug]"
+        [queryParams]="{ continue: 1 }"
+      >
+        <img [src]="r.course.imageUrl" alt="" />
+        <div>
+          <p class="eyebrow">{{ 'Continue where you left off' | t }}</p>
+          <h2>{{ r.nextLessonTitle | tr }}</h2>
+          <p class="lesson-meta">
+            {{ r.course.code | t }} · {{ r.course.title | tr }} ·
+            {{ '{p}% done' | t: { p: percent(r) } }}
+          </p>
+          <div class="progress"><span [style.width.%]="percent(r)"></span></div>
+        </div>
+        <span class="btn btn-red">{{ 'Continue' | t }}</span>
+      </a>
+    }
+
+    @if (loading()) {
+      <p class="lesson-meta">{{ 'Loading your courses…' | t }}</p>
+    } @else if (learning.courses().length) {
+      <div class="my-courses">
+        @for (mc of learning.courses(); track mc.course.id) {
+          <a class="my-course" [routerLink]="['/courses', mc.course.slug]">
+            <img [src]="mc.course.imageUrl" alt="" />
+            <div>
+              <p class="eyebrow">{{ mc.course.code | t }}</p>
+              <h3>{{ mc.course.title | tr }}</h3>
+              @if (mc.lessonsTotal) {
+                <div class="progress"><span [style.width.%]="percent(mc)"></span></div>
+              }
+              <p class="lesson-meta">
+                @if (mc.lessonsTotal) {
+                  {{
+                    '{done}/{total} lessons'
+                      | t: { done: mc.lessonsCompleted, total: mc.lessonsTotal }
+                  }}
+                } @else {
+                  {{ 'You are enrolled. Lessons are coming soon.' | t }}
+                }
+                @if (mc.quizzesTotal) {
+                  ·
+                  {{
+                    '{passed}/{total} exams passed'
+                      | t: { passed: mc.quizzesPassed, total: mc.quizzesTotal }
+                  }}
+                }
+              </p>
+            </div>
+            <span class="go" aria-hidden="true">→</span>
+          </a>
+        }
+      </div>
+    } @else {
+      <p>
+        {{
+          'You are not enrolled in a course yet. Apply for a program and our team will add you; it then appears here with your lessons and tests.'
+            | t
+        }}
+      </p>
+      <div class="form-actions">
+        <a class="btn btn-ghost" routerLink="/courses"
+          >{{ 'Browse courses' | t }} <span aria-hidden="true">→</span></a
+        >
+        <a class="btn btn-ghost" routerLink="/apply">{{ 'Apply' | t }}</a>
+      </div>
+    }
+
+    @if (certificates().length) {
+      <h2 class="block-title">{{ 'My certificates' | t }}</h2>
+      <div class="cert-list">
+        @for (cert of certificates(); track cert.code) {
+          <a class="cert-item" [routerLink]="['/certificates', cert.code]">
+            <span class="cert-badge" aria-hidden="true">✓</span>
+            <div>
+              <strong>{{ cert.courseTitle | tr }}</strong>
+              <span class="lesson-meta"
+                >{{ cert.code }} · {{ cert.issuedAt | date: 'dd.MM.y' }} ·
+                {{ cert.scorePercent }}%</span
+              >
+            </div>
+            <span class="go" aria-hidden="true">→</span>
+          </a>
+        }
+      </div>
+    }
+
+    @if (openApplications().length) {
+      <h2 class="block-title">{{ 'My applications' | t }}</h2>
+      <ul class="app-list">
+        @for (a of openApplications(); track a.id) {
+          <li>
+            <div>
+              <strong>{{ a.courseCode | t }}</strong>
+              @if (a.courseTitle) {
+                — {{ a.courseTitle | tr }}
+              }
+              <span class="lesson-meta">{{ a.createdAt | date: 'dd.MM.y' }}</span>
+            </div>
+            <span [class]="'tag status-' + a.status">{{ statusLabel(a.status) | t }}</span>
+          </li>
+        }
+      </ul>
+    }
+
+    @if (results().length) {
+      <h2 class="block-title">{{ 'My test results' | t }}</h2>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>{{ 'Test' | t }}</th>
+              <th>{{ 'Course' | t }}</th>
+              <th>{{ 'Date' | t }}</th>
+              <th>{{ 'Score' | t }}</th>
+              <th>{{ 'Result' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of results(); track r.id) {
+              <tr>
+                <td>{{ r.quizTitle | tr }}</td>
+                <td>{{ r.courseTitle | tr }}</td>
+                <td>{{ r.submittedAt | date: 'dd.MM.y, HH:mm' }}</td>
+                <td>{{ r.scorePercent }}%</td>
+                <td>
+                  <span class="tag" [class.tag-ok]="r.passed">{{
+                    (r.passed ? 'Passed' : 'Not passed') | t
+                  }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</section>
