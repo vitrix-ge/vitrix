@@ -8,11 +8,12 @@ import { ContentApi } from '../../content/content.api';
 import { CONTENT_ENABLED } from '../../content/content.config';
 import { TPipe, TrPipe, t } from '../../content/i18n';
 import { MyLearning } from '../../content/my-learning';
+import { TwoFactorSettings } from './two-factor-settings';
 import { isStaff } from '../../content/roles';
 
 @Component({
   selector: 'app-account',
-  imports: [RouterLink, ReactiveFormsModule, TrPipe, TPipe, ConfirmEmailNotice],
+  imports: [RouterLink, ReactiveFormsModule, TrPipe, TPipe, ConfirmEmailNotice, TwoFactorSettings],
   templateUrl: './account.html',
 })
 export class Account {

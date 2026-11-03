@@ -14,6 +14,8 @@ export interface Member {
   emailVerified: boolean;
   /** False for accounts made with "Continue with Google" only (no VITRIX password). */
   hasPassword: boolean;
+  /** Two-step login (authenticator app) is on. */
+  twoFactor: boolean;
   /** Course ids from COURSES. Filled by the future purchase flow (from an API). */
   courses: string[];
 }
@@ -61,13 +63,18 @@ export class Auth {
     this.ready$.subscribe();
   }
 
-  async login(email: string, password: string): Promise<void> {
+  /**
+   * Throws TwoFactorRequired when the account has two-step login: ask for the authenticator code
+   * (or a recovery code), then call again with `otp`.
+   */
+  async login(email: string, password: string, otp?: string): Promise<void> {
     this.assertEnabled();
     await this.requestTokens({
       grant_type: 'password',
       username: email.trim(),
       password,
       scope: SCOPE,
+      ...(otp ? { otp: otp.trim() } : {}),
     });
   }
 
@@ -75,14 +82,65 @@ export class Auth {
    * "Continue with Google" with the ID token from Google's button. Throws GoogleConsentRequired when
    * there is no account yet: ask for the privacy consent, then call again with acceptPrivacy = true.
    */
-  async loginWithGoogle(idToken: string, acceptPrivacy = false): Promise<void> {
+  async loginWithGoogle(idToken: string, acceptPrivacy = false, otp?: string): Promise<void> {
     this.assertEnabled();
     await this.requestTokens({
       grant_type: GOOGLE_GRANT,
       id_token: idToken,
       accept_privacy: acceptPrivacy ? 'true' : 'false',
       scope: SCOPE,
+      ...(otp ? { otp: otp.trim() } : {}),
     });
+  }
+
+  // ------------------------------------------------------------------ two-step login (Account settings)
+
+  twoFactorStatus(): Promise<TwoFactorStatus> {
+    return this.accountCall('GET', '/api/account/two-factor');
+  }
+  /** A new secret for the authenticator app: show `uri` as a QR code, `key` for typing in. */
+  twoFactorSetup(): Promise<{ key: string; uri: string }> {
+    return this.accountCall('POST', '/api/account/two-factor/setup');
+  }
+  /** Turns it on with the first code from the app; returns the one-time recovery codes. */
+  async twoFactorEnable(code: string): Promise<string[]> {
+    const result = await this.accountCall<{ recoveryCodes: string[] }>(
+      'POST',
+      '/api/account/two-factor/enable',
+      { code },
+    );
+    await this.reloadMember();
+    return result.recoveryCodes;
+  }
+  async twoFactorDisable(code: string): Promise<void> {
+    await this.accountCall('POST', '/api/account/two-factor/disable', { code });
+    await this.reloadMember();
+  }
+  async twoFactorNewRecoveryCodes(code: string): Promise<string[]> {
+    const result = await this.accountCall<{ recoveryCodes: string[] }>(
+      'POST',
+      '/api/account/two-factor/recovery-codes',
+      { code },
+    );
+    return result.recoveryCodes;
+  }
+
+  private async accountCall<T>(method: 'GET' | 'POST', path: string, body?: unknown): Promise<T> {
+    this.assertEnabled();
+    const token = this.accessToken();
+    if (!token) {
+      throw new Error(t('Your session has expired. Please log in again.'));
+    }
+    try {
+      return await firstValueFrom(
+        this.http.request<T>(method, `${IDENTITY_URL}${path}`, {
+          body,
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      );
+    } catch (error) {
+      throw new Error(describeError(error));
+    }
   }
 
   /**
@@ -291,6 +349,9 @@ export class Auth {
       if (error instanceof HttpErrorResponse && error.error?.error === 'consent_required') {
         throw new GoogleConsentRequired(describeError(error));
       }
+      if (error instanceof HttpErrorResponse && error.error?.error === 'two_factor_required') {
+        throw new TwoFactorRequired(describeError(error));
+      }
       throw new Error(describeError(error));
     }
     this.start({
@@ -330,6 +391,14 @@ export class Auth {
 
 /** "Continue with Google" for someone without an account yet: they must accept the privacy policy. */
 export class GoogleConsentRequired extends Error {}
+
+/** The password (or Google) was right; the account also needs its two-step login code. */
+export class TwoFactorRequired extends Error {}
+
+export interface TwoFactorStatus {
+  enabled: boolean;
+  recoveryCodesLeft: number;
+}
 
 /** Members only. Visitors who are not signed in go to /login and come back afterwards. */
 export const authGuard: CanActivateFn = (_route, state) => {
@@ -383,6 +452,7 @@ function toMember(accessToken: string): Member | null {
     const roles = claims['role'];
     const verified = claims['email_verified'];
     const hasPassword = claims['has_password'];
+    const twoFactor = claims['two_factor'];
     return {
       id: String(claims['sub'] ?? ''),
       email,
@@ -392,6 +462,7 @@ function toMember(accessToken: string): Member | null {
       emailVerified: verified === true || verified === 'true',
       // Older tokens don't have the claim: those accounts all have a password.
       hasPassword: !(hasPassword === false || hasPassword === 'false'),
+      twoFactor: twoFactor === true || twoFactor === 'true',
       courses: [],
     };
   } catch {

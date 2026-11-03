@@ -1,0 +1,37 @@
+# Builds the site exactly like for publishing and runs the end-to-end checks in e2e/ (pages open,
+# no security-policy violations, forms send the right data, nothing wider than a phone screen…).
+# A red ✗ on a pull request means something broke: open the run to see which check and why.
+name: Test
+
+on:
+  push:
+    branches-ignore: [gh-pages]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NG_CLI_ANALYTICS: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build (as for GitHub Pages)
+        run: npm run build:pages
+      - name: Install the test browser
+        run: npx playwright install --with-deps chromium
+      - name: End-to-end checks
+        run: npx playwright test
+      - name: Keep the details of failed checks
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: test-results/
+          retention-days: 14

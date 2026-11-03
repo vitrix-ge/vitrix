@@ -15,12 +15,20 @@ form submissions and certificates.
 ## Commands
 
 ```bash
-npm install       # once
-npm start         # dev server at http://localhost:4200
-npm run build     # production build into dist/vitrix/browser
+npm install                           # once
+npm start                             # dev server at http://localhost:4200
+npm run build                         # production build into dist/vitrix/browser
+npm run build:pages && npm run e2e    # end-to-end checks of the published build
 ```
 
-No test files exist yet (`skipTests: true` in angular.json).
+**Tests:** `e2e/` (Playwright, `playwright.config.ts`) runs the real published build at its real address
+with both servers replaced by test data (`e2e/fixtures.ts`), on a desktop and a phone screen: every
+public page opens with no security-policy violation and no sideways scrolling; course list/page,
+404, login errors, sign-up consent + honeypot, contact form (Turnstile token, empty honeypot),
+My courses, enrolled course, no second application, account menu, students kept out of admin,
+two-step login (code step, setup, staff reminder).
+GitHub runs them on every push and pull request (`.github/workflows/test.yml`). Add a check when
+adding a feature. No unit tests (`skipTests: true` in angular.json).
 
 ## Stack and conventions
 
@@ -201,6 +209,12 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
 - **"Not a robot"** (Cloudflare Turnstile, `turnstile.ts`, mostly invisible) on Create account, Forgot
   password and Contact when `TURNSTILE_SITE_KEY` (auth.config.ts) is set; the servers check the token
   with `Turnstile__SecretKey` (Render, both APIs). Either empty = off. Honeypots and rate limits stay.
+- **Two-step login** (authenticator app, optional for everyone; staff without it see a reminder in
+  the admin panel): Account settings → `pages/account/two-factor-settings.ts` (QR code drawn in the
+  browser with `qrcode`, loaded only there; 10 one-time recovery codes). Login: identity-api answers
+  `two_factor_required` → the login page asks for the code and sends the request again with `otp`
+  (also after "Continue with Google"). Token claim `two_factor` → `Member.twoFactor`. Admin → Team
+  shows who has it and can reset it for someone who lost their phone.
 - **404:** unknown addresses show the "Page not found" page (GitHub answers them with HTTP 404 via
   404.html, `noindex`). The JavaScript bundles are public by nature; never put secrets in the site
   (the Google client id and Turnstile site key are public by design).

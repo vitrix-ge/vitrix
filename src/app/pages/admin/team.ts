@@ -105,6 +105,37 @@ export class AdminTeam {
     }
   }
 
+  /** For someone who lost their phone and recovery codes: turns their two-step login off. */
+  async resetTwoFactor(user: StaffUser): Promise<void> {
+    if (
+      !confirm(
+        t(
+          'Turn off two-step login for {email}? Only do this if they lost their phone and recovery codes, and you are sure it is really them asking.',
+          { email: user.email },
+        ),
+      )
+    ) {
+      return;
+    }
+    try {
+      const saved = await firstValueFrom(
+        this.http.delete<StaffUser>(`${IDENTITY_URL}/api/admin/users/${user.id}/two-factor`, {
+          headers: this.headers(),
+        }),
+      );
+      const replace = (list: StaffUser[]) => list.map((u) => (u.id === saved.id ? saved : u));
+      this.found.update((list) => (list ? replace(list) : list));
+      this.staff.update(replace);
+      this.notify.success(
+        t('Two-step login is off for {email}. Ask them to turn it on again.', {
+          email: saved.email,
+        }),
+      );
+    } catch (e) {
+      this.notify.error(describe(e));
+    }
+  }
+
   private get(search: string): Promise<StaffUser[]> {
     const q = search ? `?search=${encodeURIComponent(search)}` : '';
     return firstValueFrom(

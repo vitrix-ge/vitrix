@@ -3766,3 +3766,123 @@ button.lesson-head:hover {
     display: none;
   }
 }
+
+/* =====================================================================================
+   Two-step login (Account settings, login page, admin nudge)
+   ===================================================================================== */
+
+.two-factor {
+  margin: 28px 0;
+}
+
+.two-factor-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.two-factor-head h2 {
+  margin: 0 0 6px;
+}
+
+.notice-inline {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(225, 20, 30, 0.08);
+  color: var(--heading);
+  font-size: 15px;
+}
+
+.setup-steps {
+  margin: 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 18px;
+}
+
+.setup-steps li::marker {
+  font-weight: 700;
+  color: var(--red);
+}
+
+.qr-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.qr-box img {
+  width: 200px;
+  height: 200px;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.secret-key {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--field);
+  border: 1px solid var(--line);
+  font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  letter-spacing: 0.06em;
+  overflow-wrap: anywhere;
+}
+
+.code-form {
+  margin-top: 10px;
+  max-width: 460px;
+}
+
+.code-form input,
+.otp-input {
+  font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  font-size: 20px !important;
+  letter-spacing: 0.2em;
+}
+
+.recovery-codes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.recovery-codes code {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--field);
+  border: 1px solid var(--line);
+  font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  text-align: center;
+}
+
+.two-factor-nudge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  padding: 14px 18px;
+  border-left: 3px solid var(--red);
+}
+
+.two-factor-nudge p {
+  margin: 0;
+  flex: 1 1 320px;
+}
+
+.data-table .form-link {
+  margin-left: 8px;
+  font-size: 13px;
+}
