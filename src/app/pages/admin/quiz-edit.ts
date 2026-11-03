@@ -15,10 +15,11 @@ import { TPipe, TrPipe, t } from '../../content/i18n';
 import { ltextGroup, move } from './forms';
 import { LTextField } from './ltext-field';
 import { Dialog } from '../../dialog';
+import { Loading } from '../../loading';
 
 @Component({
   selector: 'app-admin-quiz-edit',
-  imports: [ReactiveFormsModule, RouterLink, TrPipe, LTextField, NgTemplateOutlet, TPipe],
+  imports: [Loading, ReactiveFormsModule, RouterLink, TrPipe, LTextField, NgTemplateOutlet, TPipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './quiz-edit.html',
 })

@@ -1,4 +1,10 @@
-@if (cert(); as c) {
+@if (loading() && !cert()) {
+  <section class="page-section">
+    <div class="wrap">
+      <app-loading text="Checking…" />
+    </div>
+  </section>
+} @else if (cert(); as c) {
   <section class="page-section cert-page">
     <div class="wrap">
       <div class="cert-toolbar no-print">

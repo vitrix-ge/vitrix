@@ -17,7 +17,13 @@
         </p>
         @if (!r.passed) {
           <div class="form-actions">
-            <button type="button" class="btn btn-red" [disabled]="busy()" (click)="start()">
+            <button
+              type="button"
+              class="btn btn-red"
+              [disabled]="busy()"
+              [class.is-busy]="busy()"
+              (click)="start()"
+            >
               {{ 'Try again' | t }}
             </button>
           </div>
@@ -70,7 +76,13 @@
       <p class="error" role="alert">{{ error() | t }}</p>
     }
     <div class="form-actions">
-      <button type="button" class="btn btn-red" [disabled]="busy()" (click)="submit()">
+      <button
+        type="button"
+        class="btn btn-red"
+        [disabled]="busy()"
+        [class.is-busy]="busy()"
+        (click)="submit()"
+      >
         {{ (busy() ? 'Checking…' : mode() === 'lesson' ? 'Check answers' : 'Submit answers') | t }}
       </button>
       <span class="lesson-meta">{{
@@ -94,7 +106,13 @@
     @if (error()) {
       <p class="error" role="alert">{{ error() | t }}</p>
     }
-    <button type="button" class="btn btn-red" [disabled]="busy()" (click)="start()">
+    <button
+      type="button"
+      class="btn btn-red"
+      [disabled]="busy()"
+      [class.is-busy]="busy()"
+      (click)="start()"
+    >
       {{ (busy() ? 'Starting…' : 'Start quiz') | t }}
     </button>
   </div>
@@ -111,7 +129,13 @@
       <p class="error" role="alert">{{ error() | t }}</p>
     }
     <div class="form-actions">
-      <button type="button" class="btn btn-red" [disabled]="busy()" (click)="start()">
+      <button
+        type="button"
+        class="btn btn-red"
+        [disabled]="busy()"
+        [class.is-busy]="busy()"
+        (click)="start()"
+      >
         {{ (busy() ? 'Starting…' : 'Start exam') | t }}
       </button>
       <button type="button" class="btn btn-ghost" (click)="back.emit()">{{ 'Back' | t }}</button>

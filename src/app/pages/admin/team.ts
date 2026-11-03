@@ -8,6 +8,7 @@ import { Notify } from '../../notify';
 import { StaffUser } from '../../content/content.models';
 import { TPipe, t } from '../../content/i18n';
 import { Dialog } from '../../dialog';
+import { Loading } from '../../loading';
 
 /**
  * Admin only: give people the editor (content) or admin role. Roles live on identity-api;
@@ -15,7 +16,7 @@ import { Dialog } from '../../dialog';
  */
 @Component({
   selector: 'app-admin-team',
-  imports: [NgTemplateOutlet, TPipe],
+  imports: [Loading, NgTemplateOutlet, TPipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './team.html',
 })

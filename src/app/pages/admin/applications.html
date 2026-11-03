@@ -74,7 +74,7 @@
 </div>
 
 @if (loading() && !applications().length && !messages().length) {
-  <p class="lesson-meta">{{ 'Loading…' | t }}</p>
+  <app-loading />
 } @else if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
 } @else if (tab() === 'applications') {

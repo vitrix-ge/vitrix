@@ -17,6 +17,7 @@ import { Notify } from './notify';
 import { TPipe, pageTitleOverride, syncDocumentLang, t } from './content/i18n';
 import { syncDocumentTheme } from './theme';
 import { DialogHost } from './dialog';
+import { LoadingBar } from './loading';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +28,7 @@ import { DialogHost } from './dialog';
 })
 export class App {
   readonly notify = inject(Notify);
+  readonly loadingBar = inject(LoadingBar);
 
   constructor() {
     const router = inject(Router);

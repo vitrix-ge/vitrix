@@ -253,6 +253,10 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
 - **Confirmations** use `Dialog` (`dialog.ts`, `<app-dialog-host>` in the app shell, a styled native
   `<dialog>`): `if (!(await this.dialog.confirm({ title, message, confirm, tone: 'danger' }))) return;`.
   Never the browser's `confirm()`/`alert()`.
+- **Loaders:** `<app-loading text="…" />` (`loading.ts`: spinner + text; after 6 s it adds that the
+  server may be waking up) wherever a page waits for data; buttons get `[class.is-busy]="busy()"` next
+  to `[disabled]` (small spinner before the label); every HTTP request runs the thin red bar at the top
+  (`LoadingBar` + `loadingBarInterceptor`, shown after 250 ms).
 - **Course facts** (admin → course): Format, Duration, What you'll learn (one point per line) and
   Next start date; shown on the course page with the price. Empty start date = "On request".
 

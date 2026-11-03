@@ -69,7 +69,7 @@
           <p class="error" role="alert">{{ failure() | t }}</p>
         }
         <div class="form-actions">
-          <button class="btn btn-red" type="submit" [disabled]="busy()">
+          <button class="btn btn-red" type="submit" [disabled]="busy()" [class.is-busy]="busy()">
             {{ (busy() ? 'Checking…' : 'Log in') | t }}
           </button>
           <button class="btn btn-ghost" type="button" (click)="cancelSecondStep()">
@@ -109,6 +109,7 @@
             class="btn btn-red"
             type="button"
             [disabled]="busy() || !googleConsent()"
+            [class.is-busy]="busy()"
             (click)="createWithGoogle()"
           >
             {{ (busy() ? 'Creating account…' : 'Create account') | t }}
@@ -224,7 +225,7 @@
           <p class="error" role="alert">{{ failure() | t }}</p>
         }
 
-        <button class="btn btn-red" type="submit" [disabled]="busy()">
+        <button class="btn btn-red" type="submit" [disabled]="busy()" [class.is-busy]="busy()">
           @switch (mode()) {
             @case ('login') {
               {{ (busy() ? 'Logging in…' : 'Log in') | t }}

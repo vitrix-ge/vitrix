@@ -22,6 +22,7 @@ import { QuizRunner } from '../quiz/quiz-runner';
 import { TPipe, TrPipe, lang, pageTitleOverride, t, tr } from '../../content/i18n';
 import { youtubeEmbedUrl } from '../../content/youtube';
 import { MyLearning } from '../../content/my-learning';
+import { Loading } from '../../loading';
 
 /**
  * /courses/:slug — overview for everyone; lessons (with video), progress and tests for enrolled
@@ -29,7 +30,7 @@ import { MyLearning } from '../../content/my-learning';
  */
 @Component({
   selector: 'app-course',
-  imports: [RouterLink, DatePipe, TrPipe, TPipe, ConfirmEmailNotice, QuizRunner],
+  imports: [Loading, RouterLink, DatePipe, TrPipe, TPipe, ConfirmEmailNotice, QuizRunner],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './course.html',
 })

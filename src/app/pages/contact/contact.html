@@ -75,7 +75,12 @@
         @if (error()) {
           <p class="error" role="alert">{{ error() | t }}</p>
         }
-        <button class="btn btn-red" type="submit" [disabled]="sending()">
+        <button
+          class="btn btn-red"
+          type="submit"
+          [disabled]="sending()"
+          [class.is-busy]="sending()"
+        >
           {{ (sending() ? 'Sending…' : 'Send message') | t }}
         </button>
       </form>

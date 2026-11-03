@@ -148,7 +148,12 @@
           <a routerLink="/refunds">{{ 'refund policy' | t }}</a
           >.
         </p>
-        <button class="btn btn-red" type="submit" [disabled]="sending() || loading()">
+        <button
+          class="btn btn-red"
+          type="submit"
+          [disabled]="sending() || loading()"
+          [class.is-busy]="sending()"
+        >
           {{ (sending() ? 'Sending…' : 'Submit application') | t }}
         </button>
       </form>

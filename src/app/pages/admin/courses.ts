@@ -8,10 +8,11 @@ import { Course, LText } from '../../content/content.models';
 import { KA } from '../../content/ka';
 import { TPipe, TrPipe, t } from '../../content/i18n';
 import { move, slugify } from './forms';
+import { Loading } from '../../loading';
 
 @Component({
   selector: 'app-admin-courses',
-  imports: [RouterLink, ReactiveFormsModule, TrPipe, TPipe],
+  imports: [Loading, RouterLink, ReactiveFormsModule, TrPipe, TPipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './courses.html',
 })

@@ -5,7 +5,7 @@
 }
 
 @if (loading()) {
-  <p class="lesson-meta">{{ 'Loading…' | t }}</p>
+  <app-loading />
 } @else if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
 } @else if (quiz(); as q) {
@@ -69,7 +69,7 @@
       <span>{{ 'Published — enrolled students can take this test' | t }}</span>
     </label>
     <div class="form-actions sticky-actions">
-      <button type="submit" class="btn btn-red" [disabled]="saving()">
+      <button type="submit" class="btn btn-red" [disabled]="saving()" [class.is-busy]="saving()">
         {{ (saving() ? 'Saving…' : 'Save settings') | t }}
       </button>
       @if (form.dirty) {

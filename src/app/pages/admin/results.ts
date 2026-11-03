@@ -3,11 +3,12 @@ import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@a
 import { ContentApi } from '../../content/content.api';
 import { AttemptRow } from '../../content/content.models';
 import { TPipe, TrPipe, t, tr } from '../../content/i18n';
+import { Loading } from '../../loading';
 
 /** Admin only: every submitted test attempt, filterable, exportable as CSV. */
 @Component({
   selector: 'app-admin-results',
-  imports: [TrPipe, DatePipe, TPipe],
+  imports: [Loading, TrPipe, DatePipe, TPipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './results.html',
 })
