@@ -1,0 +1,1 @@
+import{d as ce}from"./chunk-hJXG2WY6.js";function i(r,o,n=!1){return r.nonNullable.group({en:[o?.en??``,n?[ce.required]:[]],ka:[o?.ka??``]})}function a(r){return r.toLowerCase().trim().replace(/[^a-z0-9]+/g,`-`).replace(/^-+|-+$/g,``).slice(0,60)}function g(r,o,n){let t=o+n;if(t<0||t>=r.length)return r;let e=[...r];return[e[o],e[t]]=[e[t],e[o]],e}export{g as n,i as r,a as t};
