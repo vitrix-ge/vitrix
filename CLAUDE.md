@@ -35,7 +35,9 @@ No test files exist yet (`skipTests: true` in angular.json).
   actions; navy footer. Headings in Montserrat (uppercase, wide like the wordmark), body Manrope.
   Use the color variables in `:root` of styles.scss, not hard-coded colors. Logo (`mark.ts`):
   graphite stroke + red stroke; the wordmark's X is fully red.
-  Mobile breakpoints at 1100px, 860px, 640px.
+  Mobile breakpoints at 1100px, 860px, 640px. Corners are rounded with `--radius` (cards, panels,
+  images), `--radius-sm` (buttons, fields) and pill tags; buttons are at least 46px tall.
+  The phone menu is a fixed panel under the header (`body.menu-open` stops the page scrolling).
 - **Languages (KA default, EN):** header switch `ქარ | EN` (`lang` signal in `content/i18n.ts`,
   saved in `localStorage` `vitrix.lang`, sets `<html lang>`). Interface text is written in English
   and translated with the `t` pipe / `t()` function: `{{ 'Log in' | t }}`,
