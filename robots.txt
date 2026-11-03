@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /vitrix/admin
+Disallow: /vitrix/account
+
+Sitemap: https://vitrix-ge.github.io/vitrix/sitemap.xml
