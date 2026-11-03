@@ -1,4 +1,12 @@
-import { Component, ElementRef, HostListener, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs';
 import { Auth } from '../auth';
@@ -69,6 +77,8 @@ export class SiteHeader {
   });
 
   constructor() {
+    // While the phone menu is open it covers the page under the header; the page behind stays put.
+    effect(() => document.body.classList.toggle('menu-open', this.menuOpen()));
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
       this.menuOpen.set(false);
       this.searchOpen.set(false);

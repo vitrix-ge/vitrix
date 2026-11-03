@@ -22,6 +22,10 @@
   --hero-fade-b: rgba(237, 242, 247, 0.86);
   --hero-fade-c: rgba(219, 232, 245, 0.55);
   --shadow: 0 10px 28px rgba(19, 35, 58, 0.08);
+  /* Rounded corners: cards, then buttons and fields, then small tags. */
+  --radius: 14px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
   /* Certificates stay white paper with navy ink in both themes. */
   --paper: #ffffff;
   --paper-ink: #13233a;
@@ -1262,6 +1266,7 @@ p {
 .account-cta {
   margin-top: 22px;
   margin-right: 12px;
+  margin-bottom: 22px;
 }
 
 @media (max-width: 1100px) {
@@ -3379,4 +3384,209 @@ app-google-button {
 
 .form-actions .tag {
   align-self: center;
+}
+
+/* =====================================================================================
+   Softer surfaces: rounded cards, buttons and fields, roomier buttons
+   ===================================================================================== */
+
+.btn {
+  justify-content: center;
+  min-height: 46px;
+  padding: 13px 22px;
+  border-radius: var(--radius-sm);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.btn-red {
+  box-shadow: 0 6px 16px rgba(225, 20, 30, 0.22);
+}
+
+.btn-red:hover {
+  box-shadow: 0 8px 20px rgba(225, 20, 30, 0.3);
+}
+
+.btn:focus-visible,
+.icon-btn:focus-visible,
+.avatar-btn:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+}
+
+.btn-sm {
+  min-height: 38px;
+  padding: 9px 14px;
+  border-radius: 8px;
+}
+
+/* Text followed directly by a button gets breathing room. */
+p + .btn,
+p + a.btn,
+ul + .btn,
+h2 + .btn,
+.prose-text + .btn {
+  margin-top: 10px;
+}
+
+.form-actions {
+  gap: 12px;
+  margin-top: 6px;
+}
+
+/* Cards and panels */
+.course-card,
+.info-card,
+.course-row,
+.form,
+.notice,
+.admin-card,
+.my-course,
+.resume-card,
+.lesson-list > li,
+.quiz-list li,
+.question,
+.admin-row,
+.lesson-editor,
+.stat-box,
+.delete-warning,
+.course-facts,
+.cert-item,
+.app-list li,
+.inbox-item,
+.table-wrap,
+.user-dropdown,
+.toast,
+.monitor,
+.cert-lookup {
+  border-radius: var(--radius);
+}
+
+.course-card,
+.lesson-list > li,
+.course-facts,
+.table-wrap,
+.user-dropdown {
+  overflow: hidden;
+}
+
+.course-facts > div:first-child {
+  border-top-left-radius: var(--radius);
+}
+
+.course-row img,
+.my-course img,
+.resume-card img,
+.course-cover,
+.video,
+.video iframe,
+.split figure img,
+.frame img {
+  border-radius: var(--radius-sm);
+}
+
+.course-card div {
+  padding: 16px 16px 20px;
+}
+
+.course-card span {
+  right: 14px;
+  bottom: 16px;
+}
+
+.info-card {
+  padding: 26px 24px 28px;
+}
+
+.my-course {
+  padding: 14px 16px 14px 14px;
+}
+
+.quiz-list li {
+  padding: 16px 18px;
+}
+
+.question {
+  padding: 20px 22px;
+}
+
+/* Fields */
+.form input,
+.form textarea,
+.form select,
+.inline-form input,
+.filters select,
+.filters input,
+.inbox-controls select,
+.inbox-controls input,
+.search-panel input,
+.inbox-text,
+.option {
+  border-radius: var(--radius-sm);
+}
+
+.tag {
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.icon-btn,
+.icon-mini {
+  border-radius: 8px;
+}
+
+.progress,
+.progress span {
+  border-radius: 999px;
+}
+
+.lang-switch,
+.lang-switch button {
+  border-radius: 999px;
+}
+
+.tabs button {
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+.sticky-apply .btn {
+  min-width: 140px;
+}
+
+/* =====================================================================================
+   Phone menu: opens over the page right under the header (no scrolling back up), page stays still
+   ===================================================================================== */
+
+.mobile-nav {
+  position: fixed;
+  z-index: 29;
+  top: 74px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  align-content: start;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  animation: menu-in 0.16s ease-out;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-nav {
+    animation: none;
+  }
+}
+
+body.menu-open {
+  overflow: hidden;
 }
