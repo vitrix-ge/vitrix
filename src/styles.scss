@@ -3596,7 +3596,7 @@ body.menu-open {
    (header, filters, stats, tables, cards) get the spacing here.
    ===================================================================================== */
 
-.admin-main > :not(router-outlet) {
+.admin-main > router-outlet + * {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-content: start;
@@ -3867,7 +3867,8 @@ button.lesson-head:hover {
   text-align: center;
 }
 
-.two-factor-nudge {
+.two-factor-nudge,
+.admin-callout {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -3877,7 +3878,8 @@ button.lesson-head:hover {
   border-left: 3px solid var(--red);
 }
 
-.two-factor-nudge p {
+.two-factor-nudge p,
+.admin-callout p {
   margin: 0;
   flex: 1 1 320px;
 }

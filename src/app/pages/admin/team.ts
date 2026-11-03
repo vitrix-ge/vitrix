@@ -1,6 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Auth } from '../../auth';
 import { IDENTITY_URL } from '../../auth.config';
@@ -15,6 +15,7 @@ import { TPipe, t } from '../../content/i18n';
 @Component({
   selector: 'app-admin-team',
   imports: [NgTemplateOutlet, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './team.html',
 })
 export class AdminTeam {

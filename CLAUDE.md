@@ -32,7 +32,9 @@ adding a feature. No unit tests (`skipTests: true` in angular.json).
 
 ## Stack and conventions
 
-- Angular 21, standalone components, **signals** for state, reactive forms, lazy-loaded routes.
+- Angular 22 (TypeScript 6), standalone components, **signals** for state, reactive forms, lazy-loaded
+  routes. Components keep `ChangeDetectionStrategy.Eager` and HTTP uses `withXhr()` (set by the v22
+  update to keep v21 behaviour).
 - File naming: `pages/<name>/<name>.ts` + `<name>.html`, class name `PascalCase` without a
   `Component` suffix (e.g. `Login`, `Account`).
 - Almost all CSS lives in [src/styles.scss](src/styles.scss) (global). Components rarely have
@@ -91,7 +93,7 @@ adding a feature. No unit tests (`skipTests: true` in angular.json).
 | [src/app/notify.ts](src/app/notify.ts) | `Notify` service: short toast messages (`success`, `info`, `error`), shown by the app shell. |
 | [src/app/layout/](src/app/layout/) | Header (nav, search, login link, mobile menu) and footer. |
 | [src/app/mark.ts](src/app/mark.ts) | The VITRIX logo as an SVG component. |
-| `src/app/pages/*` | One folder per page: home, about, courses, simulation, faculty, partners, contact, apply, login, my-courses, account, privacy, course (`/courses/:slug`), quiz (`/tests/:id`), faq, confirm-email, reset-password, certificate (`/certificates/:code` + lookup at `/certificates`), not-found (404). |
+| `src/app/pages/*` | One folder per page: home, about, courses, simulation, faculty, partners, contact, apply, login, my-courses, account, privacy, terms (`/terms`), refunds (`/refunds`), course (`/courses/:slug`), quiz (`/tests/:id`), faq, confirm-email, reset-password, certificate (`/certificates/:code` + lookup at `/certificates`), not-found (404). |
 | [scripts/publish-pages.mjs](scripts/publish-pages.mjs) | After the build: one `index.html` per public address with its own title, description and Open Graph tags; `404.html`, `sitemap.xml`, `robots.txt`. |
 
 ## Login (current state)
@@ -242,6 +244,12 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
   in Georgian + English, checked live against the server (so the page is also the verification), with
   "Print or save as PDF" (`window.print()`; print styles give one A4 landscape page). The course page
   links to it once the exam is passed. `/certificates` lets anyone look up a code.
+- **Terms and refunds:** `/terms` and `/refunds` (full Georgian + English, like privacy; drafts to be
+  checked by a lawyer). Linked in the footer, the sign-up consent ("I agree to the terms of service and
+  the privacy policy") and the Apply form. In-person courses: ≥14 days full refund, 7–13 days 50% or a
+  free move, <7 days a free move; online: 14-day withdrawal until the first lesson is opened.
+- **Georgian for built-in courses:** admin → Courses shows "Fill in Georgian" while a course's KA
+  fields are empty but ka.ts has the Georgian for its English text; it saves that into the course.
 - **Course facts** (admin → course): Format, Duration, What you'll learn (one point per line) and
   Next start date; shown on the course page with the price. Empty start date = "On request".
 

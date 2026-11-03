@@ -94,6 +94,7 @@ export const API_DATA: Record<string, unknown> = {
     needsEmailConfirmation: false,
   },
   '/api/faq': [],
+  '/api/admin/courses': [ACLS, ATLS],
   '/api/me/courses': [
     {
       course: ATLS,

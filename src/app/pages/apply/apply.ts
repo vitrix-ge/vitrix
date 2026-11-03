@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Catalog } from '../../content/catalog';
@@ -17,6 +17,7 @@ import { MyLearning } from '../../content/my-learning';
 @Component({
   selector: 'app-apply',
   imports: [ReactiveFormsModule, RouterLink, TrPipe, ConfirmEmailNotice, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './apply.html',
 })
 export class Apply {

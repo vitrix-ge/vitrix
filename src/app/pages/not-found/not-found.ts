@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TPipe } from '../../content/i18n';
 
@@ -6,6 +6,7 @@ import { TPipe } from '../../content/i18n';
 @Component({
   selector: 'app-not-found',
   imports: [RouterLink, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section class="page-hero not-found">
       <div class="wrap">

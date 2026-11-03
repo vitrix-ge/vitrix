@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Notify } from '../../notify';
 import { ContentApi } from '../../content/content.api';
@@ -11,6 +11,7 @@ import { LTextField } from './ltext-field';
 @Component({
   selector: 'app-admin-faq',
   imports: [ReactiveFormsModule, TrPipe, LTextField, NgTemplateOutlet, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './faq.html',
 })
 export class AdminFaq {

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ContentApi } from '../../content/content.api';
 import { AttemptRow } from '../../content/content.models';
 import { TPipe, TrPipe, t, tr } from '../../content/i18n';
@@ -8,6 +8,7 @@ import { TPipe, TrPipe, t, tr } from '../../content/i18n';
 @Component({
   selector: 'app-admin-results',
   imports: [TrPipe, DatePipe, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './results.html',
 })
 export class AdminResults {

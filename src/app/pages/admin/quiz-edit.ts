@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -18,6 +18,7 @@ import { LTextField } from './ltext-field';
 @Component({
   selector: 'app-admin-quiz-edit',
   imports: [ReactiveFormsModule, RouterLink, TrPipe, LTextField, NgTemplateOutlet, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './quiz-edit.html',
 })
 export class AdminQuizEdit {

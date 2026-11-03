@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../auth';
@@ -14,6 +14,7 @@ import { isStaff } from '../../content/roles';
 @Component({
   selector: 'app-account',
   imports: [RouterLink, ReactiveFormsModule, TrPipe, TPipe, ConfirmEmailNotice, TwoFactorSettings],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './account.html',
 })
 export class Account {

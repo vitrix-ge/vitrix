@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Auth } from '../../auth';
 import { isAdmin } from '../../content/roles';
@@ -7,6 +7,7 @@ import { TPipe } from '../../content/i18n';
 @Component({
   selector: 'app-admin-shell',
   imports: [RouterOutlet, RouterLink, RouterLinkActive, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section class="admin">
       <div class="wrap admin-layout">

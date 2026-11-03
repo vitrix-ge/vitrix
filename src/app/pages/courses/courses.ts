@@ -1,4 +1,10 @@
-import { afterNextRender, Component, inject, Injector } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  inject,
+  Injector,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Catalog } from '../../content/catalog';
@@ -8,6 +14,7 @@ import { MyLearning } from '../../content/my-learning';
 @Component({
   selector: 'app-courses',
   imports: [RouterLink, TrPipe, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './courses.html',
 })
 export class Courses {

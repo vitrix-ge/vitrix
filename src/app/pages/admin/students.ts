@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Notify } from '../../notify';
 import { ContentApi } from '../../content/content.api';
@@ -10,6 +10,7 @@ import { TPipe, TrPipe, t } from '../../content/i18n';
 @Component({
   selector: 'app-admin-students',
   imports: [ReactiveFormsModule, TrPipe, DatePipe, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './students.html',
 })
 export class AdminStudents {

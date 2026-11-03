@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Notify } from '../../notify';
 import { ContentApi } from '../../content/content.api';
 import {
@@ -25,6 +25,7 @@ const STATUS_TEXT: Record<ApplicationStatus, string> = {
 @Component({
   selector: 'app-admin-applications',
   imports: [DatePipe, TPipe, TrPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './applications.html',
 })
 export class AdminApplications {

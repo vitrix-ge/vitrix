@@ -1,4 +1,4 @@
-import { Component, inject, signal, viewChild } from '@angular/core';
+import { Component, inject, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Auth, GoogleConsentRequired, TwoFactorRequired } from '../../auth';
@@ -13,6 +13,7 @@ type Mode = 'login' | 'register' | 'forgot';
 @Component({
   selector: 'app-login',
   imports: [ReactiveFormsModule, RouterLink, GoogleButton, TPipe, TurnstileWidget],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './login.html',
 })
 export class Login {

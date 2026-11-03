@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Notify } from '../../notify';
@@ -19,6 +19,7 @@ function youtubeValidator(control: { value: string }) {
 @Component({
   selector: 'app-admin-course-edit',
   imports: [ReactiveFormsModule, RouterLink, TrPipe, LTextField, NgTemplateOutlet, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './course-edit.html',
 })
 export class AdminCourseEdit {

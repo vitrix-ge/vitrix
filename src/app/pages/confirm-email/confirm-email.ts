@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Auth } from '../../auth';
 import { ConfirmEmailNotice } from '../../confirm-email-notice';
@@ -8,6 +8,7 @@ import { TPipe, t } from '../../content/i18n';
 @Component({
   selector: 'app-confirm-email',
   imports: [RouterLink, ConfirmEmailNotice, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './confirm-email.html',
 })
 export class ConfirmEmail {

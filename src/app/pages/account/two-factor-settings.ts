@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Auth, TwoFactorStatus } from '../../auth';
 import { Notify } from '../../notify';
 import { TPipe, t } from '../../content/i18n';
@@ -14,6 +14,7 @@ type Step = 'loading' | 'off' | 'setup' | 'codes' | 'on' | 'error';
 @Component({
   selector: 'app-two-factor-settings',
   imports: [TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section class="admin-card two-factor" id="two-factor">
       <div class="two-factor-head">

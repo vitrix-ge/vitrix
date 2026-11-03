@@ -1,4 +1,4 @@
-import { Component, inject, signal, viewChild } from '@angular/core';
+import { Component, inject, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ContentApi } from '../../content/content.api';
 import { CONTENT_ENABLED } from '../../content/content.config';
@@ -10,6 +10,7 @@ import { CAPTCHA_ENABLED, TurnstileWidget } from '../../turnstile';
 @Component({
   selector: 'app-contact',
   imports: [ReactiveFormsModule, TPipe, TurnstileWidget],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './contact.html',
 })
 export class Contact {

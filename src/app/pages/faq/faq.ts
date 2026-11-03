@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ContentApi } from '../../content/content.api';
 import { CONTENT_ENABLED } from '../../content/content.config';
 import { Faq } from '../../content/content.models';
@@ -8,6 +8,7 @@ import { TPipe, TrPipe } from '../../content/i18n';
 @Component({
   selector: 'app-faq',
   imports: [TrPipe, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section class="page-hero">
       <div class="wrap">

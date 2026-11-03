@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 let nextMark = 0;
 
@@ -18,6 +18,7 @@ let nextMark = 0;
       <path class="accent" d="M98 2H72L55 46h26Z" />
     </svg>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: inline-flex;

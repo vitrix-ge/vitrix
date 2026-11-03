@@ -24,7 +24,7 @@
       <span class="btn btn-ghost">{{ 'Open' | t }}</span>
     </a>
 
-    @if (user()?.hasPassword !== undefined) {
+    @if (user()) {
       <app-two-factor-settings />
     }
 
@@ -81,7 +81,7 @@
                 type="email"
                 formControlName="password"
                 autocomplete="off"
-                [placeholder]="user()?.email"
+                [placeholder]="$safeNavigationMigration(user()?.email)"
               />
               @if (deleteForm.controls.password.invalid && deleteForm.controls.password.touched) {
                 <span class="error">{{ 'Type your email address.' | t }}</span>
