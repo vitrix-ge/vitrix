@@ -6,6 +6,7 @@ import {
   output,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { DestroyRef } from '@angular/core';
 import { GOOGLE_CLIENT_ID } from './auth.config';
@@ -64,6 +65,7 @@ function loadGoogle(): Promise<GoogleIdentity> {
 @Component({
   selector: 'app-google-button',
   imports: [TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div #host class="google-btn"></div>
     @if (failed()) {

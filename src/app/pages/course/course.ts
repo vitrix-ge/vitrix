@@ -1,6 +1,13 @@
 import { DatePipe } from '@angular/common';
 import { ConfirmEmailNotice } from '../../confirm-email-notice';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -23,6 +30,7 @@ import { MyLearning } from '../../content/my-learning';
 @Component({
   selector: 'app-course',
   imports: [RouterLink, DatePipe, TrPipe, TPipe, ConfirmEmailNotice, QuizRunner],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './course.html',
 })
 export class CoursePage {

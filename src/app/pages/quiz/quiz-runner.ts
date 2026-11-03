@@ -1,4 +1,13 @@
-import { Component, DestroyRef, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Notify } from '../../notify';
 import { ContentApi } from '../../content/content.api';
 import { AttemptResult, AttemptStart, Question } from '../../content/content.models';
@@ -13,6 +22,7 @@ import { TPipe, TrPipe, t } from '../../content/i18n';
 @Component({
   selector: 'app-quiz-runner',
   imports: [TrPipe, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './quiz-runner.html',
 })
 export class QuizRunner {

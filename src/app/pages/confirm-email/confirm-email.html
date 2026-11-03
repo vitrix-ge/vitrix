@@ -58,9 +58,12 @@
             <p>{{ error() | t }}</p>
             @if (!auth.signedIn()) {
               <p>{{ 'Log in and you can send yourself a new confirmation email.' | t }}</p>
-              <a class="btn btn-red" routerLink="/login" [queryParams]="{ redirect: '/my-courses' }">{{
-                'Log in' | t
-              }}</a>
+              <a
+                class="btn btn-red"
+                routerLink="/login"
+                [queryParams]="{ redirect: '/my-courses' }"
+                >{{ 'Log in' | t }}</a
+              >
             }
           </div>
           <app-confirm-email-notice

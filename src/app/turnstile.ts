@@ -5,6 +5,7 @@ import {
   afterNextRender,
   output,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { TURNSTILE_SITE_KEY } from './auth.config';
 import { theme } from './theme';
@@ -55,6 +56,7 @@ export const CAPTCHA_ENABLED = TURNSTILE_SITE_KEY !== '';
   template: `@if (enabled) {
     <div #box class="turnstile"></div>
   }`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: contents;

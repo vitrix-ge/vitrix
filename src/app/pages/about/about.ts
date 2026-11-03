@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PILLARS } from '../../site-data';
 import { TPipe } from '../../content/i18n';
@@ -6,6 +6,7 @@ import { TPipe } from '../../content/i18n';
 @Component({
   selector: 'app-about',
   imports: [RouterLink, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './about.html',
 })
 export class About {

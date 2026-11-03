@@ -1,5 +1,13 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../auth';
 import { ConfirmEmailNotice } from '../../confirm-email-notice';
@@ -25,6 +33,7 @@ export const STATUS_LABELS: Record<string, string> = {
 @Component({
   selector: 'app-my-courses',
   imports: [RouterLink, TrPipe, TPipe, DatePipe, ConfirmEmailNotice],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './my-courses.html',
 })
 export class MyCourses {

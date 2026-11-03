@@ -32,7 +32,9 @@ adding a feature. No unit tests (`skipTests: true` in angular.json).
 
 ## Stack and conventions
 
-- Angular 21, standalone components, **signals** for state, reactive forms, lazy-loaded routes.
+- Angular 22 (TypeScript 6), standalone components, **signals** for state, reactive forms, lazy-loaded
+  routes. Components keep `ChangeDetectionStrategy.Eager` and HTTP uses `withXhr()` (set by the v22
+  update to keep v21 behaviour).
 - File naming: `pages/<name>/<name>.ts` + `<name>.html`, class name `PascalCase` without a
   `Component` suffix (e.g. `Login`, `Account`).
 - Almost all CSS lives in [src/styles.scss](src/styles.scss) (global). Components rarely have

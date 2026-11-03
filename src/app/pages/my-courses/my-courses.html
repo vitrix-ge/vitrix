@@ -1,6 +1,8 @@
 <section class="page-hero">
   <div class="wrap">
-    <p class="eyebrow">{{ 'Hello, {name}' | t: { name: user()?.name } }}</p>
+    <p class="eyebrow">
+      {{ 'Hello, {name}' | t: { name: $safeNavigationMigration(user()?.name) } }}
+    </p>
     <h1>{{ 'My courses' | t }}</h1>
     <p class="lede">
       {{ 'Your lessons, progress, certificates and applications in one place.' | t }}

@@ -1,4 +1,10 @@
-import { Component, booleanAttribute, input, numberAttribute } from '@angular/core';
+import {
+  Component,
+  booleanAttribute,
+  input,
+  numberAttribute,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LTextGroup } from './forms';
 import { TPipe } from '../../content/i18n';
@@ -10,6 +16,7 @@ import { TPipe } from '../../content/i18n';
 @Component({
   selector: 'app-ltext-field',
   imports: [ReactiveFormsModule, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <fieldset class="ltext" [formGroup]="group()">
       <legend>

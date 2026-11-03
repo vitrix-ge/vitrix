@@ -6,6 +6,7 @@ import {
   effect,
   inject,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs';
@@ -22,6 +23,7 @@ import { theme, toggleTheme } from '../theme';
   selector: 'app-site-header',
   imports: [RouterLink, RouterLinkActive, Mark, TPipe],
   templateUrl: './site-header.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './site-header.scss',
 })
 export class SiteHeader {

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Mark } from '../../mark';
@@ -17,6 +17,7 @@ import { KA } from '../../content/ka';
 @Component({
   selector: 'app-certificate',
   imports: [RouterLink, DatePipe, TPipe, Mark],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './certificate.html',
 })
 export class CertificatePage {

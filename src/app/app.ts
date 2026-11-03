@@ -1,4 +1,11 @@
-import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
@@ -14,6 +21,7 @@ import { syncDocumentTheme } from './theme';
   selector: 'app-root',
   imports: [RouterOutlet, SiteHeader, SiteFooter, TPipe],
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.scss',
 })
 export class App {

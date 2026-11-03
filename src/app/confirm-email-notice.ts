@@ -1,4 +1,4 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Auth } from './auth';
 import { Notify } from './notify';
 import { TPipe, t } from './content/i18n';
@@ -10,6 +10,7 @@ import { TPipe, t } from './content/i18n';
 @Component({
   selector: 'app-confirm-email-notice',
   imports: [TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (auth.user(); as user) {
       @if (!user.emailVerified) {

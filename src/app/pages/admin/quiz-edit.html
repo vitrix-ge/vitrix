@@ -245,7 +245,7 @@
           {{ '+ Add answer' | t }}
         </button>
         @if (qForm.errors?.['answers'] && qForm.touched) {
-          <span class="error">{{ qForm.errors?.['answers'] | t }}</span>
+          <span class="error">{{ $safeNavigationMigration(qForm.errors?.['answers']) | t }}</span>
         }
         @if (options.invalid && options.touched) {
           <span class="error">{{ 'Every answer needs English text.' | t }}</span>

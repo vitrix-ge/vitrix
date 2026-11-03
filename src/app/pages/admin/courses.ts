@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Notify } from '../../notify';
@@ -12,6 +12,7 @@ import { move, slugify } from './forms';
 @Component({
   selector: 'app-admin-courses',
   imports: [RouterLink, ReactiveFormsModule, TrPipe, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './courses.html',
 })
 export class AdminCourses {

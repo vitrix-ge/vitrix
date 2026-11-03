@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuizRunner } from './quiz-runner';
 import { TPipe } from '../../content/i18n';
@@ -7,6 +7,7 @@ import { TPipe } from '../../content/i18n';
 @Component({
   selector: 'app-quiz',
   imports: [QuizRunner, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './quiz.html',
 })
 export class QuizPage {

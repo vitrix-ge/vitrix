@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PRIVACY_CONTACT_EMAIL } from '../../site-data';
 import { lang } from '../../content/i18n';
@@ -7,6 +7,7 @@ import { lang } from '../../content/i18n';
 @Component({
   selector: 'app-refunds',
   imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './refunds.html',
 })
 export class Refunds {

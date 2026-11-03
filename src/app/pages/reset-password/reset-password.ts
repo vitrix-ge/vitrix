@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -15,6 +15,7 @@ import { TPipe, t } from '../../content/i18n';
 @Component({
   selector: 'app-reset-password',
   imports: [ReactiveFormsModule, RouterLink, TPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './reset-password.html',
 })
 export class ResetPassword {
