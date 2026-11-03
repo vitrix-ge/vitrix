@@ -5,6 +5,7 @@ import { Notify } from '../../notify';
 import { ContentApi } from '../../content/content.api';
 import { Course, Enrollment } from '../../content/content.models';
 import { TPipe, TrPipe, t } from '../../content/i18n';
+import { Dialog } from '../../dialog';
 
 /** Admin only: who can open which course. Enrol by email — works before they create an account. */
 @Component({
@@ -14,6 +15,7 @@ import { TPipe, TrPipe, t } from '../../content/i18n';
   templateUrl: './students.html',
 })
 export class AdminStudents {
+  private readonly dialog = inject(Dialog);
   private readonly api = inject(ContentApi);
   private readonly notify = inject(Notify);
   private readonly fb = inject(FormBuilder);
@@ -105,7 +107,14 @@ export class AdminStudents {
   }
 
   async remove(e: Enrollment): Promise<void> {
-    if (!confirm(t('Remove {email} from this course? Their results are kept.', { email: e.email })))
+    if (
+      !(await this.dialog.confirm({
+        title: t('Remove from the course?'),
+        message: t('Remove {email} from this course? Their results are kept.', { email: e.email }),
+        confirm: t('Remove'),
+        tone: 'danger',
+      }))
+    )
       return;
     try {
       await this.api.unenroll(e.id);

@@ -115,7 +115,10 @@
         }
       </button>
     </div>
-    <a class="btn btn-red apply-btn" routerLink="/apply">{{ 'Apply now' | t }}</a>
+    <!-- Visitors only: members apply from a course page (and see their courses under "My courses"). -->
+    @if (!user()) {
+      <a class="btn btn-red apply-btn" routerLink="/apply">{{ 'Apply now' | t }}</a>
+    }
     <button
       type="button"
       class="icon-btn menu-btn"
@@ -227,6 +230,8 @@
         }
       </button>
     </div>
-    <a class="btn btn-red" routerLink="/apply">{{ 'Apply now' | t }}</a>
+    @if (!user()) {
+      <a class="btn btn-red" routerLink="/apply">{{ 'Apply now' | t }}</a>
+    }
   </nav>
 }

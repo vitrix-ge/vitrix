@@ -7,6 +7,7 @@ import { IDENTITY_URL } from '../../auth.config';
 import { Notify } from '../../notify';
 import { StaffUser } from '../../content/content.models';
 import { TPipe, t } from '../../content/i18n';
+import { Dialog } from '../../dialog';
 
 /**
  * Admin only: give people the editor (content) or admin role. Roles live on identity-api;
@@ -19,6 +20,7 @@ import { TPipe, t } from '../../content/i18n';
   templateUrl: './team.html',
 })
 export class AdminTeam {
+  private readonly dialog = inject(Dialog);
   private readonly http = inject(HttpClient);
   private readonly auth = inject(Auth);
   private readonly notify = inject(Notify);
@@ -70,11 +72,13 @@ export class AdminTeam {
     if (
       role === 'admin' &&
       !this.has(user, 'admin') &&
-      !confirm(
-        t('Make {email} an admin? Admins can manage students, results and the team.', {
+      !(await this.dialog.confirm({
+        title: t('Make admin?'),
+        message: t('Make {email} an admin? Admins can manage students, results and the team.', {
           email: user.email,
         }),
-      )
+        confirm: t('Make admin'),
+      }))
     ) {
       return;
     }
@@ -109,12 +113,15 @@ export class AdminTeam {
   /** For someone who lost their phone and recovery codes: turns their two-step login off. */
   async resetTwoFactor(user: StaffUser): Promise<void> {
     if (
-      !confirm(
-        t(
+      !(await this.dialog.confirm({
+        title: t('Turn off two-step login?'),
+        message: t(
           'Turn off two-step login for {email}? Only do this if they lost their phone and recovery codes, and you are sure it is really them asking.',
           { email: user.email },
         ),
-      )
+        confirm: t('Turn off'),
+        tone: 'danger',
+      }))
     ) {
       return;
     }

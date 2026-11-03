@@ -95,6 +95,15 @@ export const API_DATA: Record<string, unknown> = {
   },
   '/api/faq': [],
   '/api/admin/courses': [ACLS, ATLS],
+  '/api/admin/enrollments': [
+    {
+      id: 'e1',
+      courseId: ACLS.id,
+      courseTitle: ACLS.title,
+      email: 'student@example.com',
+      createdAt: now,
+    },
+  ],
   '/api/me/courses': [
     {
       course: ATLS,

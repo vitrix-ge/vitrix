@@ -12,6 +12,7 @@ import { Notify } from '../../notify';
 import { ContentApi } from '../../content/content.api';
 import { AttemptResult, AttemptStart, Question } from '../../content/content.models';
 import { TPipe, TrPipe, t } from '../../content/i18n';
+import { Dialog } from '../../dialog';
 
 /**
  * Takes one quiz: start → answer → submit → review. Used inline under a lesson (`mode="lesson"`:
@@ -26,6 +27,7 @@ import { TPipe, TrPipe, t } from '../../content/i18n';
   templateUrl: './quiz-runner.html',
 })
 export class QuizRunner {
+  private readonly dialog = inject(Dialog);
   private readonly api = inject(ContentApi);
   private readonly notify = inject(Notify);
 
@@ -106,7 +108,12 @@ export class QuizRunner {
       );
       if (
         this.mode() === 'lesson' ||
-        !confirm(t('{n} question(s) unanswered. Submit anyway?', { n: unanswered }))
+        !(await this.dialog.confirm({
+          title: t('Submit the exam?'),
+          message: t('{n} question(s) unanswered. Submit anyway?', { n: unanswered }),
+          confirm: t('Submit'),
+          cancel: t('Keep answering'),
+        }))
       ) {
         return;
       }

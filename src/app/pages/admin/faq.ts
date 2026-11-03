@@ -7,6 +7,7 @@ import { Course, Faq } from '../../content/content.models';
 import { TPipe, TrPipe, t } from '../../content/i18n';
 import { ltextGroup, move } from './forms';
 import { LTextField } from './ltext-field';
+import { Dialog } from '../../dialog';
 
 @Component({
   selector: 'app-admin-faq',
@@ -15,6 +16,7 @@ import { LTextField } from './ltext-field';
   templateUrl: './faq.html',
 })
 export class AdminFaq {
+  private readonly dialog = inject(Dialog);
   private readonly api = inject(ContentApi);
   private readonly notify = inject(Notify);
   private readonly fb = inject(FormBuilder);
@@ -101,7 +103,14 @@ export class AdminFaq {
   }
 
   async remove(faq: Faq): Promise<void> {
-    if (!confirm(t('Delete this question and answer?'))) return;
+    if (
+      !(await this.dialog.confirm({
+        title: t('Delete this question and answer?'),
+        confirm: t('Delete'),
+        tone: 'danger',
+      }))
+    )
+      return;
     try {
       await this.api.deleteFaq(faq.id);
       this.faqs.update((list) => list.filter((x) => x.id !== faq.id));
