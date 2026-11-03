@@ -633,6 +633,7 @@ export const KA: Record<string, string> = {
   "Yes": "კი",
   "You are enrolled in these courses:": "თქვენ ჩარიცხული ხართ ამ კურსებზე:",
   "You are enrolled in this course: confirm your email and its lessons and tests open.": "თქვენ ამ კურსზე ხართ ჩარიცხული: დაადასტურეთ ელფოსტა და გაკვეთილები და ტესტები გაიხსნება.",
+  "You are enrolled. Lessons are coming soon.": "ჩარიცხული ხართ. გაკვეთილები მალე დაემატება.",
   "You are enrolled. The lessons for this course are being prepared.": "თქვენ ჩარიცხული ხართ. ამ კურსის გაკვეთილები მზადდება.",
   "You are not enrolled in a course yet. Apply for a program and our team will add you; it then appears here with your lessons and tests.": "ჯერ არცერთ კურსზე არ ხართ ჩარიცხული. შეავსეთ განაცხადი პროგრამაზე და ჩვენი გუნდი ჩაგრიცხავთ — კურსი აქ გამოჩნდება გაკვეთილებითა და ტესტებით.",
   "You are not enrolled in this course.": "ამ კურსზე ჩარიცხული არ ხართ.",

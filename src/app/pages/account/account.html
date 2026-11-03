@@ -44,12 +44,18 @@
             <div>
               <p class="eyebrow">{{ mc.course.code | t }}</p>
               <h3>{{ mc.course.title | tr }}</h3>
-              <div class="progress"><span [style.width.%]="percent(mc)"></span></div>
+              @if (mc.lessonsTotal) {
+                <div class="progress"><span [style.width.%]="percent(mc)"></span></div>
+              }
               <p class="lesson-meta">
-                {{
-                  '{done}/{total} lessons'
-                    | t: { done: mc.lessonsCompleted, total: mc.lessonsTotal }
-                }}
+                @if (mc.lessonsTotal) {
+                  {{
+                    '{done}/{total} lessons'
+                      | t: { done: mc.lessonsCompleted, total: mc.lessonsTotal }
+                  }}
+                } @else {
+                  {{ 'You are enrolled. Lessons are coming soon.' | t }}
+                }
                 @if (mc.quizzesTotal) {
                   ·
                   {{
@@ -97,10 +103,10 @@
       </div>
     }
 
-    @if (applications().length) {
+    @if (openApplications().length) {
       <h2 class="block-title">{{ 'My applications' | t }}</h2>
       <ul class="app-list">
-        @for (a of applications(); track a.id) {
+        @for (a of openApplications(); track a.id) {
           <li>
             <div>
               <strong>{{ a.courseCode | t }}</strong>
