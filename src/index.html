@@ -10,17 +10,26 @@
       content="VITRIX is an institute of emergency medicine, simulation, and human performance. Built for the critical moment."
     />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Latin text: Manrope + Montserrat, self-hosted (public/fonts/latin.css) so no visitor data goes
+         to Google Fonts. -->
+    <link rel="stylesheet" href="fonts/latin.css" />
     <!-- Georgian text: FiraGO (SIL Open Font License, public/fonts/firago/OFL.txt), self-hosted and
          trimmed to Georgian + Latin. Relative URLs resolve against <base href>, so this works on
          GitHub Pages under /vitrix/ too. -->
-    <link rel="preload" href="fonts/firago/firago-400.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="fonts/firago/firago-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link
+      rel="preload"
+      href="fonts/firago/firago-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="fonts/firago/firago-700.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <style>
       @font-face {
         font-family: 'FiraGO';

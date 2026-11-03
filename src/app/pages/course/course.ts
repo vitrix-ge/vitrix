@@ -1,5 +1,6 @@
+import { DatePipe } from '@angular/common';
 import { ConfirmEmailNotice } from '../../confirm-email-notice';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -9,9 +10,9 @@ import { Notify } from '../../notify';
 import { Catalog } from '../../content/catalog';
 import { ContentApi } from '../../content/content.api';
 import { CONTENT_ENABLED } from '../../content/content.config';
-import { AttemptResult, CourseDetail, Lesson } from '../../content/content.models';
+import { AttemptResult, Certificate, CourseDetail, Lesson } from '../../content/content.models';
 import { QuizRunner } from '../quiz/quiz-runner';
-import { TPipe, TrPipe, t } from '../../content/i18n';
+import { TPipe, TrPipe, lang, pageTitleOverride, t, tr } from '../../content/i18n';
 import { youtubeEmbedUrl } from '../../content/youtube';
 
 /**
@@ -20,7 +21,7 @@ import { youtubeEmbedUrl } from '../../content/youtube';
  */
 @Component({
   selector: 'app-course',
-  imports: [RouterLink, TrPipe, TPipe, ConfirmEmailNotice, QuizRunner],
+  imports: [RouterLink, DatePipe, TrPipe, TPipe, ConfirmEmailNotice, QuizRunner],
   templateUrl: './course.html',
 })
 export class CoursePage {
@@ -40,11 +41,32 @@ export class CoursePage {
   /** Built-in text while the server is unreachable. */
   readonly fallback = computed(() => this.catalog.courses().find((c) => c.slug === this.slug()));
   readonly course = computed(() => this.detail()?.course ?? this.fallback() ?? null);
+  /** "What you'll learn": one point per line of the course's outcomes text. */
+  readonly outcomes = computed(() => {
+    lang(); // re-split when the language changes
+    const text = tr(this.course()?.outcomes);
+    return text
+      .split('\n')
+      .map((line) => line.replace(/^[-•*\s]+/, '').trim())
+      .filter(Boolean);
+  });
+  /** The member's certificate for this course, once they passed the final exam. */
+  readonly certificate = signal<Certificate | null>(null);
+  /** Show the Apply bar (sticky at the bottom on phones) to everyone not enrolled yet. */
+  readonly showApply = computed(() => {
+    const d = this.detail();
+    return !this.loading() && !d?.enrolled && !d?.needsEmailConfirmation;
+  });
   readonly completedCount = computed(
     () => this.detail()?.lessons.filter((lesson) => lesson.completed).length ?? 0,
   );
 
   constructor() {
+    // Browser tab: "ACLS — Advanced Cardiovascular Life Support · VITRIX".
+    effect(() => {
+      const c = this.course();
+      pageTitleOverride.set(c ? `${c.code} — ${tr(c.title)}` : null);
+    });
     this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
       this.slug.set(params.get('slug') ?? '');
       void this.load();
@@ -68,6 +90,22 @@ export class CoursePage {
         detail.lessons.find((l) => !l.locked);
       if (detail.enrolled && firstOpen && !this.openLessonId()) {
         this.openLessonId.set(firstOpen.id);
+        // From "Continue where you left off": bring the lesson into view.
+        if (this.route.snapshot.queryParamMap.has('continue')) {
+          setTimeout(() =>
+            document
+              .getElementById(`lesson-${firstOpen.id}`)
+              ?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+          );
+        }
+      }
+      if (detail.enrolled && detail.quizzes.some((q) => q.passed)) {
+        this.api
+          .myCertificates()
+          .then((list) =>
+            this.certificate.set(list.find((c) => c.courseId === detail.course.id) ?? null),
+          )
+          .catch(() => undefined);
       }
     } catch (e) {
       if (!this.fallback()) {

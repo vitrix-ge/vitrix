@@ -31,13 +31,29 @@
       </div>
     } @else if (sent()) {
       <div class="notice" role="status">
-        <h2>{{ 'Application noted' | t }}</h2>
+        <h2>{{ 'Application sent' | t }}</h2>
         <p>
           {{
-            'Thanks, {name}. Your interest in {course} is saved in this session only. A live admissions desk is not connected yet.'
-              | t: { name: form.controls.name.value, course: form.controls.course.value }
+            'Thanks, {name}. We received your application for {course} and will reply to {email}.'
+              | t: { name: form.controls.name.value, course: chosen(), email: email() }
           }}
         </p>
+        <div class="form-actions">
+          <a class="btn btn-ghost" routerLink="/account">{{ 'See it in My account' | t }}</a>
+        </div>
+      </div>
+    } @else if (!loading() && !serverReady()) {
+      <div class="notice" role="status">
+        <h2>{{ 'Applications are offline' | t }}</h2>
+        <p>
+          {{
+            'The course server is not reachable right now. Please try again in a minute, or write to us from the Contact page.'
+              | t
+          }}
+        </p>
+        <div class="form-actions">
+          <a class="btn btn-ghost" routerLink="/contact">{{ 'Contact' | t }}</a>
+        </div>
       </div>
     } @else {
       <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
@@ -50,21 +66,19 @@
         </label>
         <label>
           {{ 'Email' | t }}
-          <input type="email" formControlName="email" autocomplete="email" />
-          @if (invalid('email')) {
-            <span class="error">{{ 'Enter a valid email.' | t }}</span>
-          }
+          <input type="email" [value]="email()" readonly />
+          <span class="hint">{{ 'We reply to the email of your account.' | t }}</span>
         </label>
         <label>
           {{ 'Phone' | t }}
-          <input type="tel" formControlName="phone" autocomplete="tel" />
+          <input type="tel" formControlName="phone" autocomplete="tel" inputmode="tel" />
         </label>
         <label>
           {{ 'Course' | t }}
           <select formControlName="course">
             <option value="" disabled>{{ 'Select a program' | t }}</option>
             @for (course of courses(); track course.id) {
-              <option [value]="course.code">{{ course.code }} — {{ course.title | tr }}</option>
+              <option [value]="course.id">{{ course.code }} — {{ course.title | tr }}</option>
             }
           </select>
           @if (invalid('course')) {
@@ -78,7 +92,12 @@
             <span class="error">{{ 'Tell us where you practice.' | t }}</span>
           }
         </label>
-        <button class="btn btn-red" type="submit">{{ 'Submit application' | t }}</button>
+        @if (error()) {
+          <p class="error" role="alert">{{ error() }}</p>
+        }
+        <button class="btn btn-red" type="submit" [disabled]="sending() || loading()">
+          {{ (sending() ? 'Sending…' : 'Submit application') | t }}
+        </button>
       </form>
     }
   </div>

@@ -58,6 +58,26 @@
       hint="One sentence shown on course cards."
     />
     <app-ltext-field label="Description" [group]="form.controls.description" multiline [rows]="5" />
+    <div class="grid-2">
+      <app-ltext-field
+        label="Format"
+        [group]="form.controls.format"
+        hint="e.g. 2 days, hands-on simulation"
+      />
+      <app-ltext-field label="Duration" [group]="form.controls.duration" hint="e.g. 16 hours" />
+    </div>
+    <app-ltext-field
+      label="What you'll learn"
+      [group]="form.controls.outcomes"
+      multiline
+      [rows]="5"
+      hint="One point per line."
+    />
+    <label class="date-field">
+      {{ 'Next start date' | t }}
+      <input type="date" formControlName="nextStart" />
+      <span class="hint">{{ 'Leave empty if on request.' | t }}</span>
+    </label>
     <div class="grid-2 image-row">
       <label>
         {{ 'Image' | t }}

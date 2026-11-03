@@ -1,0 +1,197 @@
+<header class="admin-head">
+  <div>
+    <h1>{{ 'Applications' | t }}</h1>
+    <p class="lesson-meta">
+      {{
+        'Apply and Contact forms land here, and the team also gets each one by email. Reply by email or phone, then set the status.'
+          | t
+      }}
+    </p>
+  </div>
+</header>
+
+<div class="tabs" role="tablist">
+  <button
+    type="button"
+    role="tab"
+    [class.is-active]="tab() === 'applications'"
+    [attr.aria-selected]="tab() === 'applications'"
+    (click)="tab.set('applications')"
+  >
+    {{ 'Applications' | t }}
+    @if (newApplications()) {
+      <span class="count">{{ newApplications() }}</span>
+    }
+  </button>
+  <button
+    type="button"
+    role="tab"
+    [class.is-active]="tab() === 'messages'"
+    [attr.aria-selected]="tab() === 'messages'"
+    (click)="tab.set('messages')"
+  >
+    {{ 'Messages' | t }}
+    @if (openMessages()) {
+      <span class="count">{{ openMessages() }}</span>
+    }
+  </button>
+</div>
+
+<div class="filters">
+  @if (tab() === 'applications') {
+    <label>
+      {{ 'Status' | t }}
+      <select [value]="statusFilter()" (change)="statusFilter.set($any($event.target).value)">
+        <option value="open">{{ 'Open (new + contacted)' | t }}</option>
+        <option value="">{{ 'All' | t }}</option>
+        @for (s of statuses; track s) {
+          <option [value]="s">{{ statusText(s) | t }}</option>
+        }
+      </select>
+    </label>
+  } @else {
+    <label class="consent">
+      <input
+        type="checkbox"
+        [checked]="showHandled()"
+        (change)="showHandled.set($any($event.target).checked)"
+      />
+      <span>{{ 'Show handled' | t }}</span>
+    </label>
+  }
+  <label>
+    {{ 'Search' | t }}
+    <input
+      type="search"
+      [placeholder]="'Name or email' | t"
+      [value]="search()"
+      (input)="search.set($any($event.target).value)"
+    />
+  </label>
+  <button type="button" class="btn btn-ghost btn-sm" (click)="load()" [disabled]="loading()">
+    {{ 'Refresh' | t }}
+  </button>
+</div>
+
+@if (loading() && !applications().length && !messages().length) {
+  <p class="lesson-meta">{{ 'Loading…' | t }}</p>
+} @else if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+} @else if (tab() === 'applications') {
+  <div class="inbox">
+    @for (a of visibleApplications(); track a.id) {
+      <article class="admin-card inbox-item" [class.is-new]="a.status === 'new'">
+        <header>
+          <div>
+            <p class="eyebrow">
+              {{ a.courseCode }}
+              @if (a.courseTitle) {
+                · {{ a.courseTitle | tr }}
+              }
+            </p>
+            <h2>{{ a.name }}</h2>
+            <p class="contact-line">
+              <a [href]="'mailto:' + a.email">{{ a.email }}</a>
+              @if (a.phone) {
+                · <a class="nowrap" [href]="'tel:' + a.phone">{{ a.phone }}</a>
+              }
+              · <span class="lesson-meta">{{ a.createdAt | date: 'dd.MM.y, HH:mm' }}</span>
+            </p>
+          </div>
+          <span [class]="'tag status-' + a.status">{{ statusText(a.status) | t }}</span>
+        </header>
+        <p class="inbox-text">{{ a.background }}</p>
+        <div class="inbox-controls">
+          <label>
+            {{ 'Status' | t }}
+            <select
+              [disabled]="busyId() === a.id"
+              (change)="setStatus(a, $any($event.target).value)"
+            >
+              @for (s of statuses; track s) {
+                <option [value]="s" [selected]="s === a.status">{{ statusText(s) | t }}</option>
+              }
+            </select>
+          </label>
+          <label class="grow">
+            {{ 'Private note' | t }}
+            <input
+              type="text"
+              [value]="a.note"
+              [placeholder]="'Only staff see this' | t"
+              (blur)="saveNote(a, $any($event.target).value)"
+              (keydown.enter)="$any($event.target).blur()"
+            />
+          </label>
+        </div>
+        <div class="form-actions">
+          @if (a.enrolled) {
+            <span class="tag tag-ok">✓ {{ 'Enrolled' | t }}</span>
+          } @else if (a.courseId) {
+            <button
+              type="button"
+              class="btn btn-red btn-sm"
+              [disabled]="busyId() === a.id"
+              (click)="accept(a)"
+            >
+              {{ 'Accept & enroll' | t }}
+            </button>
+          }
+          <button type="button" class="btn btn-danger btn-sm" (click)="removeApplication(a)">
+            {{ 'Delete' | t }}
+          </button>
+        </div>
+      </article>
+    } @empty {
+      <p class="empty-state">
+        {{
+          (search() || statusFilter() ? 'Nothing matches the filter.' : 'No applications yet.') | t
+        }}
+      </p>
+    }
+  </div>
+} @else {
+  <div class="inbox">
+    @for (m of visibleMessages(); track m.id) {
+      <article class="admin-card inbox-item" [class.is-new]="!m.handled">
+        <header>
+          <div>
+            @if (m.organization) {
+              <p class="eyebrow">{{ m.organization }}</p>
+            }
+            <h2>{{ m.name }}</h2>
+            <p class="contact-line">
+              <a [href]="'mailto:' + m.email">{{ m.email }}</a>
+              · <span class="lesson-meta">{{ m.createdAt | date: 'dd.MM.y, HH:mm' }}</span>
+            </p>
+          </div>
+          @if (m.handled) {
+            <span class="tag tag-ok">{{ 'Handled' | t }}</span>
+          } @else {
+            <span class="tag status-new">{{ 'New' | t }}</span>
+          }
+        </header>
+        <p class="inbox-text">{{ m.message }}</p>
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-sm"
+            [class.btn-red]="!m.handled"
+            [class.btn-ghost]="m.handled"
+            [disabled]="busyId() === m.id"
+            (click)="setHandled(m, !m.handled)"
+          >
+            {{ (m.handled ? 'Mark as new' : 'Mark as handled') | t }}
+          </button>
+          <button type="button" class="btn btn-danger btn-sm" (click)="removeMessage(m)">
+            {{ 'Delete' | t }}
+          </button>
+        </div>
+      </article>
+    } @empty {
+      <p class="empty-state">
+        {{ (search() ? 'Nothing matches the filter.' : 'No new messages.') | t }}
+      </p>
+    }
+  </div>
+}

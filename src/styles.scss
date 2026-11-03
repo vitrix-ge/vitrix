@@ -22,6 +22,12 @@
   --hero-fade-b: rgba(237, 242, 247, 0.86);
   --hero-fade-c: rgba(219, 232, 245, 0.55);
   --shadow: 0 10px 28px rgba(19, 35, 58, 0.08);
+  /* Certificates stay white paper with navy ink in both themes. */
+  --paper: #ffffff;
+  --paper-ink: #13233a;
+  --paper-line: #d5dde7;
+  --paper-muted: #40536b;
+  --paper-dim: #61738a;
   /* Montserrat and Manrope have no Georgian letters: Georgian text uses Noto Sans Georgian. */
   --display: 'Montserrat', 'Noto Sans Georgian', Arial, sans-serif;
   --body: 'Manrope', 'Noto Sans Georgian', Arial, sans-serif;
@@ -399,10 +405,6 @@ p {
 .search-empty {
   color: var(--muted);
   margin-top: 10px;
-}
-
-.mobile-nav {
-  display: none;
 }
 
 .hero {
@@ -1018,6 +1020,7 @@ p {
 .form,
 .notice {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
   background: var(--surface);
   border: 1px solid var(--line);
@@ -1297,24 +1300,6 @@ p {
   .header-actions .btn,
   .header-actions .account-link {
     display: none;
-  }
-
-  .mobile-nav {
-    display: grid;
-    gap: 4px;
-    padding: 8px 22px 18px;
-    background: var(--bg);
-    border-bottom: 1px solid var(--line);
-  }
-
-  .mobile-nav a {
-    padding: 10px 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .mobile-nav .btn {
-    margin-top: 12px;
-    justify-content: center;
   }
 
   .hero-layout,
@@ -1798,6 +1783,8 @@ td .lesson-meta {
 .admin-main {
   min-width: 0;
   display: grid;
+  /* minmax(0, …): wide content (tables, long emails) scrolls inside its box, never the page. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 22px;
   align-content: start;
 }
@@ -1829,6 +1816,7 @@ td .lesson-meta {
   border: 1px solid var(--line);
   background: var(--surface);
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
 }
 
@@ -1849,11 +1837,11 @@ td .lesson-meta {
 }
 
 .grid-2 {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .grid-3 {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .image-row {
@@ -1977,11 +1965,13 @@ td .lesson-meta {
 
 .inline-form {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
 .inline-form input {
-  flex: 1;
+  flex: 1 1 220px;
+  min-width: 0;
   padding: 10px 12px;
   background: var(--surface);
   border: 1px solid var(--line);
@@ -2191,13 +2181,31 @@ td .lesson-meta {
   }
 
   .admin-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
   }
 
+  /* One swipeable row of sections instead of a tall menu. */
   .admin-nav {
     position: static;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .admin-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .admin-nav .eyebrow {
+    display: none;
+  }
+
+  .admin-nav a {
+    flex: none;
+    white-space: nowrap;
   }
 
   .admin-nav a {
@@ -2217,7 +2225,7 @@ td .lesson-meta {
   .grid-3,
   .ltext,
   .answer-row .grow {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .my-course {
@@ -2234,6 +2242,17 @@ td .lesson-meta {
 
   .admin-row {
     flex-wrap: wrap;
+  }
+
+  /* Title on its own line, controls underneath. */
+  .admin-row .grow {
+    order: -1;
+    flex-basis: 100%;
+  }
+
+  .admin-row .btn {
+    flex: 0 1 auto;
+    white-space: normal;
   }
 }
 
@@ -2482,6 +2501,8 @@ app-google-button {
 }
 
 /* Header: the full menu needs room once the language and theme switches are there. */
+/* The menu button replaces the nav row when it no longer fits. Georgian words are longer, so the
+   Georgian header switches earlier. The mobile menu itself only exists while it is open. */
 @media (max-width: 1240px) {
   .desktop-nav {
     display: none;
@@ -2490,24 +2511,34 @@ app-google-button {
   .menu-btn {
     display: grid;
   }
+}
 
-  .mobile-nav {
+@media (max-width: 1420px) {
+  html:lang(ka) .desktop-nav {
+    display: none;
+  }
+
+  html:lang(ka) .menu-btn {
     display: grid;
-    gap: 4px;
-    padding: 8px 22px 18px;
-    background: var(--bg);
-    border-bottom: 1px solid var(--line);
   }
+}
 
-  .mobile-nav a {
-    padding: 10px 0;
-    border-bottom: 1px solid var(--line);
-  }
+.mobile-nav {
+  display: grid;
+  gap: 4px;
+  padding: 8px 22px 18px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
 
-  .mobile-nav .btn {
-    margin-top: 12px;
-    justify-content: center;
-  }
+.mobile-nav a {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.mobile-nav .btn {
+  margin-top: 12px;
+  justify-content: center;
 }
 
 .mobile-prefs {
@@ -2527,5 +2558,647 @@ app-google-button {
     padding: 12px 0 4px;
     border-top: 1px solid var(--line);
     margin-top: 6px;
+  }
+}
+
+/* =====================================================================================
+   Course facts, outcomes, sticky Apply bar (course page)
+   ===================================================================================== */
+
+.course-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 18px 0 22px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.course-facts > div {
+  padding: 12px 14px;
+  background: var(--surface);
+}
+
+.course-facts dt {
+  font-size: 13px;
+  color: var(--dim);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.course-facts dd {
+  margin: 2px 0 0;
+  color: var(--heading);
+  font-weight: 600;
+}
+
+.outcomes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.outcomes li {
+  position: relative;
+  padding-left: 30px;
+}
+
+.outcomes li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--red);
+  border-radius: 50%;
+  margin-top: 3px;
+}
+
+.sticky-apply {
+  display: none;
+}
+
+.cert-notice {
+  margin-top: 22px;
+  border-left: 3px solid var(--ok);
+}
+
+/* =====================================================================================
+   My account: continue card, certificates, applications
+   ===================================================================================== */
+
+.resume-card {
+  display: grid;
+  grid-template-columns: 160px 1fr auto;
+  gap: 20px;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 36px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--red);
+  box-shadow: var(--shadow);
+}
+
+.resume-card img {
+  width: 160px;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.resume-card h2 {
+  margin: 2px 0 4px;
+  font-size: 22px;
+}
+
+.resume-card .progress {
+  margin-top: 8px;
+}
+
+.resume-card:hover {
+  border-color: rgba(225, 20, 30, 0.6);
+}
+
+.cert-list,
+.app-list {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.cert-item,
+.app-list li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.cert-item > div,
+.app-list li > div {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.app-list li > div {
+  display: block;
+}
+
+.app-list li .lesson-meta {
+  display: block;
+}
+
+.cert-item:hover {
+  border-color: rgba(225, 20, 30, 0.6);
+}
+
+.cert-item .go {
+  color: var(--red);
+  font-size: 22px;
+}
+
+.cert-badge {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--ok);
+  font-weight: 700;
+}
+
+.tag.status-new {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.tag.status-contacted {
+  border-color: #c99a2e;
+  color: var(--warn);
+}
+
+.tag.status-accepted {
+  border-color: var(--ok);
+  color: var(--ok);
+}
+
+.tag.status-rejected {
+  color: var(--dim);
+}
+
+/* =====================================================================================
+   Admin inbox (applications + messages)
+   ===================================================================================== */
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--line);
+}
+
+.tabs button {
+  white-space: nowrap;
+  padding: 10px 16px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.tabs button.is-active {
+  color: var(--heading);
+  border-bottom-color: var(--red);
+}
+
+.tabs .count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  margin-left: 6px;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--red);
+}
+
+.inbox {
+  display: grid;
+  gap: 14px;
+}
+
+.inbox-item {
+  box-shadow: var(--shadow);
+}
+
+.inbox-item.is-new {
+  border-left: 3px solid var(--red);
+}
+
+.inbox-item header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.inbox-item h2 {
+  margin: 2px 0;
+}
+
+.contact-line {
+  margin: 0;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.contact-line a {
+  color: var(--heading);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.inbox-text {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 12px 14px;
+  background: var(--field);
+  border: 1px solid var(--line);
+}
+
+.inbox-controls {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+.inbox-controls label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.inbox-controls .grow {
+  flex: 1;
+  min-width: 220px;
+}
+
+.inbox-controls select,
+.inbox-controls input {
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  background: var(--field);
+  color: var(--text);
+  font: inherit;
+}
+
+.date-field {
+  max-width: 260px;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+/* =====================================================================================
+   Certificates (/certificates/:code). Printed as A4 landscape ("Save as PDF").
+   ===================================================================================== */
+
+.wrap.narrow {
+  max-width: 560px;
+}
+
+.cert-lookup {
+  margin-bottom: 18px;
+}
+
+.cert-lookup input {
+  font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cert-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.verified {
+  margin: 0;
+  color: var(--ok);
+  font-weight: 600;
+}
+
+.certificate {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  aspect-ratio: 297 / 210;
+  padding: 5% 7%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  text-align: center;
+  color: var(--paper-ink);
+  background: var(--paper);
+  border: 1px solid var(--paper-line);
+  outline: 2px solid var(--paper-ink);
+  outline-offset: -18px;
+  box-shadow: var(--shadow);
+  font-family: 'FiraGO', 'Manrope', Arial, sans-serif;
+  font-size: clamp(11px, 1.6vw, 17px);
+  container-type: inline-size;
+}
+
+.certificate::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 1.4%;
+  background: var(--red);
+}
+
+.certificate * {
+  text-transform: none !important;
+}
+
+.certificate p {
+  max-width: none;
+}
+
+.certificate .cert-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.certificate .cert-mark {
+  width: 2.4em;
+}
+
+.certificate .wordmark {
+  margin: 0;
+  font-size: 2em;
+  letter-spacing: 0.14em;
+  text-transform: uppercase !important;
+  color: var(--paper-ink);
+}
+
+.certificate .cert-sub {
+  width: 100%;
+  font-size: 0.8em;
+  color: var(--paper-dim);
+  letter-spacing: 0.08em;
+}
+
+.certificate .cert-title {
+  display: grid;
+  gap: 0.15em;
+  margin: 0.6em 0 0.3em;
+  font-family: inherit;
+  font-size: 2.6em;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  color: var(--paper-ink);
+}
+
+.certificate .cert-title .en {
+  font-size: 0.42em;
+  letter-spacing: 0.24em;
+  font-weight: 600;
+  color: var(--paper-dim);
+  text-transform: uppercase !important;
+}
+
+.certificate .cert-small {
+  margin: 0;
+  font-size: 0.95em;
+  color: var(--paper-muted);
+}
+
+.certificate .cert-small .en,
+.certificate .cert-course .en {
+  color: var(--paper-dim);
+}
+
+.certificate .cert-name {
+  color: var(--paper-ink);
+  margin: 0.1em 0 0.2em;
+  padding: 0 1.2em 0.15em;
+  font-size: 2.3em;
+  font-weight: 700;
+  border-bottom: 2px solid var(--red);
+  overflow-wrap: anywhere;
+}
+
+.certificate .cert-course {
+  color: var(--paper-ink);
+  margin: 0;
+  display: grid;
+  gap: 0.15em;
+  font-size: 1.25em;
+  font-weight: 600;
+}
+
+.certificate .cert-course .code {
+  font-size: 0.75em;
+  letter-spacing: 0.18em;
+  color: var(--red);
+}
+
+.certificate .cert-course .en {
+  font-size: 0.8em;
+  font-weight: 500;
+}
+
+.certificate .cert-meta {
+  display: flex;
+  gap: 2.4em;
+  margin: 1em 0 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.certificate .cert-meta dt {
+  font-size: 0.75em;
+  color: var(--paper-dim);
+}
+
+.certificate .cert-meta dt span {
+  margin-left: 0.3em;
+}
+
+.certificate .cert-meta dd {
+  margin: 0.1em 0 0;
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+.mono {
+  font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  letter-spacing: 0.04em;
+}
+
+.certificate .cert-verify {
+  margin: 0.8em 0 0;
+  font-size: 0.72em;
+  color: var(--paper-dim);
+  overflow-wrap: anywhere;
+}
+
+.cert-hint {
+  text-align: center;
+  margin-top: 16px;
+}
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  app-site-header,
+  app-site-footer,
+  .site-header,
+  .site-footer,
+  .toast-region,
+  .skip,
+  .no-print,
+  .sticky-apply {
+    display: none !important;
+  }
+
+  .cert-page {
+    padding: 0 !important;
+  }
+
+  .cert-page .wrap {
+    max-width: none;
+    padding: 0;
+  }
+
+  .certificate {
+    width: 297mm;
+    height: 209mm;
+    max-width: none;
+    aspect-ratio: auto;
+    padding: 14mm 20mm;
+    border: 0;
+    box-shadow: none;
+    font-size: 12pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* =====================================================================================
+   Phones and small tablets
+   ===================================================================================== */
+
+@media (max-width: 860px) {
+  .resume-card {
+    grid-template-columns: 96px 1fr;
+  }
+
+  .resume-card img {
+    width: 96px;
+  }
+
+  .resume-card .btn {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    text-align: center;
+  }
+}
+
+@media (max-width: 640px) {
+  /* The Apply button stays in reach while reading a course. */
+  .sticky-apply {
+    position: fixed;
+    z-index: 30;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -8px 24px rgba(19, 35, 58, 0.12);
+  }
+
+  .sticky-apply > div {
+    display: grid;
+    line-height: 1.25;
+  }
+
+  .sticky-apply span {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* Room for the bar at the end of the page. */
+  .resume-card {
+    grid-template-columns: 1fr;
+  }
+
+  .resume-card img {
+    display: none;
+  }
+
+  main:has(.sticky-apply) {
+    padding-bottom: 76px;
+  }
+
+  .course-facts {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .inbox-item header {
+    flex-direction: column-reverse;
+  }
+
+  .inbox-controls label,
+  .inbox-controls .grow {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .tabs button {
+    flex: 1;
+  }
+
+  .cert-toolbar .btn {
+    width: 100%;
+  }
+
+  .certificate {
+    aspect-ratio: auto;
+    padding: 36px 22px 28px 26px;
+    font-size: 13px;
+    outline-offset: -8px;
   }
 }

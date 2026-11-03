@@ -42,6 +42,11 @@ export class AdminCourseEdit {
     title: ltextGroup(this.fb, null, true),
     summary: ltextGroup(this.fb),
     description: ltextGroup(this.fb),
+    format: ltextGroup(this.fb),
+    duration: ltextGroup(this.fb),
+    outcomes: ltextGroup(this.fb),
+    /** yyyy-MM-dd from <input type="date">; '' = on request. */
+    nextStart: [''],
     imageUrl: [''],
     price: [null as number | null, [Validators.min(0)]],
     published: [false],
@@ -77,7 +82,7 @@ export class AdminCourseEdit {
         this.api.adminQuizzes(this.id),
       ]);
       this.course.set(course);
-      this.form.reset({ ...course, price: course.price });
+      this.form.reset({ ...course, price: course.price, nextStart: course.nextStart ?? '' });
       this.lessons.set(lessons.sort((a, b) => a.order - b.order));
       this.quizzes.set(quizzes);
     } catch (e) {
@@ -106,6 +111,7 @@ export class AdminCourseEdit {
         ...this.course()!,
         ...value,
         price: value.price ?? null,
+        nextStart: value.nextStart || null,
       });
       this.course.set(saved);
       this.form.markAsPristine();

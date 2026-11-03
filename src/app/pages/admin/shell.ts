@@ -15,6 +15,7 @@ import { TPipe } from '../../content/i18n';
           <a routerLink="courses" routerLinkActive="is-active">{{ 'Courses & tests' | t }}</a>
           <a routerLink="faq" routerLinkActive="is-active">{{ 'FAQ (public)' | t }}</a>
           @if (admin()) {
+            <a routerLink="applications" routerLinkActive="is-active">{{ 'Applications' | t }}</a>
             <a routerLink="students" routerLinkActive="is-active">{{ 'Students' | t }}</a>
             <a routerLink="results" routerLinkActive="is-active">{{ 'Test results' | t }}</a>
             <a routerLink="team" routerLinkActive="is-active">{{ 'Team' | t }}</a>

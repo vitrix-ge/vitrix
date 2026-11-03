@@ -78,6 +78,16 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/quiz/quiz').then((m) => m.QuizPage),
   },
   {
+    path: 'certificates',
+    data: { title: 'Certificates' },
+    loadComponent: () => import('./pages/certificate/certificate').then((m) => m.CertificatePage),
+  },
+  {
+    path: 'certificates/:code',
+    data: { title: 'Certificate' },
+    loadComponent: () => import('./pages/certificate/certificate').then((m) => m.CertificatePage),
+  },
+  {
     path: 'faq',
     data: { title: 'Questions & answers' },
     loadComponent: () => import('./pages/faq/faq').then((m) => m.FaqPage),

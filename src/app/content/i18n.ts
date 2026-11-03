@@ -18,6 +18,12 @@ function savedLang(): Lang {
 /** Current site language. Georgian by default; the header switch changes it (remembered per browser). */
 export const lang = signal<Lang>(savedLang());
 
+/**
+ * A page's own browser-tab title (e.g. the course name), shown instead of the route's `data.title`.
+ * Cleared on every navigation; set it from the page once its content has loaded.
+ */
+export const pageTitleOverride = signal<string | null>(null);
+
 export function setLang(value: Lang): void {
   lang.set(value);
   try {

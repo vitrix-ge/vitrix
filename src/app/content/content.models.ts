@@ -26,6 +26,14 @@ export interface CourseSummary {
 
 export interface Course extends CourseSummary {
   description: LText;
+  /** e.g. "2 days, hands-on" (shown in the course facts). */
+  format?: LText;
+  /** e.g. "16 hours". */
+  duration?: LText;
+  /** What students learn, one point per line. */
+  outcomes?: LText;
+  /** Next start date (yyyy-MM-dd); null = on request. */
+  nextStart?: string | null;
 }
 
 export interface Lesson {
@@ -125,6 +133,9 @@ export interface MyCourse {
   lessonsCompleted: number;
   quizzesTotal: number;
   quizzesPassed: number;
+  /** First lesson not completed yet; null when every lesson is done. */
+  nextLessonId?: string | null;
+  nextLessonTitle?: LText | null;
 }
 
 /** POST /api/quizzes/{id}/attempts — starts an attempt. Options carry no "correct" flag. */
@@ -193,4 +204,80 @@ export interface StaffUser {
   name: string;
   roles: string[];
   createdAt: string;
+}
+
+// ---------------------------------------------------------------- inbox and certificates
+
+export type ApplicationStatus = 'new' | 'contacted' | 'accepted' | 'rejected';
+export const APPLICATION_STATUSES: ApplicationStatus[] = [
+  'new',
+  'contacted',
+  'accepted',
+  'rejected',
+];
+
+/** POST /api/applications */
+export interface ApplicationInput {
+  courseId: string;
+  name: string;
+  phone: string;
+  background: string;
+}
+
+/** GET /api/me/applications — what applicants see (no internal note). */
+export interface MyApplication {
+  id: string;
+  courseCode: string;
+  courseTitle: LText | null;
+  status: ApplicationStatus;
+  createdAt: string;
+}
+
+/** GET /api/admin/applications */
+export interface ApplicationRow {
+  id: string;
+  courseId: string | null;
+  courseCode: string;
+  courseTitle: LText | null;
+  name: string;
+  email: string;
+  phone: string;
+  background: string;
+  status: ApplicationStatus;
+  note: string;
+  createdAt: string;
+  updatedAt: string | null;
+  /** The applicant's email is already enrolled in the course. */
+  enrolled: boolean;
+}
+
+/** POST /api/contact. `website` is the honeypot: always empty from people. */
+export interface ContactInput {
+  name: string;
+  email: string;
+  organization: string;
+  message: string;
+  website: string;
+}
+
+/** GET /api/admin/messages */
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  organization: string;
+  message: string;
+  handled: boolean;
+  createdAt: string;
+}
+
+/** GET /api/me/certificates and GET /api/certificates/{code} (public verification). */
+export interface Certificate {
+  code: string;
+  courseId: string;
+  courseCode: string;
+  courseTitle: LText;
+  name: string;
+  scorePercent: number;
+  issuedAt: string;
 }
