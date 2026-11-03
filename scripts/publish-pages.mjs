@@ -10,6 +10,7 @@
 // Course pages come from the live course list (vitrix-api) when it answers within a few seconds,
 // otherwise from the built-in list in src/app/site-data.ts.
 
+import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -144,7 +145,45 @@ for (const c of courses) {
 
 // ---------------------------------------------------------------- write the pages
 
-const template = readFileSync(join(dist, 'index.html'), 'utf8');
+// ---------------------------------------------------------------- Content Security Policy
+//
+// GitHub Pages can't send security headers, so the policy is a <meta> tag. It only lets the page
+// load code from this site, talk to our two servers, and embed Google sign-in, YouTube lessons and
+// Cloudflare Turnstile. The small inline script in index.html (language/theme before start) is
+// allowed by its hash, so no other inline script can run — the main defence if someone ever slips
+// HTML into the page. (Inline styles stay allowed: Angular and Google's button use them.)
+const IDENTITY = 'https://vitrix-identity-24j8.onrender.com';
+const builtIndex = readFileSync(join(dist, 'index.html'), 'utf8');
+const inlineScripts = [...builtIndex.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(
+  (m) => `'sha256-${createHash('sha256').update(m[1]).digest('base64')}'`,
+);
+if (/\son[a-z]+="/i.test(builtIndex)) {
+  throw new Error('index.html has an inline event handler (e.g. onload=); the CSP would block it.');
+}
+const CSP = [
+  "default-src 'self'",
+  `script-src 'self' ${inlineScripts.join(' ')} https://accounts.google.com/gsi/client https://challenges.cloudflare.com`,
+  "style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style",
+  "img-src 'self' data: https:",
+  "font-src 'self'",
+  `connect-src 'self' ${IDENTITY} ${API} https://accounts.google.com/gsi/`,
+  'frame-src https://www.youtube-nocookie.com https://accounts.google.com/gsi/ https://challenges.cloudflare.com',
+  "media-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  'upgrade-insecure-requests',
+].join('; ');
+
+const template = builtIndex.replace(
+  /<meta charset="utf-8"\s*\/?>/,
+  `<meta charset="utf-8" />\n    <meta http-equiv="Content-Security-Policy" content="${CSP}">\n    <meta name="referrer" content="strict-origin-when-cross-origin">`,
+);
+if (template === builtIndex) {
+  throw new Error(
+    'Could not find <meta charset="utf-8"> in index.html to add the security policy.',
+  );
+}
 const escape = (s) =>
   s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const absolute = (url) => (/^https?:\/\//.test(url) ? url : `${site}/${url.replace(/^\//, '')}`);

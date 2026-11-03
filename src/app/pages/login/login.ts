@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Auth, GoogleConsentRequired } from '../../auth';
@@ -6,12 +6,13 @@ import { GOOGLE_CLIENT_ID } from '../../auth.config';
 import { GoogleButton, googleProfile } from '../../google-button';
 import { TPipe, t } from '../../content/i18n';
 import { Notify } from '../../notify';
+import { CAPTCHA_ENABLED, TurnstileWidget } from '../../turnstile';
 
 type Mode = 'login' | 'register' | 'forgot';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink, GoogleButton, TPipe],
+  imports: [ReactiveFormsModule, RouterLink, GoogleButton, TPipe, TurnstileWidget],
   templateUrl: './login.html',
 })
 export class Login {
@@ -27,6 +28,9 @@ export class Login {
   readonly failure = signal('');
   /** Shown in the form, e.g. after an account was created but automatic login failed. */
   readonly success = signal('');
+  /** "Not a robot" token for Create account and Forgot password (null until Cloudflare gives one). */
+  readonly captcha = signal<string | null>(null);
+  private readonly turnstile = viewChild(TurnstileWidget);
 
   readonly googleEnabled = GOOGLE_CLIENT_ID !== '';
   /** "Continue with Google" for a new person: ask for the privacy consent before creating the account. */
@@ -76,12 +80,19 @@ export class Login {
       return;
     }
     const { name, email, password, acceptPrivacy, website } = this.form.getRawValue();
+    const captcha = this.captcha() ?? '';
+    if (CAPTCHA_ENABLED && this.mode() !== 'login' && !captcha) {
+      this.failure.set(
+        t('One moment: we are checking that you are not a robot. Try again in a second.'),
+      );
+      return;
+    }
     this.busy.set(true);
     this.failure.set('');
     this.success.set('');
     try {
       if (this.mode() === 'forgot') {
-        await this.auth.forgotPassword(email);
+        await this.auth.forgotPassword(email, captcha);
         this.success.set(
           t(
             'If there is an account for {email}, we have sent it a link to choose a new password. It works for 24 hours; check your spam folder too.',
@@ -89,7 +100,7 @@ export class Login {
           ),
         );
       } else if (this.mode() === 'register') {
-        await this.createAccount(name, email, password, acceptPrivacy, website);
+        await this.createAccount(name, email, password, acceptPrivacy, website, captcha);
       } else {
         await this.auth.login(email, password);
         this.notify.success(
@@ -101,6 +112,8 @@ export class Login {
       this.failure.set(error instanceof Error ? error.message : 'Something went wrong.');
     } finally {
       this.busy.set(false);
+      // A token works once: get a fresh one for the next try.
+      this.turnstile()?.reset();
     }
   }
 
@@ -111,9 +124,10 @@ export class Login {
     password: string,
     acceptPrivacy: boolean,
     website: string,
+    captcha: string,
   ): Promise<void> {
     // Errors here stay on the Create account tab.
-    await this.auth.register(name, email, password, { acceptPrivacy, website });
+    await this.auth.register(name, email, password, { acceptPrivacy, website, captcha });
 
     try {
       await this.auth.login(email, password);

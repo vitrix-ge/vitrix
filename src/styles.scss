@@ -3590,3 +3590,29 @@ h2 + .btn,
 body.menu-open {
   overflow: hidden;
 }
+
+/* =====================================================================================
+   Vertical rhythm. Each admin page is one element inside .admin-main, so its own children
+   (header, filters, stats, tables, cards) get the spacing here.
+   ===================================================================================== */
+
+.admin-main > :not(router-outlet) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 24px;
+  min-width: 0;
+}
+
+.admin-head .lesson-meta {
+  margin-top: 6px;
+}
+
+.lede + .form-actions,
+.lede + .btn {
+  margin-top: 24px;
+}
+
+.not-found {
+  padding-bottom: 72px;
+}
