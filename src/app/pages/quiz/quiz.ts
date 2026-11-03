@@ -14,6 +14,6 @@ export class QuizPage {
   readonly quizId = inject(ActivatedRoute).snapshot.paramMap.get('id') ?? '';
 
   backToCourse(): void {
-    history.length > 1 ? history.back() : void this.router.navigateByUrl('/account');
+    history.length > 1 ? history.back() : void this.router.navigateByUrl('/my-courses');
   }
 }

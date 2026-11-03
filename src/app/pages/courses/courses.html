@@ -24,9 +24,21 @@
             <a class="btn btn-ghost" [routerLink]="['/courses', course.slug]">
               {{ 'Course details' | t }} <span aria-hidden="true">→</span>
             </a>
-            <a class="btn btn-ghost" routerLink="/apply" [queryParams]="{ course: course.slug }">{{
-              'Apply now' | t
-            }}</a>
+            @if (learning.enrolledIn(course.code)) {
+              <a class="btn btn-red" [routerLink]="['/courses', course.slug]">{{
+                'Open the course' | t
+              }}</a>
+              <span class="tag tag-ok">✓ {{ 'Enrolled' | t }}</span>
+            } @else if (learning.appliedFor(course.code)) {
+              <span class="tag status-new">{{ 'Application sent' | t }}</span>
+            } @else {
+              <a
+                class="btn btn-ghost"
+                routerLink="/apply"
+                [queryParams]="{ course: course.slug }"
+                >{{ 'Apply now' | t }}</a
+              >
+            }
           </div>
         </div>
       </article>

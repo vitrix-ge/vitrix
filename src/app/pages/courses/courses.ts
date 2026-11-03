@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Catalog } from '../../content/catalog';
 import { TPipe, TrPipe } from '../../content/i18n';
+import { MyLearning } from '../../content/my-learning';
 
 @Component({
   selector: 'app-courses',
@@ -11,6 +12,8 @@ import { TPipe, TrPipe } from '../../content/i18n';
 })
 export class Courses {
   private readonly catalog = inject(Catalog);
+  /** Enrolled courses get "Open the course" instead of "Apply now". */
+  readonly learning = inject(MyLearning);
   readonly courses = this.catalog.courses;
   private readonly route = inject(ActivatedRoute);
   private readonly injector = inject(Injector);

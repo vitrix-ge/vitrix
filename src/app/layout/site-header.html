@@ -30,14 +30,43 @@
         <path d="M16 16.5 20.5 21" />
       </svg>
     </button>
-    @if (staff()) {
-      <a class="account-link" routerLink="/admin" routerLinkActive="is-active">{{ 'Admin' | t }}</a>
-    }
     @if (authEnabled) {
       @if (user(); as member) {
-        <a class="account-link" routerLink="/account" routerLinkActive="is-active">
-          {{ member.name }}
+        <a
+          class="account-link my-courses-link"
+          routerLink="/my-courses"
+          routerLinkActive="is-active"
+        >
+          {{ 'My courses' | t }}
         </a>
+        <div class="user-menu">
+          <button
+            type="button"
+            class="avatar-btn"
+            aria-haspopup="menu"
+            [attr.aria-expanded]="userOpen()"
+            aria-controls="user-menu"
+            (click)="toggleUser()"
+            [title]="member.name"
+          >
+            <span class="avatar" aria-hidden="true">{{ initials() }}</span>
+            <span class="sr-only">{{ 'Account menu' | t }}</span>
+          </button>
+          @if (userOpen()) {
+            <div class="user-dropdown" id="user-menu" role="menu">
+              <div class="user-head">
+                <strong>{{ member.name }}</strong>
+                <span>{{ member.email }}</span>
+              </div>
+              <a role="menuitem" routerLink="/my-courses">{{ 'My courses' | t }}</a>
+              <a role="menuitem" routerLink="/account">{{ 'Account settings' | t }}</a>
+              @if (staff()) {
+                <a role="menuitem" routerLink="/admin">{{ 'Admin panel' | t }}</a>
+              }
+              <button type="button" role="menuitem" (click)="logout()">{{ 'Log out' | t }}</button>
+            </div>
+          }
+        </div>
       } @else {
         <a class="account-link" routerLink="/login" routerLinkActive="is-active">{{
           'Log in' | t
@@ -131,6 +160,24 @@
 
 @if (menuOpen()) {
   <nav class="mobile-nav" id="mobile-nav" [attr.aria-label]="'Menu' | t">
+    @if (authEnabled && user(); as member) {
+      <div class="mobile-user">
+        <span class="avatar" aria-hidden="true">{{ initials() }}</span>
+        <div>
+          <strong>{{ member.name }}</strong>
+          <span>{{ member.email }}</span>
+        </div>
+      </div>
+      <a class="mobile-strong" routerLink="/my-courses" routerLinkActive="is-active">{{
+        'My courses' | t
+      }}</a>
+      <a routerLink="/account" routerLinkActive="is-active">{{ 'Account settings' | t }}</a>
+      @if (staff()) {
+        <a routerLink="/admin" routerLinkActive="is-active">{{ 'Admin panel' | t }}</a>
+      }
+      <button type="button" class="mobile-logout" (click)="logout()">{{ 'Log out' | t }}</button>
+      <p class="mobile-section">{{ 'Menu' | t }}</p>
+    }
     @for (item of nav; track item.path) {
       <a
         [routerLink]="item.path"
@@ -140,15 +187,8 @@
         {{ item.label | t }}
       </a>
     }
-    @if (staff()) {
-      <a routerLink="/admin" routerLinkActive="is-active">{{ 'Admin' | t }}</a>
-    }
-    @if (authEnabled) {
-      @if (user()) {
-        <a routerLink="/account" routerLinkActive="is-active">{{ 'My account' | t }}</a>
-      } @else {
-        <a routerLink="/login" routerLinkActive="is-active">{{ 'Log in' | t }}</a>
-      }
+    @if (authEnabled && !user()) {
+      <a routerLink="/login" routerLinkActive="is-active">{{ 'Log in' | t }}</a>
     }
     <div class="mobile-prefs">
       <div class="lang-switch" role="group" [attr.aria-label]="'Language' | t">

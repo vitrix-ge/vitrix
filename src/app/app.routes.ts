@@ -62,9 +62,15 @@ export const routes: Routes = [
   },
   {
     path: 'account',
-    data: { title: 'My account' },
+    data: { title: 'Account settings' },
     canActivate: [authGuard],
     loadComponent: () => import('./pages/account/account').then((m) => m.Account),
+  },
+  {
+    path: 'my-courses',
+    data: { title: 'My courses' },
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/my-courses/my-courses').then((m) => m.MyCourses),
   },
   {
     path: 'courses/:slug',

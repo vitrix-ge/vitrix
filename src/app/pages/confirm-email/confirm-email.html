@@ -39,12 +39,12 @@
             </p>
             <div class="form-actions">
               @if (auth.signedIn()) {
-                <a class="btn btn-red" routerLink="/account">{{ 'Go to my account' | t }}</a>
+                <a class="btn btn-red" routerLink="/my-courses">{{ 'Go to my courses' | t }}</a>
               } @else {
                 <a
                   class="btn btn-red"
                   routerLink="/login"
-                  [queryParams]="{ redirect: '/account' }"
+                  [queryParams]="{ redirect: '/my-courses' }"
                   >{{ 'Log in' | t }}</a
                 >
               }
@@ -58,7 +58,7 @@
             <p>{{ error() | t }}</p>
             @if (!auth.signedIn()) {
               <p>{{ 'Log in and you can send yourself a new confirmation email.' | t }}</p>
-              <a class="btn btn-red" routerLink="/login" [queryParams]="{ redirect: '/account' }">{{
+              <a class="btn btn-red" routerLink="/login" [queryParams]="{ redirect: '/my-courses' }">{{
                 'Log in' | t
               }}</a>
             }

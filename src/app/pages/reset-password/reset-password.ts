@@ -64,7 +64,7 @@ export class ResetPassword {
       try {
         await this.auth.login(email, password);
         this.notify.success(t('Your password has been changed. You are signed in.'));
-        await this.router.navigateByUrl('/account');
+        await this.router.navigateByUrl('/my-courses');
       } catch {
         this.notify.success(t('Your password has been changed. Log in with the new password.'));
         await this.router.navigateByUrl('/login');
