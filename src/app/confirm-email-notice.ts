@@ -24,10 +24,22 @@ import { TPipe, t } from './content/i18n';
             <p class="error" role="alert">{{ error() | t }}</p>
           }
           <div class="form-actions">
-            <button class="btn btn-red" type="button" (click)="resend()" [disabled]="busy()">
+            <button
+              class="btn btn-red"
+              type="button"
+              (click)="resend()"
+              [disabled]="busy()"
+              [class.is-busy]="busy()"
+            >
               {{ (busy() ? 'Sending…' : sent() ? 'Send again' : 'Resend email') | t }}
             </button>
-            <button class="btn btn-ghost" type="button" (click)="check()" [disabled]="busy()">
+            <button
+              class="btn btn-ghost"
+              type="button"
+              (click)="check()"
+              [disabled]="busy()"
+              [class.is-busy]="busy()"
+            >
               {{ "I've confirmed it" | t }}
             </button>
           </div>

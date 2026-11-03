@@ -35,7 +35,7 @@
     }
 
     @if (loading()) {
-      <p class="lesson-meta">{{ 'Loading your courses…' | t }}</p>
+      <app-loading text="Loading your courses…" />
     } @else if (learning.courses().length) {
       <div class="my-courses">
         @for (mc of learning.courses(); track mc.course.id) {

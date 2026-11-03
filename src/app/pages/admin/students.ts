@@ -6,11 +6,12 @@ import { ContentApi } from '../../content/content.api';
 import { Course, Enrollment } from '../../content/content.models';
 import { TPipe, TrPipe, t } from '../../content/i18n';
 import { Dialog } from '../../dialog';
+import { Loading } from '../../loading';
 
 /** Admin only: who can open which course. Enrol by email — works before they create an account. */
 @Component({
   selector: 'app-admin-students',
-  imports: [ReactiveFormsModule, TrPipe, DatePipe, TPipe],
+  imports: [Loading, ReactiveFormsModule, TrPipe, DatePipe, TPipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './students.html',
 })

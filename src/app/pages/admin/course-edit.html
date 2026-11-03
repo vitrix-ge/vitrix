@@ -3,7 +3,7 @@
 </p>
 
 @if (loading()) {
-  <p class="lesson-meta">{{ 'Loading…' | t }}</p>
+  <app-loading />
 } @else if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
 } @else if (course(); as c) {
@@ -99,7 +99,7 @@
       <span>{{ 'Published — visible to visitors on the Courses page' | t }}</span>
     </label>
     <div class="form-actions sticky-actions">
-      <button type="submit" class="btn btn-red" [disabled]="saving()">
+      <button type="submit" class="btn btn-red" [disabled]="saving()" [class.is-busy]="saving()">
         {{ (saving() ? 'Saving…' : 'Save course') | t }}
       </button>
       @if (form.dirty) {

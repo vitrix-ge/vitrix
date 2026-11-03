@@ -16,6 +16,7 @@ import { CONTENT_ENABLED } from '../../content/content.config';
 import { AttemptRow, Certificate, MyCourse } from '../../content/content.models';
 import { TPipe, TrPipe } from '../../content/i18n';
 import { MyLearning } from '../../content/my-learning';
+import { Loading } from '../../loading';
 
 /** What applicants see for each status (admins see the same words in the Applications page). */
 export const STATUS_LABELS: Record<string, string> = {
@@ -32,7 +33,7 @@ export const STATUS_LABELS: Record<string, string> = {
  */
 @Component({
   selector: 'app-my-courses',
-  imports: [RouterLink, TrPipe, TPipe, DatePipe, ConfirmEmailNotice],
+  imports: [Loading, RouterLink, TrPipe, TPipe, DatePipe, ConfirmEmailNotice],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './my-courses.html',
 })

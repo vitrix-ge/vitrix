@@ -54,7 +54,7 @@
 </div>
 
 @if (loading()) {
-  <p class="lesson-meta">{{ 'Loading…' | t }}</p>
+  <app-loading />
 } @else if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
 } @else {

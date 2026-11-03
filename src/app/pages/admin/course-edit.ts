@@ -11,6 +11,7 @@ import { youtubeId } from '../../content/youtube';
 import { ltextGroup, move, slugify } from './forms';
 import { LTextField } from './ltext-field';
 import { Dialog } from '../../dialog';
+import { Loading } from '../../loading';
 
 /** Accepts an 11-character id or any YouTube link; empty is allowed (lesson without video). */
 function youtubeValidator(control: { value: string }) {
@@ -19,7 +20,7 @@ function youtubeValidator(control: { value: string }) {
 
 @Component({
   selector: 'app-admin-course-edit',
-  imports: [ReactiveFormsModule, RouterLink, TrPipe, LTextField, NgTemplateOutlet, TPipe],
+  imports: [Loading, ReactiveFormsModule, RouterLink, TrPipe, LTextField, NgTemplateOutlet, TPipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './course-edit.html',
 })

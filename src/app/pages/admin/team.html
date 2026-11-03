@@ -22,7 +22,12 @@
       [placeholder]="'Search by email' | t"
       [attr.aria-label]="'Search by email' | t"
     />
-    <button type="submit" class="btn btn-ghost" [disabled]="searching()">
+    <button
+      type="submit"
+      class="btn btn-ghost"
+      [disabled]="searching()"
+      [class.is-busy]="searching()"
+    >
       {{ (searching() ? 'Searching…' : 'Search') | t }}
     </button>
   </form>
@@ -37,7 +42,7 @@
 <section class="admin-card">
   <h2>{{ 'Current team' | t }}</h2>
   @if (loading()) {
-    <p class="lesson-meta">{{ 'Loading…' | t }}</p>
+    <app-loading />
   } @else if (error()) {
     <p class="error" role="alert">{{ error() }}</p>
   } @else {

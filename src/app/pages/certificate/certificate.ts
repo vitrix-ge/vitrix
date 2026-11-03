@@ -8,6 +8,7 @@ import { CONTENT_ENABLED } from '../../content/content.config';
 import { Certificate } from '../../content/content.models';
 import { TPipe } from '../../content/i18n';
 import { KA } from '../../content/ka';
+import { Loading } from '../../loading';
 
 /**
  * /certificates/:code — the certificate (Georgian + English on one page), checked live against
@@ -16,7 +17,7 @@ import { KA } from '../../content/ka';
  */
 @Component({
   selector: 'app-certificate',
-  imports: [RouterLink, DatePipe, TPipe, Mark],
+  imports: [Loading, RouterLink, DatePipe, TPipe, Mark],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './certificate.html',
 })

@@ -8,10 +8,11 @@ import { TPipe, TrPipe, t } from '../../content/i18n';
 import { ltextGroup, move } from './forms';
 import { LTextField } from './ltext-field';
 import { Dialog } from '../../dialog';
+import { Loading } from '../../loading';
 
 @Component({
   selector: 'app-admin-faq',
-  imports: [ReactiveFormsModule, TrPipe, LTextField, NgTemplateOutlet, TPipe],
+  imports: [Loading, ReactiveFormsModule, TrPipe, LTextField, NgTemplateOutlet, TPipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './faq.html',
 })

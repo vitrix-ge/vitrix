@@ -279,7 +279,7 @@
             }}</a>
           </div>
         } @else {
-          <p class="lesson-meta">{{ 'Loading course…' | t }}</p>
+          <app-loading text="Loading course…" />
         }
       </div>
     </div>
@@ -299,7 +299,7 @@
 } @else if (loading()) {
   <section class="page-section">
     <div class="wrap">
-      <p class="lesson-meta">{{ 'Loading course…' | t }}</p>
+      <app-loading text="Loading course…" />
     </div>
   </section>
 } @else {

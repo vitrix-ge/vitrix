@@ -3,6 +3,7 @@ import { Auth, TwoFactorStatus } from '../../auth';
 import { Notify } from '../../notify';
 import { TPipe, t } from '../../content/i18n';
 import { isStaff } from '../../content/roles';
+import { Loading } from '../../loading';
 
 type Step = 'loading' | 'off' | 'setup' | 'codes' | 'on' | 'error';
 
@@ -13,7 +14,7 @@ type Step = 'loading' | 'off' | 'setup' | 'codes' | 'on' | 'error';
  */
 @Component({
   selector: 'app-two-factor-settings',
-  imports: [TPipe],
+  imports: [Loading, TPipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section class="admin-card two-factor" id="two-factor">
@@ -40,7 +41,7 @@ type Step = 'loading' | 'off' | 'setup' | 'codes' | 'on' | 'error';
 
       @switch (step()) {
         @case ('loading') {
-          <p class="lesson-meta">{{ 'Loading…' | t }}</p>
+          <app-loading />
         }
         @case ('error') {
           <p class="error" role="alert">{{ error() | t }}</p>
@@ -50,7 +51,13 @@ type Step = 'loading' | 'off' | 'setup' | 'codes' | 'on' | 'error';
             <p class="error" role="alert">{{ error() | t }}</p>
           }
           <div class="form-actions">
-            <button type="button" class="btn btn-red" (click)="startSetup()" [disabled]="busy()">
+            <button
+              type="button"
+              class="btn btn-red"
+              (click)="startSetup()"
+              [disabled]="busy()"
+              [class.is-busy]="busy()"
+            >
               {{ 'Turn on two-step login' | t }}
             </button>
           </div>
@@ -91,7 +98,13 @@ type Step = 'loading' | 'off' | 'setup' | 'codes' | 'on' | 'error';
                   (keydown.enter)="enable()"
                   [attr.aria-label]="'Code' | t"
                 />
-                <button type="button" class="btn btn-red" (click)="enable()" [disabled]="busy()">
+                <button
+                  type="button"
+                  class="btn btn-red"
+                  (click)="enable()"
+                  [disabled]="busy()"
+                  [class.is-busy]="busy()"
+                >
                   {{ (busy() ? 'Checking…' : 'Turn on') | t }}
                 </button>
               </div>
@@ -155,6 +168,7 @@ type Step = 'loading' | 'off' | 'setup' | 'codes' | 'on' | 'error';
                 [class.btn-danger]="action() === 'off'"
                 (click)="confirmAction()"
                 [disabled]="busy()"
+                [class.is-busy]="busy()"
               >
                 {{ (action() === 'off' ? 'Turn off' : 'Get new codes') | t }}
               </button>

@@ -10,6 +10,7 @@ import {
 } from '../../content/content.models';
 import { TPipe, TrPipe, t } from '../../content/i18n';
 import { Dialog } from '../../dialog';
+import { Loading } from '../../loading';
 
 /** Admin labels for application statuses. */
 const STATUS_TEXT: Record<ApplicationStatus, string> = {
@@ -25,7 +26,7 @@ const STATUS_TEXT: Record<ApplicationStatus, string> = {
  */
 @Component({
   selector: 'app-admin-applications',
-  imports: [DatePipe, TPipe, TrPipe],
+  imports: [Loading, DatePipe, TPipe, TrPipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './applications.html',
 })

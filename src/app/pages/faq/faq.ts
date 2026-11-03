@@ -3,11 +3,12 @@ import { ContentApi } from '../../content/content.api';
 import { CONTENT_ENABLED } from '../../content/content.config';
 import { Faq } from '../../content/content.models';
 import { TPipe, TrPipe } from '../../content/i18n';
+import { Loading } from '../../loading';
 
 /** /faq — general questions and answers, managed in the admin panel. */
 @Component({
   selector: 'app-faq',
-  imports: [TrPipe, TPipe],
+  imports: [Loading, TrPipe, TPipe],
   changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section class="page-hero">
@@ -25,14 +26,11 @@ import { TPipe, TrPipe } from '../../content/i18n';
             <p class="prose-text">{{ faq.answer | tr }}</p>
           </details>
         } @empty {
-          <p>
-            {{
-              (loading()
-                ? 'Loading…'
-                : 'No questions published yet. Write to us on the Contact page.'
-              ) | t
-            }}
-          </p>
+          @if (loading()) {
+            <app-loading />
+          } @else {
+            <p>{{ 'No questions published yet. Write to us on the Contact page.' | t }}</p>
+          }
         }
       </div>
     </section>
