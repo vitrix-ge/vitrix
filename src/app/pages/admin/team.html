@@ -56,6 +56,7 @@
           <th>{{ 'Person' | t }}</th>
           <th>{{ 'Editor' | t }}</th>
           <th>{{ 'Admin' | t }}</th>
+          <th>{{ 'Two-step login' | t }}</th>
         </tr>
       </thead>
       <tbody>
@@ -90,10 +91,22 @@
                 <span>{{ (has(u, 'admin') ? 'Yes' : 'No') | t }}</span>
               </label>
             </td>
+            <td>
+              @if (u.twoFactor) {
+                <span class="tag tag-ok">{{ 'On' | t }}</span>
+                @if (u.id !== myId()) {
+                  <button type="button" class="form-link" (click)="resetTwoFactor(u)">
+                    {{ 'Reset' | t }}
+                  </button>
+                }
+              } @else {
+                <span class="tag tag-warn">{{ 'Off' | t }}</span>
+              }
+            </td>
           </tr>
         } @empty {
           <tr>
-            <td colspan="3" class="empty-state">{{ empty }}</td>
+            <td colspan="4" class="empty-state">{{ empty }}</td>
           </tr>
         }
       </tbody>

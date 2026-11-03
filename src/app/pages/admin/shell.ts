@@ -26,6 +26,20 @@ import { TPipe } from '../../content/i18n';
           </p>
         </aside>
         <div class="admin-main">
+          @if (auth.user()?.twoFactor === false) {
+            <div class="notice two-factor-nudge" role="status">
+              <p>
+                <strong>{{ 'Protect your staff account.' | t }}</strong>
+                {{
+                  'Turn on two-step login, so a stolen password alone cannot open the admin panel.'
+                    | t
+                }}
+              </p>
+              <a class="btn btn-red btn-sm" routerLink="/account" fragment="two-factor">{{
+                'Turn on' | t
+              }}</a>
+            </div>
+          }
           <router-outlet />
         </div>
       </div>

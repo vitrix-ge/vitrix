@@ -42,6 +42,41 @@
         <h2>{{ 'Coming soon' | t }}</h2>
         <p>{{ 'Student accounts are not open on this site yet.' | t }}</p>
       </div>
+    } @else if (secondStep()) {
+      <form class="form two-step" (submit)="$event.preventDefault(); submitCode()" novalidate>
+        <h2>{{ 'Two-step login' | t }}</h2>
+        <p>
+          {{
+            'Open your authenticator app and enter the 6-digit code for VITRIX. Lost your phone? Enter one of your recovery codes instead.'
+              | t
+          }}
+        </p>
+        <label>
+          {{ 'Code' | t }}
+          <input
+            class="otp-input"
+            type="text"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            maxlength="20"
+            autofocus
+            [value]="otp()"
+            (input)="otp.set($any($event.target).value)"
+            placeholder="123 456"
+          />
+        </label>
+        @if (failure()) {
+          <p class="error" role="alert">{{ failure() | t }}</p>
+        }
+        <div class="form-actions">
+          <button class="btn btn-red" type="submit" [disabled]="busy()">
+            {{ (busy() ? 'Checking…' : 'Log in') | t }}
+          </button>
+          <button class="btn btn-ghost" type="button" (click)="cancelSecondStep()">
+            {{ 'Back' | t }}
+          </button>
+        </div>
+      </form>
     } @else if (googleSignup(); as g) {
       <div class="form google-consent" role="dialog" aria-labelledby="google-consent-title">
         <h2 id="google-consent-title">{{ 'Create your account' | t }}</h2>
