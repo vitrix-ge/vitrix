@@ -3616,3 +3616,153 @@ body.menu-open {
 .not-found {
   padding-bottom: 72px;
 }
+
+/* =====================================================================================
+   Course page, enrolled: progress card and lesson list
+   ===================================================================================== */
+
+.progress-card {
+  display: grid;
+  gap: 12px;
+  padding: 20px 22px 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.progress-card-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.progress-card .eyebrow {
+  margin: 0 0 4px;
+}
+
+.progress-card-count {
+  margin: 0;
+  color: var(--heading);
+  font-weight: 600;
+}
+
+.progress-card-percent {
+  font-family: var(--display);
+  font-size: 30px;
+  line-height: 1;
+  color: var(--heading);
+}
+
+.progress-card .progress {
+  height: 10px;
+  margin: 0;
+}
+
+.progress-card-note {
+  margin: 0;
+  color: var(--ok);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.lessons-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.lessons-title .lesson-meta {
+  font-size: 15px;
+}
+
+.lesson-list {
+  gap: 10px;
+}
+
+.lesson-list > li {
+  box-shadow: var(--shadow);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.lesson-list > li.open {
+  border-color: rgba(225, 20, 30, 0.45);
+  box-shadow: 0 14px 34px rgba(19, 35, 58, 0.12);
+}
+
+.lesson-head {
+  gap: 14px;
+  padding: 16px 20px;
+  min-height: 60px;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+button.lesson-head:hover {
+  background: rgba(var(--ink-rgb), 0.03);
+}
+
+.lesson-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-weight: 600;
+}
+
+.lesson-list li.open .lesson-num {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.lesson-list li.done .lesson-num {
+  color: #fff;
+}
+
+.lesson-body {
+  gap: 18px;
+  padding: 4px 20px 22px;
+  justify-items: stretch;
+}
+
+.lesson-body .video {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(19, 35, 58, 0.18);
+}
+
+.lesson-body .prose-text {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.lesson-body > .btn {
+  justify-self: start;
+  margin-top: 0;
+}
+
+.lesson-body .lesson-quiz {
+  margin-top: 4px;
+}
+
+@media (max-width: 640px) {
+  .lesson-head {
+    padding: 14px 16px;
+  }
+
+  .lesson-body {
+    padding: 2px 14px 18px;
+  }
+
+  .progress-card {
+    padding: 18px;
+  }
+
+  /* The lock icon says it; the full sentence is in the tooltip. */
+  .lesson-list li.is-locked .lesson-head .lesson-meta {
+    display: none;
+  }
+}
