@@ -9,6 +9,7 @@ import {
   ContactMessage,
 } from '../../content/content.models';
 import { TPipe, TrPipe, t } from '../../content/i18n';
+import { Dialog } from '../../dialog';
 
 /** Admin labels for application statuses. */
 const STATUS_TEXT: Record<ApplicationStatus, string> = {
@@ -29,6 +30,7 @@ const STATUS_TEXT: Record<ApplicationStatus, string> = {
   templateUrl: './applications.html',
 })
 export class AdminApplications {
+  private readonly dialog = inject(Dialog);
   private readonly api = inject(ContentApi);
   private readonly notify = inject(Notify);
 
@@ -114,7 +116,13 @@ export class AdminApplications {
   }
 
   async accept(a: ApplicationRow): Promise<void> {
-    if (!confirm(t('Enrol {email} in {course}?', { email: a.email, course: a.courseCode }))) {
+    if (
+      !(await this.dialog.confirm({
+        title: t('Accept & enroll'),
+        message: t('Enrol {email} in {course}?', { email: a.email, course: a.courseCode }),
+        confirm: t('Enrol'),
+      }))
+    ) {
       return;
     }
     await this.update(
@@ -125,7 +133,13 @@ export class AdminApplications {
   }
 
   async removeApplication(a: ApplicationRow): Promise<void> {
-    if (!confirm(t('Delete the application from {name}?', { name: a.name }))) {
+    if (
+      !(await this.dialog.confirm({
+        title: t('Delete the application from {name}?', { name: a.name }),
+        confirm: t('Delete'),
+        tone: 'danger',
+      }))
+    ) {
       return;
     }
     try {
@@ -150,7 +164,13 @@ export class AdminApplications {
   }
 
   async removeMessage(m: ContactMessage): Promise<void> {
-    if (!confirm(t('Delete the message from {name}?', { name: m.name }))) {
+    if (
+      !(await this.dialog.confirm({
+        title: t('Delete the message from {name}?', { name: m.name }),
+        confirm: t('Delete'),
+        tone: 'danger',
+      }))
+    ) {
       return;
     }
     try {

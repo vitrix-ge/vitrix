@@ -14,6 +14,7 @@ import { Question, Quiz } from '../../content/content.models';
 import { TPipe, TrPipe, t } from '../../content/i18n';
 import { ltextGroup, move } from './forms';
 import { LTextField } from './ltext-field';
+import { Dialog } from '../../dialog';
 
 @Component({
   selector: 'app-admin-quiz-edit',
@@ -22,6 +23,7 @@ import { LTextField } from './ltext-field';
   templateUrl: './quiz-edit.html',
 })
 export class AdminQuizEdit {
+  private readonly dialog = inject(Dialog);
   private readonly api = inject(ContentApi);
   private readonly notify = inject(Notify);
   private readonly router = inject(Router);
@@ -118,7 +120,15 @@ export class AdminQuizEdit {
 
   async remove(): Promise<void> {
     const q = this.quiz();
-    if (!q || !confirm(t('Delete the test "{name}" and all its results?', { name: q.title.en }))) {
+    if (
+      !q ||
+      !(await this.dialog.confirm({
+        title: t('Delete this test?'),
+        message: t('Delete the test "{name}" and all its results?', { name: q.title.en }),
+        confirm: t('Delete'),
+        tone: 'danger',
+      }))
+    ) {
       return;
     }
     try {
@@ -197,7 +207,13 @@ export class AdminQuizEdit {
   }
 
   async deleteQuestion(q: Question): Promise<void> {
-    if (!confirm(t('Delete this question?'))) {
+    if (
+      !(await this.dialog.confirm({
+        title: t('Delete this question?'),
+        confirm: t('Delete'),
+        tone: 'danger',
+      }))
+    ) {
       return;
     }
     try {

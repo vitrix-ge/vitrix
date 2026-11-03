@@ -158,7 +158,7 @@ Pages:
 - `/my-courses`, `/account` and `/apply` — protected by `authGuard` (not signed in →
   `/login?redirect=...`). After logging in members land on `/my-courses` (unless `redirect` says
   otherwise). Apply is pre-filled with the member's name and email.
-- Header: "Log in" for visitors. Signed in: a **My courses** link (desktop) and an avatar button
+- Header: "Log in" and the red "Apply now" for visitors (members apply from a course page instead). Signed in: a **My courses** link (desktop) and an avatar button
   (initials) opening the **account menu**: name + email, My courses, Account settings (`/account`),
   Admin panel (staff), Log out. On phones the same items sit at the top of the menu.
 - `Auth.accessToken()` gives the Bearer token for calling VITRIX APIs later.
@@ -250,6 +250,9 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
   free move, <7 days a free move; online: 14-day withdrawal until the first lesson is opened.
 - **Georgian for built-in courses:** admin → Courses shows "Fill in Georgian" while a course's KA
   fields are empty but ka.ts has the Georgian for its English text; it saves that into the course.
+- **Confirmations** use `Dialog` (`dialog.ts`, `<app-dialog-host>` in the app shell, a styled native
+  `<dialog>`): `if (!(await this.dialog.confirm({ title, message, confirm, tone: 'danger' }))) return;`.
+  Never the browser's `confirm()`/`alert()`.
 - **Course facts** (admin → course): Format, Duration, What you'll learn (one point per line) and
   Next start date; shown on the course page with the price. Empty start date = "On request".
 

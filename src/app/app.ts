@@ -16,10 +16,11 @@ import { Auth } from './auth';
 import { Notify } from './notify';
 import { TPipe, pageTitleOverride, syncDocumentLang, t } from './content/i18n';
 import { syncDocumentTheme } from './theme';
+import { DialogHost } from './dialog';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SiteHeader, SiteFooter, TPipe],
+  imports: [RouterOutlet, SiteHeader, SiteFooter, TPipe, DialogHost],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.scss',

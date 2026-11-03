@@ -127,11 +127,14 @@ test.describe('signed in', () => {
   test('the account menu has My courses and Log out', async ({ page, signIn }) => {
     await signIn();
     await page.goto('about');
+    // Members don't get the header's "Apply now" button; visitors do (checked after logging out).
+    await expect(page.locator('.header-actions .apply-btn')).toHaveCount(0);
     await page.locator('.avatar-btn').click();
     const menu = page.locator('#user-menu');
     await expect(menu.getByRole('menuitem', { name: 'My courses' })).toBeVisible();
     await menu.getByRole('menuitem', { name: 'Log out' }).click();
     await expect(page.locator('.avatar-btn')).toHaveCount(0);
+    await expect(page.locator('.header-actions .apply-btn')).toHaveCount(1);
   });
 
   test('students cannot open the admin panel', async ({ page, signIn }) => {
@@ -147,5 +150,28 @@ test.describe('signed in', () => {
     await expect.poll(() => sent.filter((s) => s.method === 'PUT').length).toBe(2);
     const acls = sent.find((s) => s.path.endsWith(ACLS.id))?.body as { title: { ka: string } };
     expect(acls.title.ka).not.toBe('');
+  });
+
+  test("removing a student asks in the site's own dialog", async ({ page, signIn, sent }) => {
+    await signIn({ role: ['admin'] });
+    await page.goto('admin/students');
+    const dialog = page.locator('dialog.confirm-dialog');
+
+    await page.getByRole('button', { name: 'Remove' }).first().click();
+    await expect(dialog).toBeVisible();
+    await expect(dialog).toContainText('student@example.com');
+    await dialog.getByRole('button', { name: 'Cancel' }).click();
+    await expect(dialog).toBeHidden();
+    expect(sent.filter((s) => s.method === 'DELETE')).toEqual([]);
+
+    await page.getByRole('button', { name: 'Remove' }).first().click();
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    expect(sent.filter((s) => s.method === 'DELETE')).toEqual([]);
+
+    await page.getByRole('button', { name: 'Remove' }).first().click();
+    await dialog.getByRole('button', { name: 'Remove' }).click();
+    await expect.poll(() => sent.filter((s) => s.method === 'DELETE').length).toBe(1);
   });
 });

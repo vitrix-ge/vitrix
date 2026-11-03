@@ -10,6 +10,7 @@ import { TPipe, TrPipe, t } from '../../content/i18n';
 import { youtubeId } from '../../content/youtube';
 import { ltextGroup, move, slugify } from './forms';
 import { LTextField } from './ltext-field';
+import { Dialog } from '../../dialog';
 
 /** Accepts an 11-character id or any YouTube link; empty is allowed (lesson without video). */
 function youtubeValidator(control: { value: string }) {
@@ -23,6 +24,7 @@ function youtubeValidator(control: { value: string }) {
   templateUrl: './course-edit.html',
 })
 export class AdminCourseEdit {
+  private readonly dialog = inject(Dialog);
   private readonly api = inject(ContentApi);
   private readonly notify = inject(Notify);
   private readonly router = inject(Router);
@@ -129,11 +131,17 @@ export class AdminCourseEdit {
     const c = this.course();
     if (
       !c ||
-      !confirm(
-        t('Delete "{name}" with all its lessons, tests and results? This cannot be undone.', {
-          name: c.title.en,
-        }),
-      )
+      !(await this.dialog.confirm({
+        title: t('Delete this course?'),
+        message: t(
+          'Delete "{name}" with all its lessons, tests and results? This cannot be undone.',
+          {
+            name: c.title.en,
+          },
+        ),
+        confirm: t('Delete course'),
+        tone: 'danger',
+      }))
     ) {
       return;
     }
@@ -196,11 +204,14 @@ export class AdminCourseEdit {
 
   async deleteLesson(lesson: Lesson): Promise<void> {
     if (
-      !confirm(
-        t('Delete the lesson "{name}"? Students\' progress for it is removed too.', {
+      !(await this.dialog.confirm({
+        title: t('Delete this lesson?'),
+        message: t('Delete the lesson "{name}"? Students\' progress for it is removed too.', {
           name: lesson.title.en,
         }),
-      )
+        confirm: t('Delete'),
+        tone: 'danger',
+      }))
     ) {
       return;
     }
