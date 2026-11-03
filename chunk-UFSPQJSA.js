@@ -1,1 +1,0 @@
-import{c as n,l as r,r as o,x as s}from"./chunk-OSQMYD22.js";function x(t){t||(t=o(s));let i=new n(e=>{if(t.destroyed){e.next();return}return t.onDestroy(e.next.bind(e))});return e=>e.pipe(r(i))}export{x as a};
