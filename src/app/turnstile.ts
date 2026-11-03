@@ -7,7 +7,6 @@ import {
   viewChild,
 } from '@angular/core';
 import { TURNSTILE_SITE_KEY } from './auth.config';
-import { lang } from './content/i18n';
 import { theme } from './theme';
 
 /** Cloudflare's script API (only what we use). */
@@ -83,7 +82,8 @@ export class TurnstileWidget implements OnDestroy {
             sitekey: TURNSTILE_SITE_KEY,
             appearance: 'interaction-only',
             theme: theme(),
-            language: lang() === 'ka' ? 'ka' : 'en',
+            // Turnstile has no Georgian; English avoids its "language not supported" warning.
+            language: 'en',
             callback: (t: string) => this.token.emit(t),
             'expired-callback': () => this.token.emit(null),
             'error-callback': () => this.token.emit(null),
