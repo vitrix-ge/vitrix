@@ -78,10 +78,12 @@ No test files exist yet (`skipTests: true` in angular.json).
 | [src/app/content/](src/app/content/) | Courses/tests data layer: `content.models.ts` (the API contract), `content.api.ts` (all vitrix-api calls), `content.config.ts` (API URL), `catalog.ts` (course list with built-in fallback), `roles.ts` (admin/editor + `roleGuard`), `i18n.ts` (`LText` EN/KA + `tr` pipe), `youtube.ts`. |
 | [src/app/pages/admin/](src/app/pages/admin/) | Admin panel `/admin`: courses, lessons, tests/questions, Q&A (admin + editor); students, results and team roles (admin only; team calls identity-api `/api/admin/users`). |
 | [src/app/confirm-email-notice.ts](src/app/confirm-email-notice.ts) | "Confirm your email" box (resend / "I've confirmed it") for signed-in members with an unconfirmed email; used on account, apply and course pages. |
+| [src/app/turnstile.ts](src/app/turnstile.ts) | Cloudflare Turnstile widget ("not a robot") for sign-up, forgot password and contact. |
+| [src/app/content/my-learning.ts](src/app/content/my-learning.ts) | `MyLearning`: the member's courses and applications, shared by header, My courses, Apply, course pages. |
 | [src/app/notify.ts](src/app/notify.ts) | `Notify` service: short toast messages (`success`, `info`, `error`), shown by the app shell. |
 | [src/app/layout/](src/app/layout/) | Header (nav, search, login link, mobile menu) and footer. |
 | [src/app/mark.ts](src/app/mark.ts) | The VITRIX logo as an SVG component. |
-| `src/app/pages/*` | One folder per page: home, about, courses, simulation, faculty, partners, contact, apply, login, account, privacy, course (`/courses/:slug`), quiz (`/tests/:id`), faq, confirm-email, reset-password, certificate (`/certificates/:code` + lookup at `/certificates`). |
+| `src/app/pages/*` | One folder per page: home, about, courses, simulation, faculty, partners, contact, apply, login, my-courses, account, privacy, course (`/courses/:slug`), quiz (`/tests/:id`), faq, confirm-email, reset-password, certificate (`/certificates/:code` + lookup at `/certificates`), not-found (404). |
 | [scripts/publish-pages.mjs](scripts/publish-pages.mjs) | After the build: one `index.html` per public address with its own title, description and Open Graph tags; `404.html`, `sitemap.xml`, `robots.txt`. |
 
 ## Login (current state)
@@ -248,7 +250,9 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
 - **Students:** enrolled members see lessons with the YouTube video (`youtube-nocookie.com`
   embed), complete lessons, and take the final exam at `/tests/:id`. Starting a test creates an
   attempt on the server (attempt limit, timer); scoring happens on the server and correct answers
-  are never sent before submitting. My account shows course progress and test results.
+  are never sent before submitting. My courses shows course progress and test results; the course
+  page shows a progress card and the lessons as cards (open one highlighted, video, description,
+  quiz or "Mark as completed").
 - **Enrollment** is by email (admin → Students), so it works before the person has an account.
 - **Team** (admin → Team) gives people the `editor`/`admin` role on identity-api; it applies at their next login.
 - **Deleting an account** also calls `DELETE /api/me` on vitrix-api (progress, results, enrollments).
@@ -275,6 +279,7 @@ Port 4200 is also used by `identity-web` (the test client); run one of them at a
 8. ~~Translate the admin panel~~ done. Admins should fill the KA fields of the six built-in
    courses (until then the site shows its own Georgian for them).
 9. ~~Self-host Montserrat and Manrope~~ done. ~~Search/sharing tags and sitemap~~ done.
-10. Weekly encrypted database backups run from vitrix-api's GitHub Actions ("Database backup").
+10. ~~Backups~~ done: daily encrypted database backups (kept 30 days) from vitrix-api's GitHub Actions
+    ("Database backup"). ~~Not-a-robot check~~ done (Turnstile). ~~Security policy (CSP)~~ done.
 
 Update this file when you finish a roadmap item or change how something works.
