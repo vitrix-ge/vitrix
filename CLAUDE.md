@@ -26,7 +26,7 @@ with both servers replaced by test data (`e2e/fixtures.ts`), on a desktop and a 
 public page opens with no security-policy violation and no sideways scrolling; course list/page,
 404, login errors, sign-up consent + honeypot, contact form (Turnstile token, empty honeypot),
 My courses, enrolled course, no second application, account menu, students kept out of admin,
-two-step login (code step, setup, staff reminder).
+two-step login (code step, setup, staff reminder), session expiry (401 → renew once, else log out).
 GitHub runs them on every push and pull request (`.github/workflows/test.yml`). Add a check when
 adding a feature. No unit tests (`skipTests: true` in angular.json).
 
@@ -162,6 +162,10 @@ Pages:
   (initials) opening the **account menu**: name + email, My courses, Account settings (`/account`),
   Admin panel (staff), Log out. On phones the same items sit at the top of the menu.
 - `Auth.accessToken()` gives the Bearer token for calling VITRIX APIs later.
+- **Session expiry:** `sessionInterceptor` (auth.ts, registered in app.config.ts) watches every
+  request of a signed-in member. On a 401 it renews the token once with the refresh token and repeats
+  the request; if that fails (or the scheduled refresh fails), `Auth.sessionExpired()` logs out,
+  shows "Your session has ended. Please log in again." and opens `/login?redirect=<current page>`.
 - `Member.courses` is a list of course `id`s from `COURSES`. Nothing fills it yet — that is the
   job of the future purchase flow (an API that validates the identity server's tokens).
 
