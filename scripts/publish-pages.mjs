@@ -188,10 +188,14 @@ const escape = (s) =>
   s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const absolute = (url) => (/^https?:\/\//.test(url) ? url : `${site}/${url.replace(/^\//, '')}`);
 
+const pageUrl = (path) => (path ? `${site}/${path}/` : `${site}/`);
+
 function page({ path, title, fullTitle, description, image }) {
   const heading =
     fullTitle ?? (title ? `${ka(title)} · VITRIX` : 'VITRIX — გადაუდებელი მედიცინის ინსტიტუტი');
-  const url = path ? `${site}/${path}` : `${site}/`;
+  // Each page is a folder with index.html, so GitHub Pages answers /courses with a redirect to
+  // /courses/: use the final address (with the slash) everywhere Google and link previews look.
+  const url = pageUrl(path);
   const img = absolute(image ?? 'media/og-image.jpg');
   const tags = [
     `<link rel="canonical" href="${url}" />`,
@@ -248,7 +252,7 @@ const today = new Date().toISOString().slice(0, 10);
 const urls = PAGES.filter((p) => p.sitemap !== false)
   .map(
     (p) =>
-      `  <url><loc>${p.path ? `${site}/${p.path}` : `${site}/`}</loc><lastmod>${today}</lastmod><priority>${p.priority ?? '0.6'}</priority></url>`,
+      `  <url><loc>${pageUrl(p.path)}</loc><lastmod>${today}</lastmod><priority>${p.priority ?? '0.6'}</priority></url>`,
   )
   .join('\n');
 writeFileSync(
