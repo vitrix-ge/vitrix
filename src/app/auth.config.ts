@@ -30,7 +30,7 @@ export const GOOGLE_CLIENT_ID: string =
  * the widget's site key from dash.cloudflare.com → Turnstile (public). The matching secret key goes
  * on Render as Turnstile__SecretKey for identity-api and vitrix-api. '' = check off.
  */
-export const TURNSTILE_SITE_KEY: string = '';
+export const TURNSTILE_SITE_KEY: string = '0x4AAAAAAFx7zOU0PvpNjJHI';
 
 /** The identity server's grant type for Google ID tokens (identity-api: External/GoogleSignIn.cs). */
 export const GOOGLE_GRANT = 'urn:vitrix:params:oauth:grant-type:google';
