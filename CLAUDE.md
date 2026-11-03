@@ -138,7 +138,7 @@ on Render.
 Pages:
 
 - `/login` — two tabs, **Log in** and **Create account**. Creating an account signs the member
-  in straight away; both then go to the `?redirect=` URL or `/account` with a toast ("Account
+  in straight away; both then go to the `?redirect=` URL or `/my-courses` with a toast ("Account
   created. Welcome…" / "Welcome back…"). Logging out shows "You have been logged out.".
 - `/my-courses`, `/account` and `/apply` — protected by `authGuard` (not signed in →
   `/login?redirect=...`). After logging in members land on `/my-courses` (unless `redirect` says
