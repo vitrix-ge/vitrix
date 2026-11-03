@@ -1,0 +1,29 @@
+# Dependabot: GitHub opens a pull request when a library this site uses has an update.
+# Security fixes come as soon as they are published; ordinary updates once a week, grouped so
+# there are only a few pull requests. The Test workflow checks each one before you merge it.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Asia/Tbilisi
+    open-pull-requests-limit: 5
+    groups:
+      angular:
+        patterns: ['@angular/*', '@angular-devkit/*', 'typescript', 'zone.js', 'rxjs']
+        update-types: [minor, patch]
+      everything-else:
+        patterns: ['*']
+        exclude-patterns: ['@angular/*', '@angular-devkit/*', 'typescript', 'zone.js', 'rxjs']
+        update-types: [minor, patch]
+    ignore:
+      # Kept at the version of the browser the tests use; update together on purpose.
+      - dependency-name: '@playwright/test'
+        update-types: [version-update:semver-minor, version-update:semver-major]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

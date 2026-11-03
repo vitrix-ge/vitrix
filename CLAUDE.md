@@ -15,12 +15,19 @@ form submissions and certificates.
 ## Commands
 
 ```bash
-npm install       # once
-npm start         # dev server at http://localhost:4200
-npm run build     # production build into dist/vitrix/browser
+npm install                           # once
+npm start                             # dev server at http://localhost:4200
+npm run build                         # production build into dist/vitrix/browser
+npm run build:pages && npm run e2e    # end-to-end checks of the published build
 ```
 
-No test files exist yet (`skipTests: true` in angular.json).
+**Tests:** `e2e/` (Playwright, `playwright.config.ts`) runs the real published build at its real address
+with both servers replaced by test data (`e2e/fixtures.ts`), on a desktop and a phone screen: every
+public page opens with no security-policy violation and no sideways scrolling; course list/page,
+404, login errors, sign-up consent + honeypot, contact form (Turnstile token, empty honeypot),
+My courses, enrolled course, no second application, account menu, students kept out of admin.
+GitHub runs them on every push and pull request (`.github/workflows/test.yml`). Add a check when
+adding a feature. No unit tests (`skipTests: true` in angular.json).
 
 ## Stack and conventions
 
