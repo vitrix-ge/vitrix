@@ -39,6 +39,11 @@ export class Account {
   readonly loadingCourses = signal(CONTENT_ENABLED);
   readonly applications = signal<MyApplication[]>([]);
   readonly certificates = signal<Certificate[]>([]);
+  /** Applications still worth showing: once the course is in "My courses", its application is done. */
+  readonly openApplications = computed(() => {
+    const enrolled = new Set(this.myCourses().map((c) => c.course.code));
+    return this.applications().filter((a) => !enrolled.has(a.courseCode));
+  });
   /** "Continue where you left off": the started course with the most progress, else the first. */
   readonly resume = computed(() => {
     const open = this.myCourses().filter((c) => c.nextLessonId);
