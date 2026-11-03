@@ -58,22 +58,33 @@
               <p>{{ 'You are enrolled. The lessons for this course are being prepared.' | t }}</p>
             </div>
           } @else if (d.enrolled) {
-            <p class="eyebrow">{{ 'Your progress' | t }}</p>
-            <h2 class="block-title progress-title">
-              {{
-                '{done} of {total} lessons' | t: { done: completedCount(), total: d.lessons.length }
-              }}
-            </h2>
-            <div
-              class="progress"
-              role="progressbar"
-              [attr.aria-valuenow]="completedCount()"
-              aria-valuemin="0"
-              [attr.aria-valuemax]="d.lessons.length"
-            >
-              <span
-                [style.width.%]="d.lessons.length ? (100 * completedCount()) / d.lessons.length : 0"
-              ></span>
+            <div class="progress-card">
+              <div class="progress-card-top">
+                <div>
+                  <p class="eyebrow">{{ 'Your progress' | t }}</p>
+                  <p class="progress-card-count">
+                    {{
+                      '{done} of {total} lessons completed'
+                        | t: { done: completedCount(), total: d.lessons.length }
+                    }}
+                  </p>
+                </div>
+                <strong class="progress-card-percent">{{ progressPercent() }}%</strong>
+              </div>
+              <div
+                class="progress"
+                role="progressbar"
+                [attr.aria-valuenow]="completedCount()"
+                aria-valuemin="0"
+                [attr.aria-valuemax]="d.lessons.length"
+              >
+                <span [style.width.%]="progressPercent()"></span>
+              </div>
+              @if (completedCount() === d.lessons.length && d.quizzes.length) {
+                <p class="progress-card-note">
+                  ✓ {{ 'All lessons completed. The final exam is open below.' | t }}
+                </p>
+              }
             </div>
             @if (certificate(); as cert) {
               <div class="notice cert-notice">
@@ -124,7 +135,10 @@
           }
 
           @if (d.lessons.length) {
-            <h2 class="block-title">{{ 'Lessons' | t }}</h2>
+            <h2 class="block-title lessons-title">
+              {{ 'Lessons' | t }}
+              <span class="lesson-meta">{{ d.lessons.length }}</span>
+            </h2>
             <ol class="lesson-list">
               @for (lesson of d.lessons; track lesson.id; let i = $index) {
                 <li

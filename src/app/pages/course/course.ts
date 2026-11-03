@@ -61,6 +61,10 @@ export class CoursePage {
     const d = this.detail();
     return !this.loading() && !d?.enrolled && !d?.needsEmailConfirmation && !this.applied();
   });
+  readonly progressPercent = computed(() => {
+    const total = this.detail()?.lessons.length ?? 0;
+    return total ? Math.round((100 * this.completedCount()) / total) : 0;
+  });
   readonly completedCount = computed(
     () => this.detail()?.lessons.filter((lesson) => lesson.completed).length ?? 0,
   );
