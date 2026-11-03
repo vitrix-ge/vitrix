@@ -108,7 +108,8 @@ Privacy and spam protection:
   Don't remove it or make it visible.
 - **Delete account:** My account → Delete account (asks for the password) calls
   `DELETE {IDENTITY_URL}/api/account` and signs out. It removes the user and all their tokens.
-- If bot sign-ups ever get through anyway, the next step is Cloudflare Turnstile (free CAPTCHA).
+- **Not a robot:** Cloudflare Turnstile is on (site key in `auth.config.ts`, secret key
+  `Turnstile__SecretKey` on Render for both APIs) for Create account, Forgot password and Contact.
 
 Email confirmation and password reset (identity-api sends the emails through **Brevo**'s HTTPS API
 from `vitrix.contact1@gmail.com`, a verified Brevo sender; key on Render as `Email__BrevoApiKey`.
