@@ -1,0 +1,1 @@
+import{A as o,B as m}from"./chunk-NRMUGOJV.js";var r="vitrix.theme";function n(){try{return localStorage.getItem(r)==="dark"?"dark":"light"}catch{return"light"}}var e=o(n());function h(){let t=e()==="dark"?"light":"dark";e.set(t);try{localStorage.setItem(r,t)}catch{}}function a(){m(()=>{document.documentElement.dataset.theme=e()})}export{e as a,h as b,a as c};
