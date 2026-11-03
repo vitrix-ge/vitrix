@@ -1,9 +1,20 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpInterceptorFn, HttpParams } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { Observable, firstValueFrom, from, map, of, shareReplay } from 'rxjs';
+import {
+  Observable,
+  catchError,
+  firstValueFrom,
+  from,
+  map,
+  of,
+  shareReplay,
+  switchMap,
+  throwError,
+} from 'rxjs';
 import { AUTH_ENABLED, CLIENT_ID, GOOGLE_GRANT, IDENTITY_URL, SCOPE } from './auth.config';
 import { t } from './content/i18n';
+import { Notify } from './notify';
 
 export interface Member {
   id: string;
@@ -44,6 +55,10 @@ const TOKENS_KEY = 'vitrix.session';
 @Injectable({ providedIn: 'root' })
 export class Auth {
   private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
+  private readonly notify = inject(Notify);
+  /** A refresh already on its way (several requests can get 401 at the same time). */
+  private refreshing: Promise<boolean> | null = null;
   private readonly current = signal<Member | null>(null);
   private tokens: Tokens | null = null;
   private refreshTimer: ReturnType<typeof setTimeout> | undefined;
@@ -334,6 +349,38 @@ export class Auth {
     return false;
   }
 
+  /**
+   * A server said 401 to a request that carried our token: try one refresh (the token may have just
+   * expired, e.g. after the computer slept). True = there is a fresh token to retry with.
+   */
+  refreshAfter401(): Promise<boolean> {
+    const refreshToken = this.tokens?.refreshToken;
+    if (!refreshToken) {
+      return Promise.resolve(false);
+    }
+    this.refreshing ??= this.refresh(refreshToken)
+      .then(() => true)
+      .catch(() => false)
+      .finally(() => (this.refreshing = null));
+    return this.refreshing;
+  }
+
+  /**
+   * The session can't be renewed (signed out elsewhere, password changed, account removed…):
+   * sign out here too and go to the login page, which brings the member back afterwards.
+   */
+  sessionExpired(): void {
+    if (!this.current()) {
+      return;
+    }
+    this.logout();
+    this.notify.info(t('Your session has ended. Please log in again.'));
+    const here = this.router.url;
+    void this.router.navigate(['/login'], {
+      queryParams: here.startsWith('/login') ? {} : { redirect: here },
+    });
+  }
+
   private refresh(refreshToken: string): Promise<void> {
     return this.requestTokens({ grant_type: 'refresh_token', refresh_token: refreshToken });
   }
@@ -375,9 +422,10 @@ export class Auth {
     clearTimeout(this.refreshTimer);
     if (tokens.refreshToken) {
       const refreshToken = tokens.refreshToken;
-      const delay = Math.max(tokens.expiresAt - Date.now() - 60_000, 5_000);
+      // (Capped: browsers fire longer setTimeout delays than ~24 days at once.)
+      const delay = Math.min(Math.max(tokens.expiresAt - Date.now() - 60_000, 5_000), 2 ** 31 - 1);
       this.refreshTimer = setTimeout(() => {
-        this.refresh(refreshToken).catch(() => this.logout());
+        this.refresh(refreshToken).catch(() => this.sessionExpired());
       }, delay);
     }
   }
@@ -399,6 +447,43 @@ export interface TwoFactorStatus {
   enabled: boolean;
   recoveryCodesLeft: number;
 }
+
+/**
+ * A signed-in member's request got 401: refresh the login once and retry; if that doesn't help, the
+ * session is over (sign out, go to /login, come back after logging in).
+ */
+export const sessionInterceptor: HttpInterceptorFn = (req, next) => {
+  if (req.url.includes('/connect/token')) {
+    return next(req);
+  }
+  const auth = inject(Auth);
+  return next(req).pipe(
+    catchError((error: unknown) => {
+      // Only for members: a visitor's 401 (e.g. a members-only page) is handled by that page.
+      // (A request can lack the token when it expired while the computer slept: refresh fixes that.)
+      if (!(error instanceof HttpErrorResponse) || error.status !== 401 || !auth.user()) {
+        return throwError(() => error);
+      }
+      return from(auth.refreshAfter401()).pipe(
+        switchMap((renewed) => {
+          const token = renewed ? auth.accessToken() : null;
+          if (!token) {
+            auth.sessionExpired();
+            return throwError(() => error);
+          }
+          return next(req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })).pipe(
+            catchError((again: unknown) => {
+              if (again instanceof HttpErrorResponse && again.status === 401) {
+                auth.sessionExpired();
+              }
+              return throwError(() => again);
+            }),
+          );
+        }),
+      );
+    }),
+  );
+};
 
 /** Members only. Visitors who are not signed in go to /login and come back afterwards. */
 export const authGuard: CanActivateFn = (_route, state) => {
