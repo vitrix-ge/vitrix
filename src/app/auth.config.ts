@@ -25,6 +25,13 @@ export const CLIENT_ID = 'vitrix';
 export const GOOGLE_CLIENT_ID: string =
   '837354581289-5lr4palm86u3i9p0460av6mm3q2ii9ns.apps.googleusercontent.com';
 
+/**
+ * "I'm not a robot" check (Cloudflare Turnstile) on Create account, Forgot password and Contact:
+ * the widget's site key from dash.cloudflare.com → Turnstile (public). The matching secret key goes
+ * on Render as Turnstile__SecretKey for identity-api and vitrix-api. '' = check off.
+ */
+export const TURNSTILE_SITE_KEY: string = '';
+
 /** The identity server's grant type for Google ID tokens (identity-api: External/GoogleSignIn.cs). */
 export const GOOGLE_GRANT = 'urn:vitrix:params:oauth:grant-type:google';
 

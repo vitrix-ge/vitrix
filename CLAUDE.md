@@ -186,6 +186,22 @@ language) and live in the script. Submit `…/vitrix/sitemap.xml` in Google Sear
 
 Port 4200 is also used by `identity-web` (the test client); run one of them at a time.
 
+## Security
+
+- **Content Security Policy** (a `<meta>` tag written by `scripts/publish-pages.mjs`, since GitHub
+  Pages can't send headers): scripts only from this site (+ the hash of index.html's small inline
+  script), Google sign-in and Cloudflare Turnstile; connections only to our two servers and Google;
+  frames only YouTube (nocookie), Google sign-in and Turnstile; no plugins, no `<base>` changes.
+  Adding a new outside service means adding it there. The production build has
+  `inlineCritical: false` (critical-CSS inlining adds an `onload=` handler the policy would block;
+  the script refuses to publish if one appears). Also `Referrer-Policy: strict-origin-when-cross-origin`.
+- **"Not a robot"** (Cloudflare Turnstile, `turnstile.ts`, mostly invisible) on Create account, Forgot
+  password and Contact when `TURNSTILE_SITE_KEY` (auth.config.ts) is set; the servers check the token
+  with `Turnstile__SecretKey` (Render, both APIs). Either empty = off. Honeypots and rate limits stay.
+- **404:** unknown addresses show the "Page not found" page (GitHub answers them with HTTP 404 via
+  404.html, `noindex`). The JavaScript bundles are public by nature; never put secrets in the site
+  (the Google client id and Turnstile site key are public by design).
+
 ## Applications, contact messages and certificates
 
 - **Apply** (`/apply`, members with a confirmed email; `/apply?course=acls` preselects) posts to

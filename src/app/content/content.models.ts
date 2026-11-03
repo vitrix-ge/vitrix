@@ -258,6 +258,8 @@ export interface ContactInput {
   organization: string;
   message: string;
   website: string;
+  /** Cloudflare Turnstile token ('' when the check is off). */
+  captcha?: string;
 }
 
 /** GET /api/admin/messages */

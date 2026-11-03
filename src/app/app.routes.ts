@@ -108,5 +108,9 @@ export const routes: Routes = [
     data: { title: 'Privacy' },
     loadComponent: () => import('./pages/privacy/privacy').then((m) => m.Privacy),
   },
-  { path: '**', redirectTo: '' },
+  {
+    path: '**',
+    data: { title: 'Page not found' },
+    loadComponent: () => import('./pages/not-found/not-found').then((m) => m.NotFound),
+  },
 ];

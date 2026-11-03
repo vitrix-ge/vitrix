@@ -71,6 +71,7 @@
             <input type="text" formControlName="website" tabindex="-1" autocomplete="off" />
           </label>
         </div>
+        <app-turnstile (token)="captcha.set($event)" />
         @if (error()) {
           <p class="error" role="alert">{{ error() | t }}</p>
         }

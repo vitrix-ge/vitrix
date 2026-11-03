@@ -94,7 +94,7 @@ export class Auth {
     name: string,
     email: string,
     password: string,
-    options: { acceptPrivacy: boolean; website?: string },
+    options: { acceptPrivacy: boolean; website?: string; captcha?: string },
   ): Promise<void> {
     this.assertEnabled();
     try {
@@ -105,6 +105,7 @@ export class Auth {
           password,
           acceptPrivacy: options.acceptPrivacy,
           website: options.website ?? '',
+          captcha: options.captcha ?? '',
         }),
       );
     } catch (error) {
@@ -174,11 +175,14 @@ export class Auth {
   }
 
   /** Emails a password reset link. The server answers the same whether or not the account exists. */
-  async forgotPassword(email: string): Promise<void> {
+  async forgotPassword(email: string, captcha = ''): Promise<void> {
     this.assertEnabled();
     try {
       await firstValueFrom(
-        this.http.post(`${IDENTITY_URL}/api/account/forgot-password`, { email: email.trim() }),
+        this.http.post(`${IDENTITY_URL}/api/account/forgot-password`, {
+          email: email.trim(),
+          captcha,
+        }),
       );
     } catch (error) {
       throw new Error(describeError(error));

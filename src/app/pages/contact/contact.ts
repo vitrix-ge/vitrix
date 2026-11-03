@@ -1,14 +1,15 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ContentApi } from '../../content/content.api';
 import { CONTENT_ENABLED } from '../../content/content.config';
-import { TPipe } from '../../content/i18n';
+import { TPipe, t } from '../../content/i18n';
 import { PRIVACY_CONTACT_EMAIL } from '../../site-data';
+import { CAPTCHA_ENABLED, TurnstileWidget } from '../../turnstile';
 
 /** Contact form → POST /api/contact (saved for admin → Applications → Messages, emailed to the team). */
 @Component({
   selector: 'app-contact',
-  imports: [ReactiveFormsModule, TPipe],
+  imports: [ReactiveFormsModule, TPipe, TurnstileWidget],
   templateUrl: './contact.html',
 })
 export class Contact {
@@ -18,6 +19,9 @@ export class Contact {
   readonly sending = signal(false);
   readonly error = signal('');
   readonly email = PRIVACY_CONTACT_EMAIL;
+  /** "Not a robot" token (null until Cloudflare gives one). */
+  readonly captcha = signal<string | null>(null);
+  private readonly turnstile = viewChild(TurnstileWidget);
 
   readonly form = this.fb.nonNullable.group({
     name: ['', Validators.required],
@@ -42,6 +46,12 @@ export class Contact {
       this.error.set('The course server is not reachable. Please try again later.');
       return;
     }
+    if (CAPTCHA_ENABLED && !this.captcha()) {
+      this.error.set(
+        t('One moment: we are checking that you are not a robot. Try again in a second.'),
+      );
+      return;
+    }
     const v = this.form.getRawValue();
     this.sending.set(true);
     this.error.set('');
@@ -52,12 +62,14 @@ export class Contact {
         organization: v.organization.trim(),
         message: v.message.trim(),
         website: v.website,
+        captcha: this.captcha() ?? '',
       });
       this.sent.set(true);
     } catch (error) {
       this.error.set((error as Error).message);
     } finally {
       this.sending.set(false);
+      this.turnstile()?.reset();
     }
   }
 }
