@@ -95,6 +95,8 @@
           />
           <span>
             {{ 'I agree to the' | t }}
+            <a routerLink="/terms" target="_blank">{{ 'terms of service' | t }}</a>
+            {{ 'and the' | t }}
             <a routerLink="/privacy" target="_blank">{{ 'privacy policy' | t }}</a>
             {{ '(how VITRIX stores my name and email).' | t }}
           </span>
@@ -192,6 +194,8 @@
             <input type="checkbox" formControlName="acceptPrivacy" />
             <span>
               {{ 'I agree to the' | t }}
+              <a routerLink="/terms" target="_blank">{{ 'terms of service' | t }}</a>
+              {{ 'and the' | t }}
               <a routerLink="/privacy" target="_blank">{{ 'privacy policy' | t }}</a>
               {{ '(how VITRIX stores my name and email).' | t }}
             </span>

@@ -12,6 +12,23 @@
   }
 </header>
 
+@if (georgianToFill().length) {
+  <div class="notice admin-callout">
+    <p>
+      <strong>{{
+        'Georgian text is missing in {n} course(s).' | t: { n: georgianToFill().length }
+      }}</strong>
+      {{
+        'The site shows its own Georgian for them. Save it into the courses, so you can see and edit it here.'
+          | t
+      }}
+    </p>
+    <button type="button" class="btn btn-red btn-sm" (click)="fillGeorgian()" [disabled]="busy()">
+      {{ 'Fill in Georgian' | t }}
+    </button>
+  </div>
+}
+
 @if (creating()) {
   <form class="form admin-card" [formGroup]="newForm" (ngSubmit)="create()" novalidate>
     <h2>{{ 'New course' | t }}</h2>

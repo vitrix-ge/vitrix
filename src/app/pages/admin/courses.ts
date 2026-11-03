@@ -1,10 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Notify } from '../../notify';
 import { Catalog } from '../../content/catalog';
 import { ContentApi } from '../../content/content.api';
-import { Course } from '../../content/content.models';
+import { Course, LText } from '../../content/content.models';
+import { KA } from '../../content/ka';
 import { TPipe, TrPipe, t } from '../../content/i18n';
 import { move, slugify } from './forms';
 
@@ -25,6 +26,17 @@ export class AdminCourses {
   readonly error = signal('');
   readonly creating = signal(false);
   readonly busy = signal(false);
+
+  /**
+   * Courses whose Georgian fields are empty although the site has its own Georgian for the English
+   * text (ka.ts — the built-in courses). Visitors already see that Georgian; this saves it into the
+   * course so it shows in the editor and can be changed there.
+   */
+  readonly georgianToFill = computed(() =>
+    this.courses()
+      .map((course) => ({ course, filled: withSiteGeorgian(course) }))
+      .filter((x) => x.filled !== null),
+  );
 
   readonly newForm = this.fb.nonNullable.group({
     code: ['', [Validators.required, Validators.maxLength(30)]],
@@ -74,6 +86,30 @@ export class AdminCourses {
     }
   }
 
+  async fillGeorgian(): Promise<void> {
+    const todo = this.georgianToFill();
+    if (!todo.length) {
+      return;
+    }
+    this.busy.set(true);
+    let saved = 0;
+    try {
+      for (const { filled } of todo) {
+        const result = await this.api.saveCourse(filled!);
+        this.courses.update((list) => list.map((c) => (c.id === result.id ? result : c)));
+        saved++;
+      }
+      this.notify.success(
+        t('Georgian text saved for {n} course(s). You can edit it in each course.', { n: saved }),
+      );
+      void this.catalog.refresh();
+    } catch (e) {
+      this.notify.error(e instanceof Error ? e.message : t('Could not save.'));
+    } finally {
+      this.busy.set(false);
+    }
+  }
+
   async togglePublished(course: Course): Promise<void> {
     try {
       const saved = await this.api.saveCourse({ ...course, published: !course.published });
@@ -99,4 +135,21 @@ export class AdminCourses {
       void this.load();
     }
   }
+}
+
+const FIELDS = ['title', 'summary', 'description', 'format', 'duration', 'outcomes'] as const;
+
+/** The course with empty Georgian fields filled from ka.ts, or null when there is nothing to fill. */
+function withSiteGeorgian(course: Course): Course | null {
+  let changed = false;
+  const copy: Course = { ...course };
+  for (const field of FIELDS) {
+    const text = course[field] as LText | undefined;
+    const georgian = text && !text.ka.trim() && text.en.trim() ? KA[text.en.trim()] : undefined;
+    if (georgian) {
+      (copy[field] as LText) = { en: text!.en, ka: georgian };
+      changed = true;
+    }
+  }
+  return changed ? copy : null;
 }

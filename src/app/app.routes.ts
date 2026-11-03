@@ -104,6 +104,16 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
   {
+    path: 'terms',
+    data: { title: 'Terms of service' },
+    loadComponent: () => import('./pages/terms/terms').then((m) => m.Terms),
+  },
+  {
+    path: 'refunds',
+    data: { title: 'Cancellations and refunds' },
+    loadComponent: () => import('./pages/refunds/refunds').then((m) => m.Refunds),
+  },
+  {
     path: 'privacy',
     data: { title: 'Privacy' },
     loadComponent: () => import('./pages/privacy/privacy').then((m) => m.Privacy),

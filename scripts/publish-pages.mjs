@@ -90,6 +90,19 @@ const PAGES = [
     priority: '0.3',
   },
   {
+    path: 'terms',
+    title: 'Terms of service',
+    description: 'VITRIX-ის ვებსაიტის, ანგარიშებისა და კურსების მომსახურების პირობები.',
+    priority: '0.2',
+  },
+  {
+    path: 'refunds',
+    title: 'Cancellations and refunds',
+    description:
+      'როდის და როგორ შეგიძლიათ VITRIX-ის კურსის გაუქმება, გადატანა ან თანხის დაბრუნება.',
+    priority: '0.2',
+  },
+  {
     path: 'privacy',
     title: 'Privacy',
     description: 'როგორ ინახავს და იცავს VITRIX თქვენს მონაცემებს.',

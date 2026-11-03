@@ -1,0 +1,142 @@
+@if (lang() === 'ka') {
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">გადახდა</p>
+      <h1>გაუქმება და თანხის დაბრუნება</h1>
+      <p class="lede">
+        როდის და როგორ შეგიძლიათ კურსის გაუქმება ან სხვა თარიღზე გადატანა. ბოლო განახლება:
+        {{ updatedKa }}.
+      </p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="wrap prose">
+      <h2>კურსები ადგილზე (პრაქტიკული ან შერეული)</h2>
+      <ul>
+        <li>
+          <strong>დაწყებამდე 14 დღით ან მეტით ადრე:</strong> სრული თანხის დაბრუნება ან უფასო
+          გადატანა სხვა თარიღზე.
+        </li>
+        <li>
+          <strong>დაწყებამდე 7–13 დღით ადრე:</strong> დაბრუნდება 50% ან კურსს უფასოდ გადაიტანთ სხვა
+          თარიღზე.
+        </li>
+        <li>
+          <strong>დაწყებამდე 7 დღეზე ნაკლები ან გამოუცხადებლობა:</strong> თანხა არ ბრუნდება, თუმცა
+          შეგიძლიათ ერთხელ, ადგილების არსებობის შემთხვევაში, უფასოდ გადახვიდეთ შემდეგ ნაკადზე.
+        </li>
+        <li>
+          დაწყებამდე ადგილი შეგიძლიათ გადასცეთ კოლეგას, თუ ის აკმაყოფილებს კურსის მოთხოვნებს —
+          უბრალოდ წინასწარ გვაცნობეთ.
+        </li>
+      </ul>
+
+      <h2>ონლაინ კურსები</h2>
+      <ul>
+        <li>შეძენიდან 14 დღის განმავლობაში შეგიძლიათ უარი თქვათ კურსზე და მიიღოთ სრული თანხა.</li>
+        <li>
+          თუ თქვენი თანხმობით უკვე დაიწყეთ კურსი (გახსენით პირველი გაკვეთილი), უარის თქმის ეს უფლება
+          აღარ მოქმედებს — ციფრული მასალა უკვე მოგეწოდათ.
+        </li>
+      </ul>
+
+      <h2>თუ კურსს VITRIX გააუქმებს ან გადაიტანს</h2>
+      <p>
+        აირჩიეთ სრული თანხის დაბრუნება ან უფასო გადასვლა სხვა თარიღზე. სხვა ხარჯებს (მაგ. მგზავრობა,
+        სასტუმრო) ვერ ავანაზღაურებთ, ამიტომ გირჩევთ, ჯავშანი გააკეთოთ გაუქმების შესაძლებლობით.
+      </p>
+
+      <h2>როდის არ ბრუნდება თანხა</h2>
+      <p>
+        კურსის დასრულებისა და სერტიფიკატის გაცემის შემდეგ, ან როცა ანგარიში დაიხურა
+        <a routerLink="/terms">მომსახურების პირობების</a> დარღვევის გამო.
+      </p>
+
+      <h2>როგორ მოითხოვოთ</h2>
+      <ol>
+        <li>
+          მოგვწერეთ <a [href]="'mailto:' + contactEmail">{{ contactEmail }}</a> — მიუთითეთ სახელი,
+          ანგარიშის ელფოსტა, კურსი და გადახდის თარიღი.
+        </li>
+        <li>გიპასუხებთ 5 სამუშაო დღეში.</li>
+        <li>
+          დადასტურებული თანხა ბრუნდება გადახდის იმავე საშუალებით 10 სამუშაო დღეში (ბანკის მხრიდან
+          შეიძლება მეტი დრო დასჭირდეს).
+        </li>
+      </ol>
+      <p>
+        ეს წესები არ ზღუდავს თქვენს უფლებებს, რომლებიც საქართველოს მომხმარებელთა უფლებების დაცვის
+        კანონმდებლობით გაქვთ.
+      </p>
+    </div>
+  </section>
+} @else {
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">Payments</p>
+      <h1>Cancellations and refunds</h1>
+      <p class="lede">
+        When and how you can cancel a course or move to another date. Last updated: {{ updated }}.
+      </p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="wrap prose">
+      <h2>In-person courses (hands-on or blended)</h2>
+      <ul>
+        <li>
+          <strong>14 days or more before the start:</strong> full refund, or a free move to another
+          date.
+        </li>
+        <li>
+          <strong>7–13 days before the start:</strong> 50% refund, or a free move to another date.
+        </li>
+        <li>
+          <strong>Less than 7 days before, or not attending:</strong> no refund, but you can move
+          once, free of charge, to the next group if there are places.
+        </li>
+        <li>
+          Before the start you can pass your place to a colleague who meets the course requirements
+          — just tell us in advance.
+        </li>
+      </ul>
+
+      <h2>Online courses</h2>
+      <ul>
+        <li>You can withdraw within 14 days of buying and get a full refund.</li>
+        <li>
+          If you have already started the course with your consent (opened the first lesson), this
+          right no longer applies, because the digital content has been supplied.
+        </li>
+      </ul>
+
+      <h2>If VITRIX cancels or moves a course</h2>
+      <p>
+        Choose a full refund or a free move to another date. We can't cover other costs (such as
+        travel or hotels), so we recommend flexible bookings.
+      </p>
+
+      <h2>When there is no refund</h2>
+      <p>
+        After you have completed the course and received the certificate, or when an account was
+        closed for breaking the <a routerLink="/terms">terms of service</a>.
+      </p>
+
+      <h2>How to ask</h2>
+      <ol>
+        <li>
+          Write to <a [href]="'mailto:' + contactEmail">{{ contactEmail }}</a> with your name, the
+          email of your account, the course and the payment date.
+        </li>
+        <li>We reply within 5 working days.</li>
+        <li>
+          Approved refunds go back to the original payment method within 10 working days (your bank
+          may take longer).
+        </li>
+      </ol>
+      <p>This policy does not limit your rights under Georgia's consumer protection law.</p>
+    </div>
+  </section>
+}

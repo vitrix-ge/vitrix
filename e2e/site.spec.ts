@@ -1,4 +1,4 @@
-import { expect, expectNoSidewaysScroll, test } from './fixtures';
+import { ACLS, expect, expectNoSidewaysScroll, test } from './fixtures';
 
 /** Public pages: they open, have a heading, break no security rule and fit the screen. */
 const PUBLIC_PAGES = [
@@ -138,5 +138,14 @@ test.describe('signed in', () => {
     await signIn();
     await page.goto('admin');
     await expect(page).not.toHaveURL(/\/admin/);
+  });
+
+  test("admins can save the site's Georgian into courses", async ({ page, signIn, sent }) => {
+    await signIn({ role: ['admin'] });
+    await page.goto('admin/courses');
+    await page.getByRole('button', { name: 'Fill in Georgian' }).click();
+    await expect.poll(() => sent.filter((s) => s.method === 'PUT').length).toBe(2);
+    const acls = sent.find((s) => s.path.endsWith(ACLS.id))?.body as { title: { ka: string } };
+    expect(acls.title.ka).not.toBe('');
   });
 });

@@ -3867,7 +3867,8 @@ button.lesson-head:hover {
   text-align: center;
 }
 
-.two-factor-nudge {
+.two-factor-nudge,
+.admin-callout {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -3877,7 +3878,8 @@ button.lesson-head:hover {
   border-left: 3px solid var(--red);
 }
 
-.two-factor-nudge p {
+.two-factor-nudge p,
+.admin-callout p {
   margin: 0;
   flex: 1 1 320px;
 }
