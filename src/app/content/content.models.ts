@@ -204,6 +204,8 @@ export interface StaffUser {
   name: string;
   roles: string[];
   createdAt: string;
+  /** Two-step login is on. */
+  twoFactor?: boolean;
 }
 
 // ---------------------------------------------------------------- inbox and certificates

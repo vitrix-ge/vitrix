@@ -1,7 +1,7 @@
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Auth, GoogleConsentRequired } from '../../auth';
+import { Auth, GoogleConsentRequired, TwoFactorRequired } from '../../auth';
 import { GOOGLE_CLIENT_ID } from '../../auth.config';
 import { GoogleButton, googleProfile } from '../../google-button';
 import { TPipe, t } from '../../content/i18n';
@@ -36,6 +36,9 @@ export class Login {
   /** "Continue with Google" for a new person: ask for the privacy consent before creating the account. */
   readonly googleSignup = signal<{ token: string; email: string; name: string } | null>(null);
   readonly googleConsent = signal(false);
+  /** Two-step login: the password (or Google) was right, now the authenticator code is needed. */
+  readonly secondStep = signal<{ google?: string } | null>(null);
+  readonly otp = signal('');
 
   constructor() {
     // /login?mode=forgot (from "Send a new link" on the reset page) or ?mode=register.
@@ -102,7 +105,16 @@ export class Login {
       } else if (this.mode() === 'register') {
         await this.createAccount(name, email, password, acceptPrivacy, website, captcha);
       } else {
-        await this.auth.login(email, password);
+        try {
+          await this.auth.login(email, password);
+        } catch (error) {
+          if (error instanceof TwoFactorRequired) {
+            this.otp.set('');
+            this.secondStep.set({});
+            return;
+          }
+          throw error;
+        }
         this.notify.success(
           t('Welcome back, {name}.', { name: this.auth.user()?.name ?? t('member') }),
         );
@@ -161,7 +173,10 @@ export class Login {
       );
       await this.goOn();
     } catch (error) {
-      if (error instanceof GoogleConsentRequired) {
+      if (error instanceof TwoFactorRequired) {
+        this.otp.set('');
+        this.secondStep.set({ google: idToken });
+      } else if (error instanceof GoogleConsentRequired) {
         this.googleConsent.set(false);
         this.googleSignup.set({ token: idToken, ...googleProfile(idToken) });
       } else {
@@ -194,6 +209,42 @@ export class Login {
     } finally {
       this.busy.set(false);
     }
+  }
+
+  /** Second step: send the login again with the authenticator (or recovery) code. */
+  async submitCode(): Promise<void> {
+    const step = this.secondStep();
+    const code = this.otp().trim();
+    if (!step || !code) {
+      this.failure.set(t('Enter the 6-digit code from your authenticator app.'));
+      return;
+    }
+    this.busy.set(true);
+    this.failure.set('');
+    try {
+      if (step.google) {
+        await this.auth.loginWithGoogle(step.google, false, code);
+      } else {
+        const { email, password } = this.form.getRawValue();
+        await this.auth.login(email, password, code);
+      }
+      this.secondStep.set(null);
+      this.notify.success(
+        t('Welcome back, {name}.', { name: this.auth.user()?.name ?? t('member') }),
+      );
+      await this.goOn();
+    } catch (error) {
+      this.otp.set('');
+      this.failure.set(error instanceof Error ? error.message : 'Something went wrong.');
+    } finally {
+      this.busy.set(false);
+    }
+  }
+
+  cancelSecondStep(): void {
+    this.secondStep.set(null);
+    this.otp.set('');
+    this.failure.set('');
   }
 
   cancelGoogle(): void {

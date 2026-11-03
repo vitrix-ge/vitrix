@@ -24,6 +24,10 @@
       <span class="btn btn-ghost">{{ 'Open' | t }}</span>
     </a>
 
+    @if (user()?.hasPassword !== undefined) {
+      <app-two-factor-settings />
+    }
+
     <button type="button" class="btn btn-ghost account-cta" (click)="logout()">
       {{ 'Log out' | t }}
     </button>
