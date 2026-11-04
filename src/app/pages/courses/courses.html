@@ -17,7 +17,14 @@
       <article class="course-row" [id]="course.slug">
         <img [src]="course.imageUrl" [alt]="'{code} training' | t: { code: course.code }" />
         <div>
-          <p class="eyebrow">{{ course.code | t }}</p>
+          <div class="course-row-head">
+            <p class="eyebrow">{{ course.code | t }}</p>
+            @if (learning.enrolledIn(course.code)) {
+              <span class="tag tag-ok">✓ {{ 'Enrolled' | t }}</span>
+            } @else if (learning.appliedFor(course.code)) {
+              <span class="tag status-new">{{ 'Application sent' | t }}</span>
+            }
+          </div>
           <h2>{{ course.title | tr }}</h2>
           <p>{{ (course.description | tr) || (course.summary | tr) }}</p>
           <div class="form-actions">
@@ -28,10 +35,7 @@
               <a class="btn btn-red" [routerLink]="['/courses', course.slug]">{{
                 'Open the course' | t
               }}</a>
-              <span class="tag tag-ok">✓ {{ 'Enrolled' | t }}</span>
-            } @else if (learning.appliedFor(course.code)) {
-              <span class="tag status-new">{{ 'Application sent' | t }}</span>
-            } @else {
+            } @else if (!learning.appliedFor(course.code)) {
               <a
                 class="btn btn-ghost"
                 routerLink="/apply"
