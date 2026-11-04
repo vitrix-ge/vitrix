@@ -1000,6 +1000,18 @@ p {
   scroll-margin-top: 90px;
 }
 
+.course-row-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 8px;
+}
+
+.course-row-head .eyebrow {
+  margin: 0;
+}
+
 .course-row img {
   width: 100%;
   height: 170px;

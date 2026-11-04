@@ -124,6 +124,26 @@ test.describe('signed in', () => {
     await expect(page.getByRole('heading', { name: 'You already have this course' })).toBeVisible();
   });
 
+  test('the course list marks enrolled courses next to the course code', async ({
+    page,
+    signIn,
+  }) => {
+    await signIn();
+    await page.goto('courses');
+    const row = page.locator('.course-row').filter({ hasText: 'ATLS' });
+    await expect(row.locator('.course-row-head .tag-ok')).toBeVisible();
+    await expect(row.locator('.form-actions .tag')).toHaveCount(0);
+    await expect(row.getByRole('link', { name: 'Open the course' })).toBeVisible();
+  });
+
+  test('the Apply form shows the terms note once', async ({ page, signIn }) => {
+    await signIn();
+    await page.goto('apply');
+    await expect(page.locator('form button[type="submit"]')).toBeVisible();
+    await expect(page.locator('form a[href$="/terms"]')).toHaveCount(1);
+    await expect(page.locator('form a[href$="/refunds"]')).toHaveCount(1);
+  });
+
   test('the account menu has My courses and Log out', async ({ page, signIn }) => {
     await signIn();
     await page.goto('about');
